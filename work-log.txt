@@ -1,0 +1,13 @@
+----------------------------------------------------
+NOTES TO KEEP TRACK OF PROGRESS, IDEAS, PROBLEMS EG.
+----------------------------------------------------
+
+--- 1/23/17 ---
+Matildha:
+Created git repo. Copied fhresh pintos files into it and commited, 
+none of my previous changes to lab1 added yet. 
+  Made all the tests in lab0 and added commands to .bashrc. Unsure if it works 
+properly though. Added the tags to emacs and ran the alarm-single with and without gdb.
+  
+TODO: Try to understand what changes I made to lab1 and then transfer them into new 
+project if seems correct.  

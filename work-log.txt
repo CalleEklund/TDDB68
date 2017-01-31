@@ -10,4 +10,8 @@ none of my previous changes to lab1 added yet.
 properly though. Added the tags to emacs and ran the alarm-single with and without gdb.
   
 TODO: Try to understand what changes I made to lab1 and then transfer them into new 
-project if seems correct.  
+project if seems correct.
+
+--- 1/27/17 ---
+Matildha:
+Changed the *esp pointer to PYSBASE - 12 and set process_wait() to infinite loop. 

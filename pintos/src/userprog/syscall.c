@@ -1,8 +1,20 @@
 #include "userprog/syscall.h"
 #include <stdio.h>
+#include <stdbool.h>
 #include <syscall-nr.h>
 #include "threads/interrupt.h"
 #include "threads/thread.h"
+
+
+void halt(void);
+
+bool create (const char *file, unsigned initial_size);
+
+int open (const char *file); 
+
+void close(int fd);
+
+int write(int fd, const void *buffer, unsigned size);
 
 static void syscall_handler (struct intr_frame *);
 
@@ -16,18 +28,16 @@ static void
 syscall_handler (struct intr_frame *f UNUSED) 
 {
   printf ("system call!\n");
+  halt();
   thread_exit ();
 }
 
 void halt(void)
 {
-  power_off();
+  power_off();  // Works! (i think)
 }
 
-void halt(void)
-{
-}
-
+/*
 bool create (const char *file, unsigned initial_size)
 {
 }
@@ -42,4 +52,5 @@ void close(int fd)
 
 int write(int fd, const void *buffer, unsigned size)
 {
-}
+}*/
+

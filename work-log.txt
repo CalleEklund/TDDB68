@@ -10,8 +10,15 @@ none of my previous changes to lab1 added yet.
 properly though. Added the tags to emacs and ran the alarm-single with and without gdb.
   
 TODO: Try to understand what changes I made to lab1 and then transfer them into new 
-project if seems correct.
+project if seems correct. !DONE!
 
 --- 1/27/17 ---
 Matildha:
 Changed the *esp pointer to PYSBASE - 12 and set process_wait() to infinite loop. 
+   Much of what I did previously in lab1 seem to be kinda of wrong... 
+
+--- 1/31/17 ---
+Matildha:
+Copied old halt() function to present. 
+   
+TODO: Should all syscall functions be declared static? 

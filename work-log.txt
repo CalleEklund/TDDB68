@@ -22,3 +22,8 @@ Matildha:
 Copied old halt() function to present. 
    
 TODO: Should all syscall functions be declared static? 
+
+--- 2/1/17 ---
+Matildha:
+Create file function seems to work. Does not test arguments. 
+   Found useful read and write operations in file.c. (good filename lol)

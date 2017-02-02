@@ -93,6 +93,13 @@ thread_init (void)
   init_thread (initial_thread, "main", PRI_DEFAULT);
   initial_thread->status = THREAD_RUNNING;
   initial_thread->tid = allocate_tid ();
+
+  /* Initalize file descriptor table. */
+  initial_thread->max_nr_open_files = 128;
+  int i = 0;
+  for(i; i<initial_thread->max_nr_open_files; i++) {
+    initial_thread->fd_table[i] = NULL;
+  }
 }
 
 /* Starts preemptive thread scheduling by enabling interrupts.

@@ -27,3 +27,14 @@ TODO: Should all syscall functions be declared static?
 Matildha:
 Create file function seems to work. Does not test arguments. 
    Found useful read and write operations in file.c. (good filename lol)
+
+Added nr_open_files to 'struct thread' and pointer to dynamically allocated array for file descriptor table - which consists of 'struct file*' pointers. Failed to allocate array in thread_init() since #ifdef USERPROG made it unavaiable.
+   Wrote something quick in syscall, a function callled init_fd_table that allocates the array and sets nr_open_files to 0. Not finished, not tested. 
+TODO: Try to initialize fd_table and nr_open_files in syscall.c. 
+
+--- 2/2/17 ---
+Matildha:
+You are allowed to put fd_table array i thread struct. Set all elements to NULL in thread_init. 
+  Succeeded to open a file and put it at the first position in the fd_table. Added max_nr_open_files in thread struct. 
+TODO: Should this be constant? HOW?
+TODO: Fix get_new_fd() to handle several open calls.

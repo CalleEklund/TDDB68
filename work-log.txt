@@ -38,3 +38,7 @@ You are allowed to put fd_table array i thread struct. Set all elements to NULL 
   Succeeded to open a file and put it at the first position in the fd_table. Added max_nr_open_files in thread struct. 
 TODO: Should this be constant? HOW?
 TODO: Fix get_new_fd() to handle several open calls.
+
+--- 3/2/17 ---
+Matildha & Dominique:
+We have done the write and close functions, the write function is tested and seems to work. We moved initialasion of thread struct variables to init_thread instead of thread_init. 

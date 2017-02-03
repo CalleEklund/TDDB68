@@ -101,6 +101,7 @@ struct thread
     struct file* fd_table[128];
     int nr_open_files;
     int max_nr_open_files;
+    int fd_table_offset;
 #endif
 
     /* Owned by thread.c. */

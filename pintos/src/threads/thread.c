@@ -94,12 +94,6 @@ thread_init (void)
   initial_thread->status = THREAD_RUNNING;
   initial_thread->tid = allocate_tid ();
 
-  /* Initalize file descriptor table. */
-  initial_thread->max_nr_open_files = 128;
-  int i = 0;
-  for(i; i<initial_thread->max_nr_open_files; i++) {
-    initial_thread->fd_table[i] = NULL;
-  }
 }
 
 /* Starts preemptive thread scheduling by enabling interrupts.
@@ -443,6 +437,15 @@ init_thread (struct thread *t, const char *name, int priority)
   t->stack = (uint8_t *) t + PGSIZE;
   t->priority = priority;
   t->magic = THREAD_MAGIC;
+
+  /* Initalize file descriptor table. */
+  t->max_nr_open_files = 128;
+  t->fd_table_offset = 2;
+  t->nr_open_files = 0;
+  int i;
+  for(i=0; i<t->max_nr_open_files; i++) {
+    t->fd_table[i] = NULL;
+  }
 }
 
 /* Allocates a SIZE-byte frame at the top of thread T's stack and

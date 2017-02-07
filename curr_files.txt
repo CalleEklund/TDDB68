@@ -1,0 +1,13 @@
+./lib/user/syscall.c
+./lib/user/syscall.h
+./lib/syscall-nr.h
+./threads/interrupt.c
+./threads/interrupt.h
+./userprog/syscall.c
+./userprog/syscall.h
+./threads/thread.c 
+./threads/thread.h
+./filesys/filesys.c 
+./filesys/filesys.h 
+./filesys/file.h 
+./filesys/file.c

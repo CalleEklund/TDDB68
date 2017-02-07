@@ -438,6 +438,7 @@ init_thread (struct thread *t, const char *name, int priority)
   t->priority = priority;
   t->magic = THREAD_MAGIC;
 
+  #ifdef USERPROG
   /* Initalize file descriptor table. */
   t->max_nr_open_files = 128;
   t->fd_table_offset = 2;
@@ -446,6 +447,7 @@ init_thread (struct thread *t, const char *name, int priority)
   for(i=0; i<t->max_nr_open_files; i++) {
     t->fd_table[i] = NULL;
   }
+  #endif
 }
 
 /* Allocates a SIZE-byte frame at the top of thread T's stack and

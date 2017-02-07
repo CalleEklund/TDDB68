@@ -39,6 +39,14 @@ You are allowed to put fd_table array i thread struct. Set all elements to NULL 
 TODO: Should this be constant? HOW?
 TODO: Fix get_new_fd() to handle several open calls.
 
---- 3/2/17 ---
+--- 2/3/17 ---
 Matildha & Dominique:
 We have done the write and close functions, the write function is tested and seems to work. We moved initialasion of thread struct variables to init_thread instead of thread_init. 
+
+--- 2/7/17 --- 
+Matildha & Dominique:
+Done write and read functions, works both from files and from console. Haven't confirmed that read works from keyboard. 
+TODO: Unsure what/how to test?
+  Close seems to work, at least for a single open file. 
+
+PROBLEM: Can't have 2 open files at the same time. First open call fails if there is a second open call afterwards. Close in between don't matter. 

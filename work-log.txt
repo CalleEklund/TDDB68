@@ -50,3 +50,8 @@ TODO: Unsure what/how to test?
   Close seems to work, at least for a single open file. 
 
 PROBLEM: Can't have 2 open files at the same time. First open call fails if there is a second open call afterwards. Close in between don't matter. 
+
+-- 2/7/17 ---
+Matildha:
+Wrote skeleton for switch statement in syscall handler. Created a custom test in examples. Is going to test create which is the only case with function call in handler.
+TODO: Fix compilation errors and test the create syscall. (Does retreiving of arguments work as I've written it now?)

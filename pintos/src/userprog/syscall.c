@@ -13,6 +13,8 @@
 
 void halt(void);
 
+void exit(int status);
+
 bool create (const char *file, unsigned initial_size);
 
 int open (const char *file); 
@@ -24,6 +26,8 @@ int write(int fd, const void *buffer, unsigned size);
 int read (int fd, void *buffer, unsigned size);
 
 int add_file_to_fd_table(struct file* openfile, struct thread* current_thread);
+
+void* get_args(int nr_args, void* sp);
 
 static void syscall_handler (struct intr_frame *);
 
@@ -37,12 +41,43 @@ static void
 syscall_handler (struct intr_frame *f UNUSED) 
 {
 
+  uint32_t return_value;
+  int syscall_nr =  (int*) *(f->esp);
+  void* sp = ++(f->esp);
+
+  switch(syscall_nr) {
+
+  case SYS_HALT:                   /* Halt the operating system.*/
+
+    break;
+    
+  case SYS_EXIT:                   /* Terminate this process. */
+
+    break; 
+  case SYS_CREATE:                 /* Create a file. */
+    return_value = (uint32_t) create(sp,++sp);
+    break;
+  case SYS_OPEN:                   /* Open a file. */
+
+    break;
+  case SYS_READ:                   /* Read from a file. */
+
+    break;
+  case SYS_WRITE:                  /* Write to a file. */
+
+    break;
+  case SYS_CLOSE:                  /* Close a file. */
+
+    break;
 
 
 
+  }
+
+  f->eax = return_value;
 
 
-  printf ("system call!\n");
+  /*printf ("system call!\n");
   char filename_a[5] = {'a','.','t','x','t'};
   char filename_c[5] = {'c','.','t','x','t'};
   char nonsense[11] = {'a','.','t','x','t','h','e','j','r','y','f'};
@@ -66,9 +101,9 @@ syscall_handler (struct intr_frame *f UNUSED)
   //printf("%d number of bytes read.\n", nr_bytes_r);
   //printf("%d number of bytes written to file try1.\n", nr_bytes_w1);
   //printf("%d number of bytes written to file try2.\n", nr_bytes_w3);
-  //printf("%d number of bytes written to console.\n", nr_bytes_w2);
-  //halt();
-  // thread_exit ();
+  //printf("%d number of bytes written to console.\n", nr_bytes_w2);*/
+  halt();
+  thread_exit ();
 }
 
 void halt(void)
@@ -84,6 +119,7 @@ void exit(int status)
 bool create (const char *file, unsigned initial_size)
 {
   off_t init_size = (off_t) initial_size;
+  printf("Init size %d in create",inital_size);
   return filesys_create(file, init_size);
 }
 
@@ -196,4 +232,10 @@ int add_file_to_fd_table(struct file* openfile, struct thread* current_thread)
       return i;
   }
   return -1;
+}
+
+void* get_args(int nr_args, void* sp)
+{
+  
+
 }

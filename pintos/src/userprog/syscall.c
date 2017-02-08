@@ -27,7 +27,7 @@ int read (int fd, void *buffer, unsigned size);
 
 int add_file_to_fd_table(struct file* openfile, struct thread* current_thread);
 
-void* get_args(int nr_args, void* sp);
+void get_args(int nr_args, int* args, void* esp);
 
 static void syscall_handler (struct intr_frame *);
 
@@ -38,94 +38,78 @@ syscall_init (void)
 }
 
 static void
-syscall_handler (struct intr_frame *f UNUSED) 
+syscall_handler (struct intr_frame *f) 
 {
+  //printf("Entering syscall handler...\n");
+  uint32_t return_value = NULL;
+  int syscall_nr =  *((int*)f->esp);
+  //printf("Syscall nr is %d\n", syscall_nr);
+  int* arg1;
 
-  uint32_t return_value;
-  int syscall_nr =  (int*) *(f->esp);
-  void* sp = ++(f->esp);
+  int args[3];         // Used to store syscall args, max nr args 3
 
   switch(syscall_nr) {
 
-  case SYS_HALT:                   /* Halt the operating system.*/
-
+  case SYS_HALT :                   /* Halt the operating system.*/
+    halt();
     break;
     
-  case SYS_EXIT:                   /* Terminate this process. */
-
+  case SYS_EXIT :                   /* Terminate this process. */
+    get_args(1, args, f->esp);
+    exit((int) args[0]);
     break; 
-  case SYS_CREATE:                 /* Create a file. */
-    return_value = (uint32_t) create(sp,++sp);
-    break;
-  case SYS_OPEN:                   /* Open a file. */
 
-    break;
-  case SYS_READ:                   /* Read from a file. */
-
-    break;
-  case SYS_WRITE:                  /* Write to a file. */
-
-    break;
-  case SYS_CLOSE:                  /* Close a file. */
-
+  case SYS_CREATE :                 /* Create a file. */
+    get_args(2, args, f->esp);
+    return_value = (uint32_t) create((const char*)args[0], (unsigned)args[1]);
     break;
 
+  case SYS_OPEN :                   /* Open a file. */
+    get_args(1, args, f->esp);
+    return_value = (uint32_t) open((const char*) args[0]);
+    break;
 
+  case SYS_READ :                   /* Read from a file. */
+    get_args(3, args, f->esp);
+    return_value = (uint32_t) read((int)args[0], (const void*)args[1], (unsigned)args[2]);
+    break;
 
+  case SYS_WRITE :                  /* Write to a file. */
+    get_args(3, args, f->esp);
+    return_value = (uint32_t) write((int)args[0], (const void*)args[1], (unsigned)args[2]);
+    break;
+
+  case SYS_CLOSE :                  /* Close a file. */
+    get_args(1, args, f->esp);
+    close((int) args[0]);
+    break;
   }
 
   f->eax = return_value;
-
-
-  /*printf ("system call!\n");
-  char filename_a[5] = {'a','.','t','x','t'};
-  char filename_c[5] = {'c','.','t','x','t'};
-  char nonsense[11] = {'a','.','t','x','t','h','e','j','r','y','f'};
-  char buffer[10];
-  //bool success = create(filename, 50);
-  //if(success) printf("Succesfully created file a.txt\n");
-
-  int fd_c = open(filename_c);
-  close(fd_c);
-  //int fd_a = open(filename_a);
-
-  printf("Fdc: %d\n", fd_c);
-  //printf("Fda: %d\n", fd_a);
-  
-
-  //close(fd_c);
-  //int nr_bytes_w1 = write(fd,filename,5);
-  //int nr_bytes_w3 = write(fd,nonsense,11);
-  //int nr_bytes_r = read(fd, buffer,10);
-  //int nr_bytes_w2 = write(1,buffer,10);
-  //printf("%d number of bytes read.\n", nr_bytes_r);
-  //printf("%d number of bytes written to file try1.\n", nr_bytes_w1);
-  //printf("%d number of bytes written to file try2.\n", nr_bytes_w3);
-  //printf("%d number of bytes written to console.\n", nr_bytes_w2);*/
-  halt();
-  thread_exit ();
 }
 
 void halt(void)
 {
+  printf("Syscall halt\n");
   power_off();  // Works! (i think)
 }
 
-void exit(int status)
+void exit(int status UNUSED)
 {
- thread_exit ();
+  printf("Syscall exit thread\n");
+  thread_exit();
 }
 
 bool create (const char *file, unsigned initial_size)
 {
   off_t init_size = (off_t) initial_size;
-  printf("Init size %d in create",inital_size);
+  printf("Init size %d in create",initial_size);
   return filesys_create(file, init_size);
 }
 
-
 int open (const char *file)
 {
+  printf("First letter of file name %c \n", *file);
   struct thread* current_thread = thread_current();
   struct file* openfile = filesys_open(file);
   if(openfile == NULL) {
@@ -140,7 +124,6 @@ int open (const char *file)
   printf("File pointer %p in open\n", file_fd);
   return fd;
 } 
-
 
 void close(int fd)
 {
@@ -234,8 +217,14 @@ int add_file_to_fd_table(struct file* openfile, struct thread* current_thread)
   return -1;
 }
 
-void* get_args(int nr_args, void* sp)
+void get_args(int nr_args, int* args, void* esp)
 {
-  
-
+  int i;
+  int* p;
+  for(i=0; i < nr_args; i++) {
+    p = (int*) esp + 1 + i;
+    args[i] = *p;
+    //args[i] = *((int*) esp +1 +1);        // TOFDO: Why this don't work??!!!!
+  }
 }
+

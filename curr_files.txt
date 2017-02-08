@@ -11,3 +11,5 @@
 ./filesys/filesys.h 
 ./filesys/file.h 
 ./filesys/file.c
+./examples/custom_lab1.c 
+

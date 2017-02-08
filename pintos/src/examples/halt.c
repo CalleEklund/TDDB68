@@ -11,4 +11,5 @@ main (void)
 {
   halt ();
   /* not reached */
+  printf("Förbi syscall i halt\n");
 }

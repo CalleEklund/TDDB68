@@ -29,6 +29,8 @@ int add_file_to_fd_table(struct file* openfile, struct thread* current_thread);
 
 void get_args(int nr_args, int* args, void* esp);
 
+bool validate_fd(int fd, struct thread* current_thread);
+
 static void syscall_handler (struct intr_frame *);
 
 void
@@ -71,7 +73,7 @@ syscall_handler (struct intr_frame *f)
 
   case SYS_READ :                   /* Read from a file. */
     get_args(3, args, f->esp);
-    return_value = (uint32_t) read((int)args[0], (const void*)args[1], (unsigned)args[2]);
+    return_value = (uint32_t) read((int)args[0], (void*)args[1], (unsigned)args[2]);
     break;
 
   case SYS_WRITE :                  /* Write to a file. */
@@ -97,6 +99,16 @@ void halt(void)
 void exit(int status UNUSED)
 {
   printf("Syscall exit thread\n");
+  struct thread* t = thread_current();
+  if (t->nr_open_files > 0) { 
+    int i;
+    for(i=0; i<t->max_nr_open_files; i++) {
+      if(t->fd_table[i] != NULL) {
+        int fd = i + t->fd_table_offset;
+        close(fd);
+      }
+    } 
+ }
   thread_exit();
 }
 
@@ -126,19 +138,23 @@ int open (const char *file)
 } 
 
 void close(int fd)
-{
+{ 
   struct thread* current_thread = thread_current();
+  if (!(validate_fd(fd, current_thread))) return;
   int i = fd - current_thread->fd_table_offset;
   struct file* closing_file = current_thread->fd_table[i];
-  file_close(closing_file);
-  current_thread->fd_table[i] = NULL;
-  printf("Setting fd table index %d to null \n", i);
+  if (closing_file != NULL)
+    { file_close(closing_file);
+      current_thread->fd_table[i] = NULL;
+      printf("Setting fd table index %d to null \n", i);
+      (current_thread->nr_open_files)-- ;  
+    }
 }
 
 int write(int fd, const void *buffer, unsigned size)
 {
   int nr_bytes_written = -1;
-
+  
   if(fd == 1) {
     // File descriptor 1 writes to console
     const unsigned  max_size = 500;  // bytes
@@ -156,7 +172,9 @@ int write(int fd, const void *buffer, unsigned size)
 
   // Deal with all file descriptors stored in current thread's 
   // file descriptor table.
+  
   struct thread* current_thread = thread_current();
+  if ( !(validate_fd(fd, current_thread))) return nr_bytes_written;
   int i = fd - current_thread->fd_table_offset;
   struct file* file = current_thread->fd_table[i];
 
@@ -182,10 +200,17 @@ int read (int fd, void *buffer, unsigned size)
   
   if (fd == 0) 
   {
-    //uint8_t key; 
-    nr_bytes_read = input_getc();
+    uint8_t* curr_buffer = (uint8_t*)buffer; 
+    unsigned i;
+    for(i=0 ; i<size; i++){ // read from the keyboard
+      uint8_t key; 
+      key = input_getc();
+      curr_buffer[i]=key;
+      }
+    return size;
   }
   struct thread* current_thread = thread_current();
+  if ( !(validate_fd(fd, current_thread))) return nr_bytes_read;
   int i = fd - current_thread->fd_table_offset;
   struct file* file = current_thread->fd_table[i];
   printf("File pointer %p in read\n", file);
@@ -228,3 +253,7 @@ void get_args(int nr_args, int* args, void* esp)
   }
 }
 
+bool validate_fd(int fd, struct thread* current_thread)
+{
+  return ((fd < current_thread->max_nr_open_files) & (fd > 0)); 
+}

@@ -64,4 +64,5 @@ PROBLEM: Read from console deos however NOT work with lab1test. I can't currentl
 TODO: Test lab1test from school pc.  
 
 -- 2/9/17 ---
-
+Dominique & Matildha
+Passed the lab1test. Fixed the problems when reading on the console. Adding the validate_fd function into several other functions. Closed the files that the user did not close in exit(). 

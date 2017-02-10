@@ -98,10 +98,12 @@ struct thread
     uint32_t *pagedir;                  /* Page directory. */
 
     /* Owned by userprog/syscall.c. */
-    struct file* fd_table[128];
+    struct file* fd_table[128];         /* File descriptor table */
     int nr_open_files;
     int max_nr_open_files;
-    int fd_table_offset;
+    int fd_table_offset;                /* Used to calculate actual index in fd_table. 
+                                           (needed since fd nr 0 and 1 are reserved and not stored
+                                           in fd table)*/
 #endif
 
     /* Owned by thread.c. */

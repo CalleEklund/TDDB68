@@ -13,6 +13,7 @@
 #include "threads/vaddr.h"
 #ifdef USERPROG
 #include "userprog/process.h"
+#include "filesys/file.h"
 #endif
 
 /* Random value for struct thread's `magic' member.
@@ -278,6 +279,16 @@ thread_exit (void)
   ASSERT (!intr_context ());
 
 #ifdef USERPROG
+  struct thread* t = thread_current();
+   if (t->nr_open_files > 0) { 
+     int i;
+     for(i=0; i<t->max_nr_open_files; i++) {
+       struct file* file = t->fd_table[i];
+       if(file != NULL) {
+         file_close(file);
+       }
+     } 
+  }
   process_exit ();
 #endif
 
@@ -439,7 +450,7 @@ init_thread (struct thread *t, const char *name, int priority)
   t->magic = THREAD_MAGIC;
 
   #ifdef USERPROG
-  /* Initalize file descriptor table. */
+  /* Initalize file descriptor table and constants */
   t->max_nr_open_files = 128;
   t->fd_table_offset = 2;
   t->nr_open_files = 0;

@@ -94,16 +94,6 @@ void halt(void)
 
 void exit(int status UNUSED)
 {
-  struct thread* t = thread_current();
-  if (t->nr_open_files > 0) { 
-    int i;
-    for(i=0; i<t->max_nr_open_files; i++) {
-      if(t->fd_table[i] != NULL) {
-        int fd = i + t->fd_table_offset;
-        close(fd);
-      }
-    } 
- }
   thread_exit();
 }
 

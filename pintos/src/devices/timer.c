@@ -7,6 +7,7 @@
 #include "threads/io.h"
 #include "threads/synch.h"
 #include "threads/thread.h"
+#include "threads/malloc.h"
   
 /* See [8254] for hardware details of the 8254 timer chip. */
 
@@ -48,7 +49,6 @@ timer_init (void)
 
   struct list* tick_list = (struct list*)malloc(sizeof(struct list));
   list_init(tick_list);
-  
 }
 
 /* Calibrates loops_per_tick, used to implement brief delays. */
@@ -107,12 +107,14 @@ timer_sleep (int64_t ticks)
   while (timer_elapsed (start) < ticks) 
   thread_yield ();*/
   struct semaphore* sleep_sema = get_sleep_sema();
-  struct p_sleep_time* p_s_t =(struct p_sleep_time*) malloc(sizeof(struct p_sleep_time));
-  p_s_t->tid = (int)thread_current()->tid;
-  p_s_t->init_ticks = ticks;
-  p_s_t->start = timer_ticks ();
-  //list_insert_sorted(tick_list,&(p_s_t->elem),time_left, void); 
-  sema_down(sleep_sema);  
+  struct p_sleep_time* pst =(struct p_sleep_time*) malloc(sizeof(struct p_sleep_time));
+  pst->tid = (int)thread_current()->tid;
+  pst->init_ticks = ticks;
+  pst->start = timer_ticks ();
+  void* aux = NULL;
+  list_insert_sorted(tick_list, &(pst->elem), time_left_sleep, aux); 
+  sema_down(sleep_sema);
+  free(pst);
   
 }
 
@@ -148,6 +150,10 @@ timer_print_stats (void)
 static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
+  // Check if first sleeping thread in tick_queue 
+  (ticks - list_front(tick_list)->start) <= list_front(tick_list)->sleep_ticks
+
+
   ticks++;
   thread_tick ();
 }
@@ -215,7 +221,10 @@ real_time_sleep (int64_t num, int32_t denom)
     }
 }
 
-/*bool time_left(struct list_elem new_elem,struct list_elem element,void)
+bool time_left_sleep(struct list_elem new_e, struct list_elem cmp_e, void* aux UNUSED)
 {
-  list_entry
-}*/
+  struct p_sleep_time cmp = list_entry(cmp_e, struct p_sleep_time, elem);
+  struct p_sleep_time new = list_entry(new_e, struct p_sleep_time, elem);
+  int64_t ticks = timer_ticks();
+  return (cmp->sleep_ticks - time_elapsed(cmp->start)) > (new->sleep_ticks - time_elapsed(new->start));
+}

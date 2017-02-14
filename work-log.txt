@@ -83,6 +83,24 @@ Created the sleep_queue and sleep_sema inside thread.c. And a list in timer.c to
 TODO: Create the comparator function for the insert_ordered. Add code in timer_interrupt(). 
 TODO: list_entry?????? 
 
+--- 14/2/17 ---
+Matildha: 
+Free p_sleep_time struct after sema_down in timer_sleep(). Free the same struct right after. 
+
+We will probably need a local semaphore for management of the  tick_list!! 
+
+I DO BELIEVE our tick_list is our ACTUAL SLEEP_QUEUE!!!!!!!!!!!!!! 
+
+timer_ticks() protects ticks variable by disabling and reenabling interrupts... NOT using any lock or semaphore?? Would we be allowed to do this as well? 
+  - Yes, inside timer_interrupt() right? Cuz we can't call sema_down inside an interrupt handler!? 
+
+
+
+
+
+
+
+
 
 
 

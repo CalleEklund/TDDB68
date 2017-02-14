@@ -76,6 +76,13 @@ thread_block() puts thread to sleep, used through synch module primitives.
 
 Use list_insert_ordered() ? - impossible when using semaphores. They called push-back and pop_front directly. 
 
+--- 14/2/17 ---
+Matildha & Dominique: 
+Created the sleep_queue and sleep_sema inside thread.c. And a list in timer.c to hold structs which keep track of time of ticks a certain process wants to sleep and the starting time for the sleep. Items in this list should be inserted with list_insert_ordered. 
+
+TODO: Create the comparator function for the insert_ordered. Add code in timer_interrupt(). 
+TODO: list_entry?????? 
+
 
 
 

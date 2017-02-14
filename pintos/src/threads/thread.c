@@ -15,6 +15,7 @@
 #include "userprog/process.h"
 #include "filesys/file.h"
 #endif
+#include "threads/malloc.h"
 
 /* Random value for struct thread's `magic' member.
    Used to detect stack overflow.  See the big comment at the top
@@ -33,6 +34,12 @@ static struct thread *initial_thread;
 
 /* Lock used by allocate_tid(). */
 static struct lock tid_lock;
+
+/*Sleep Semaphore declaration*/
+struct semaphore* sleep_sema;
+
+/*Sleep list declaration*/
+struct list sleep_queue;
 
 /* Stack frame for kernel_thread(). */
 struct kernel_thread_frame 
@@ -89,6 +96,11 @@ thread_init (void)
   lock_init (&tid_lock);
   list_init (&ready_list);
 
+  // #ifdef USERPROG
+  sleep_sema = (struct semaphore*) malloc(sizeof(struct semaphore));
+  sleep_sema->waiters = sleep_queue;
+  sema_init(sleep_sema, 0); // we want the first process to wait for sema_up directly
+  //#endif
   /* Set up a thread structure for the running thread. */
   initial_thread = running_thread ();
   init_thread (initial_thread, "main", PRI_DEFAULT);
@@ -574,3 +586,8 @@ allocate_tid (void)
 /* Offset of `stack' member within `struct thread'.
    Used by switch.S, which can't figure it out on its own. */
 uint32_t thread_stack_ofs = offsetof (struct thread, stack);
+
+struct semaphore* get_sleep_sema(void)
+{
+  return sleep_sema; 
+}

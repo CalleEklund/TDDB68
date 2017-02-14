@@ -5,6 +5,8 @@
 #include <list.h>
 #include <stdint.h>
 #include "filesys/file.h"
+#include "threads/synch.h"
+
 
 /* States in a thread's life cycle. */
 enum thread_status
@@ -141,5 +143,9 @@ int thread_get_nice (void);
 void thread_set_nice (int);
 int thread_get_recent_cpu (void);
 int thread_get_load_avg (void);
+
+
+struct semaphore* get_sleep_sema(void);
+
 
 #endif /* threads/thread.h */

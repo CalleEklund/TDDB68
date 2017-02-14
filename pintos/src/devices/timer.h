@@ -3,10 +3,19 @@
 
 #include <round.h>
 #include <stdint.h>
+#include "lib/kernel/list.h"
 
 /* Number of timer interrupts per second. */
 #define TIMER_FREQ 100
 
+/*Struct to be placed in the tick list to map the time of sleep(in ticks) of each thread*/
+struct p_sleep_time 
+{
+  int64_t init_ticks;
+  int tid;
+  int64_t start;
+  struct list_elem elem;
+  };
 void timer_init (void);
 void timer_calibrate (void);
 

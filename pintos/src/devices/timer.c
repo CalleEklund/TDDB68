@@ -37,6 +37,7 @@ timer_init (void)
 {
   /* 8254 input frequency divided by TIMER_FREQ, rounded to
      nearest. */
+
   uint16_t count = (1193180 + TIMER_FREQ / 2) / TIMER_FREQ;
 
   outb (0x43, 0x34);    /* CW: counter 0, LSB then MSB, mode 2, binary. */
@@ -44,6 +45,10 @@ timer_init (void)
   outb (0x40, count >> 8);
 
   intr_register_ext (0x20, timer_interrupt, "8254 Timer");
+
+  struct list* tick_list = (struct list*)malloc(sizeof(struct list));
+  list_init(tick_list);
+  
 }
 
 /* Calibrates loops_per_tick, used to implement brief delays. */
@@ -96,11 +101,19 @@ timer_elapsed (int64_t then)
 void
 timer_sleep (int64_t ticks) 
 {
-  int64_t start = timer_ticks ();
+  /*int64_t start = timer_ticks ();
 
   ASSERT (intr_get_level () == INTR_ON);
   while (timer_elapsed (start) < ticks) 
-    thread_yield ();
+  thread_yield ();*/
+  struct semaphore* sleep_sema = get_sleep_sema();
+  struct p_sleep_time* p_s_t =(struct p_sleep_time*) malloc(sizeof(struct p_sleep_time));
+  p_s_t->tid = (int)thread_current()->tid;
+  p_s_t->init_ticks = ticks;
+  p_s_t->start = timer_ticks ();
+  //list_insert_sorted(tick_list,&(p_s_t->elem),time_left, void); 
+  sema_down(sleep_sema);  
+  
 }
 
 /* Suspends execution for approximately MS milliseconds. */
@@ -202,3 +215,7 @@ real_time_sleep (int64_t num, int32_t denom)
     }
 }
 
+/*bool time_left(struct list_elem new_elem,struct list_elem element,void)
+{
+  list_entry
+}*/

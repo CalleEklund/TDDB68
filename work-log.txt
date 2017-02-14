@@ -54,15 +54,30 @@ PROBLEM: Can't have 2 open files at the same time. First open call fails if ther
 -- 2/7/17 ---
 Matildha:
 Wrote skeleton for switch statement in syscall handler. Created a custom test in examples. Is going to test create which is the only case with function call in handler.
-TODO: Fix compilation errors and test the create syscall. (Does retreiving of arguments work as I've written it now?)
+TODO: Fix compilation errors and test the create syscall. (Does retreiving of arguments work as I've written it nowb?)
 
--- 2/8/17 ---
+--- 2/8/17 ---
 Matildha:
 Finished switch statement with call to all out functions. Created a function get_args() which puts the right number of arguments into an array allocated in syscall_handler. Create, write and open and exit seems to work. Not tested halt yet. 
    I thiiiink the problem with opening 2 files did not appear to be a problem when running lab1test. 
 PROBLEM: Read from console deos however NOT work with lab1test. I can't currently rule out that it's because of the ssh x11 connection i used in doing the test. 
 TODO: Test lab1test from school pc.  
 
--- 2/9/17 ---
-Dominique & Matildha
+--- 2/9/17 ---
+Dominique & Matildha:
 Passed the lab1test. Fixed the problems when reading on the console. Adding the validate_fd function into several other functions. Closed the files that the user did not close in exit(). 
+
+--- 13/2/17 ---
+Matildha:
+
+STARTING LAB 2:
+
+thread_block() puts thread to sleep, used through synch module primitives. 
+
+Use list_insert_ordered() ? - impossible when using semaphores. They called push-back and pop_front directly. 
+
+
+
+
+
+

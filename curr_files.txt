@@ -8,3 +8,5 @@
 ./devices/timer.h
 ./lib/kernel/list.c
 ./lib/kernel/list.h
+./threads/malloc.c
+./threads/malloc.h

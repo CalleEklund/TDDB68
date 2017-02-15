@@ -25,10 +25,13 @@ static int64_t ticks;
    Initialized by timer_calibrate(). */
 static unsigned loops_per_tick;
 
+struct list* tick_list;
+
 static intr_handler_func timer_interrupt;
 static bool too_many_loops (unsigned loops);
 static void busy_wait (int64_t loops);
 static void real_time_sleep (int64_t num, int32_t denom);
+
 
 /* Sets up the 8254 Programmable Interval Timer (PIT) to
    interrupt PIT_FREQ times per second, and registers the
@@ -47,7 +50,7 @@ timer_init (void)
 
   intr_register_ext (0x20, timer_interrupt, "8254 Timer");
 
-  struct list* tick_list = (struct list*)malloc(sizeof(struct list));
+  tick_list = (struct list*)malloc(sizeof(struct list));
   list_init(tick_list);
 }
 
@@ -108,11 +111,11 @@ timer_sleep (int64_t ticks)
   thread_yield ();*/
   struct semaphore* sleep_sema = get_sleep_sema();
   struct p_sleep_time* pst =(struct p_sleep_time*) malloc(sizeof(struct p_sleep_time));
-  pst->tid = (int)thread_current()->tid;
-  pst->init_ticks = ticks;
+  pst->pid = (int)thread_current()->tid;
+  pst->sleep_ticks = ticks;
   pst->start = timer_ticks ();
   void* aux = NULL;
-  list_insert_sorted(tick_list, &(pst->elem), time_left_sleep, aux); 
+  list_insert_ordered(tick_list, &(pst->elem), &time_left_sleep, aux); 
   sema_down(sleep_sema);
   free(pst);
   
@@ -151,8 +154,25 @@ static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
   // Check if first sleeping thread in tick_queue 
-  (ticks - list_front(tick_list)->start) <= list_front(tick_list)->sleep_ticks
+  struct list_elem* first = list_front(tick_list);
+  struct p_sleep_time* ready = list_entry(first, struct p_sleep_time, elem);
+  if (timer_elapsed(ready->start) <=  ready->sleep_ticks)
+  {
+     list_pop_front(tick_list);
+     struct semaphore* sleep_sema = get_sleep_sema();
+     struct list* sleep_queue = &(sleep_sema->waiters);
+     struct list_elem* e;
+     struct thread* sleep_th;
 
+     for (e = list_begin (sleep_queue); e != list_end (sleep_queue);
+          e = list_next (e))
+     {
+         sleep_th = list_entry (e, struct thread, elem);
+         if(sleep_th->tid == ready->pid) break;
+     } 
+     list_push_front(sleep_queue,e);
+     sema_up(sleep_sema);
+  }
 
   ticks++;
   thread_tick ();
@@ -221,10 +241,10 @@ real_time_sleep (int64_t num, int32_t denom)
     }
 }
 
-bool time_left_sleep(struct list_elem new_e, struct list_elem cmp_e, void* aux UNUSED)
+bool time_left_sleep(const struct list_elem* new_e, const struct list_elem* cmp_e, void* aux UNUSED)
 {
-  struct p_sleep_time cmp = list_entry(cmp_e, struct p_sleep_time, elem);
-  struct p_sleep_time new = list_entry(new_e, struct p_sleep_time, elem);
-  int64_t ticks = timer_ticks();
-  return (cmp->sleep_ticks - time_elapsed(cmp->start)) > (new->sleep_ticks - time_elapsed(new->start));
+  struct p_sleep_time* cmp = list_entry(cmp_e, struct p_sleep_time, elem);
+  struct p_sleep_time* new = list_entry(new_e, struct p_sleep_time, elem);
+ 
+  return (cmp->sleep_ticks - timer_elapsed(cmp->start)) > (new->sleep_ticks - timer_elapsed(new->start));
 }

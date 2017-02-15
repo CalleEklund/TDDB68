@@ -13,7 +13,7 @@
 struct p_sleep_time 
 {
   int64_t sleep_ticks;
-  int tid;
+  int pid;
   int64_t start;
   struct list_elem elem;
   };
@@ -30,6 +30,6 @@ void timer_nsleep (int64_t nanoseconds);
 
 void timer_print_stats (void);
 
-bool time_left_sleep(struct list_elem new_e, struct list_elem cmp_e, void* aux);
+bool time_left_sleep(const struct list_elem* new_e, const struct list_elem* cmp_e, void* aux);
 
 #endif /* devices/timer.h */

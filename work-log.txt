@@ -94,6 +94,10 @@ I DO BELIEVE our tick_list is our ACTUAL SLEEP_QUEUE!!!!!!!!!!!!!!
 timer_ticks() protects ticks variable by disabling and reenabling interrupts... NOT using any lock or semaphore?? Would we be allowed to do this as well? 
   - Yes, inside timer_interrupt() right? Cuz we can't call sema_down inside an interrupt handler!? 
 
+-- 15/2/17 ---
+Matildha and Dominique 
+Finish the timer_interrupt function. Fix several compilations errors left from passed sessions. We followed the teacher's recommendation regarding lab 1. 
+TODO : protect tick_list. create small test? otherwise start real tests. 
 
 
 

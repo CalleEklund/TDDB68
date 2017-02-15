@@ -294,7 +294,7 @@ thread_exit (void)
   struct thread* t = thread_current();
    if (t->nr_open_files > 0) { 
      int i;
-     for(i=0; i<t->max_nr_open_files; i++) {
+     for(i=0; i<MAX_NR_OPEN_FILES; i++) {
        struct file* file = t->fd_table[i];
        if(file != NULL) {
          file_close(file);
@@ -463,11 +463,9 @@ init_thread (struct thread *t, const char *name, int priority)
 
   #ifdef USERPROG
   /* Initalize file descriptor table and constants */
-  t->max_nr_open_files = 128;
-  t->fd_table_offset = 2;
   t->nr_open_files = 0;
   int i;
-  for(i=0; i<t->max_nr_open_files; i++) {
+  for(i=0; i<MAX_NR_OPEN_FILES; i++) {
     t->fd_table[i] = NULL;
   }
   #endif

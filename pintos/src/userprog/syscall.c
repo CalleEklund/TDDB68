@@ -29,7 +29,7 @@ int add_file_to_fd_table(struct file* openfile, struct thread* current_thread);
 
 void get_args(int nr_args, int* args, void* esp);
 
-bool validate_fd(int fd, struct thread* current_thread);
+bool validate_fd(int fd);
 
 static void syscall_handler (struct intr_frame *);
 
@@ -111,7 +111,7 @@ int open (const char *file)
     return -1;
   }
   int index = add_file_to_fd_table(openfile, current_thread);
-  int fd = index + current_thread->fd_table_offset;              //offset is 2 in our case
+  int fd = index + FD_TABLE_OFFSET;              //offset is 2 in our case
 
   return fd;
 } 
@@ -119,8 +119,8 @@ int open (const char *file)
 void close(int fd)
 { 
   struct thread* current_thread = thread_current();
-  if (!(validate_fd(fd, current_thread))) return;
-  int i = fd - current_thread->fd_table_offset;
+  if (!(validate_fd(fd))) return;
+  int i = fd - FD_TABLE_OFFSET;
   struct file* closing_file = current_thread->fd_table[i];
   if (closing_file != NULL)
     { file_close(closing_file);
@@ -151,8 +151,8 @@ int write(int fd, const void *buffer, unsigned size)
   // file descriptor table.
   
   struct thread* current_thread = thread_current();
-  if ( !(validate_fd(fd, current_thread))) return nr_bytes_written;
-  int i = fd - current_thread->fd_table_offset;
+  if ( !(validate_fd(fd))) return nr_bytes_written;
+  int i = fd - FD_TABLE_OFFSET;
   struct file* file = current_thread->fd_table[i];
 
   off_t size_var = (off_t)size;
@@ -184,8 +184,8 @@ int read (int fd, void *buffer, unsigned size)
     return size;
   }
   struct thread* current_thread = thread_current();
-  if ( !(validate_fd(fd, current_thread))) return nr_bytes_read;
-  int i = fd - current_thread->fd_table_offset;
+  if ( !(validate_fd(fd))) return nr_bytes_read;
+  int i = fd - FD_TABLE_OFFSET;
   struct file* file = current_thread->fd_table[i];
   if ( file != NULL && buffer != NULL)
     {
@@ -200,9 +200,9 @@ and returns the index or -1 if the file descriptor table is full.
  */
 int add_file_to_fd_table(struct file* openfile, struct thread* current_thread)
 {
-  if(current_thread->nr_open_files <= current_thread->max_nr_open_files) {
+  if(current_thread->nr_open_files <= MAX_NR_OPEN_FILES) {
       int i;
-      for(i=0; i < current_thread->max_nr_open_files; i++) {
+      for(i=0; i < MAX_NR_OPEN_FILES; i++) {
         if(current_thread->fd_table[i]==NULL){
           current_thread->fd_table[i] = openfile;
 	  current_thread->nr_open_files++;
@@ -231,7 +231,7 @@ void get_args(int nr_args, int* args, void* esp)
 Confirms that the file descriptor is within the acceptable bounds (2 - 127). 
 STDIN and STDOUT for values 0 and 1 are not accounted for. 
  */
-bool validate_fd(int fd, struct thread* current_thread)
+bool validate_fd(int fd)
 {
-  return ((fd < current_thread->max_nr_open_files) & (fd > 1)); 
+  return ((fd < MAX_NR_OPEN_FILES) & (fd > 1)); 
 }

@@ -26,6 +26,13 @@ typedef int tid_t;
 #define PRI_MIN 0                       /* Lowest priority. */
 #define PRI_DEFAULT 31                  /* Default priority. */
 #define PRI_MAX 63                      /* Highest priority. */
+#ifdef USERPROG
+#define MAX_NR_OPEN_FILES 128
+/* Used to calculate actual index in fd_table. 
+   (needed since fd nr 0 and 1 are reserved and not stored
+    in fd table)*/
+#define FD_TABLE_OFFSET 2
+#endif
 
 /* A kernel thread or user process.
 
@@ -102,10 +109,8 @@ struct thread
     /* Owned by userprog/syscall.c. */
     struct file* fd_table[128];         /* File descriptor table */
     int nr_open_files;
-    int max_nr_open_files;
-    int fd_table_offset;                /* Used to calculate actual index in fd_table. 
-                                           (needed since fd nr 0 and 1 are reserved and not stored
-                                           in fd table)*/
+    //int max_nr_open_files;
+    int fd_table_offset;                
 #endif
 
     /* Owned by thread.c. */

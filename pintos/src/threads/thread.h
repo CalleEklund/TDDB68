@@ -150,7 +150,7 @@ int thread_get_recent_cpu (void);
 int thread_get_load_avg (void);
 
 
-struct semaphore* get_sleep_sema(void);
+//struct semaphore* get_sleep_sema(void);
 
 
 #endif /* threads/thread.h */

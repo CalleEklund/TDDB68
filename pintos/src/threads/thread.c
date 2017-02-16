@@ -36,10 +36,10 @@ static struct thread *initial_thread;
 static struct lock tid_lock;
 
 /*Sleep Semaphore declaration*/
-struct semaphore* sleep_sema;
+//struct semaphore sleep_sema;
 
 /*Sleep list declaration*/
-struct list sleep_queue;
+//struct list wait_queue;
 
 /* Stack frame for kernel_thread(). */
 struct kernel_thread_frame 
@@ -97,9 +97,10 @@ thread_init (void)
   list_init (&ready_list);
 
   // #ifdef USERPROG
-  sleep_sema = (struct semaphore*) malloc(sizeof(struct semaphore));
-  sleep_sema->waiters = sleep_queue;
-  sema_init(sleep_sema, 0); // we want the first process to wait for sema_up directly
+  //sleep_sema = (struct semaphore*) malloc(sizeof(struct semaphore));
+  //sleep_sema.waiters = wait_queue;
+  //sema_init(&sleep_sema, 0); // we want the first process to wait for sema_up directly
+  printf("thread init \n");
   //#endif
   /* Set up a thread structure for the running thread. */
   initial_thread = running_thread ();
@@ -270,6 +271,7 @@ thread_current (void)
      have overflowed its stack.  Each thread has less than 4 kB
      of stack, so a few big automatic arrays or moderate
      recursion can cause stack overflow. */
+  printf("in thread current\n");
   ASSERT (is_thread (t));
   ASSERT (t->status == THREAD_RUNNING);
 
@@ -585,7 +587,7 @@ allocate_tid (void)
    Used by switch.S, which can't figure it out on its own. */
 uint32_t thread_stack_ofs = offsetof (struct thread, stack);
 
-struct semaphore* get_sleep_sema(void)
+/*struct semaphore* get_sleep_sema(void)
 {
   return sleep_sema; 
-}
+}*/

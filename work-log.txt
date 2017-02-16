@@ -99,6 +99,13 @@ Matildha and Dominique
 Finish the timer_interrupt function. Fix several compilations errors left from passed sessions. We followed the teacher's recommendation regarding lab 1. 
 TODO : protect tick_list. create small test? otherwise start real tests. 
 
+--- 16/2/17 ---
+M & D:
+Started to debug lab2. Commented everythings we've added line by line until only the busyloop remained. We put a print and a division by 0 in timer_sleep and didn't get a print or error when running alarm-single. 
+TODO: WHY???? 
+
+Store semaphores that are unique for each process in the sleep_queue!! 
+
 
 
 

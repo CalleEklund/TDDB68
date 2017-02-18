@@ -111,6 +111,14 @@ M & D:
 Moved sleep_sema and its queue into timer.c. Debugged this. 
 TODO: (Branch the solution with 1 semaphore) and then continue seperately on one semaphore for each process. 
 
+--- 18/2/17 ---
+M:
+I think I got lab2 to work!! Passed all the tests. Didn't run them more then once or twice with my final solution though, so might want to do that, since it was so inconsistent before when testing (getting different results with me not changing any code). 
+
+TODO: Clean up code, remove prints and remove thread pid from our p_time_sleep struct. 
+
+TODO: Check for mem leaks? 
+
 
 
 

@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "lib/kernel/list.h"
+#include "threads/synch.h"
 
 /* Number of timer interrupts per second. */
 #define TIMER_FREQ 100
@@ -15,6 +16,7 @@ struct p_sleep_time
   int64_t sleep_ticks;
   int pid;
   int64_t start;
+  struct semaphore sema;
   struct list_elem elem;
   };
 void timer_init (void);

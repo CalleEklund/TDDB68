@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include "threads/interrupt.h"
 #include "threads/io.h"
-#include "threads/synch.h"
+//#include "threads/synch.h"
 #include "threads/thread.h"
 #include "threads/malloc.h"
   
@@ -25,13 +25,14 @@ static int64_t ticks;
    Initialized by timer_calibrate(). */
 static unsigned loops_per_tick;
 
+/* List for sleeping processes */
 struct list sleep_queue;
 
-/*Sleep Semaphore declaration*/
-struct semaphore sleep_sema;
+/*Sleep semaphore*/
+//struct semaphore sleep_sema;
 
-/*Sleep list declaration*/
-struct list wait_queue;
+/*Semaphore wait list*/
+//struct list wait_queue;
 
 static intr_handler_func timer_interrupt;
 static bool too_many_loops (unsigned loops);
@@ -57,10 +58,9 @@ timer_init (void)
   intr_register_ext (0x20, timer_interrupt, "8254 Timer");
 
   printf("Before init sleep_queue\n");
-  //sleep_queue = (struct list*)malloc(sizeof(struct list));
   list_init(&sleep_queue);
-  sleep_sema.waiters = wait_queue;
-  sema_init(&sleep_sema, 0);
+  //sleep_sema.waiters = wait_queue;
+  //sema_init(&sleep_sema, 0);
 }
 
 /* Calibrates loops_per_tick, used to implement brief delays. */
@@ -113,43 +113,33 @@ timer_elapsed (int64_t then)
 void
 timer_sleep (int64_t ticks) 
 {
-  //int64_t start = timer_ticks ();
-
   ASSERT (intr_get_level () == INTR_ON);
-  //ASSERT ( sleep_sema == NULL);
-  /*while (timer_elapsed (start) < ticks) 
-    thread_yield ();*/
-  printf("Start of timer_sleep\n");
-  long l_ticks = (long) ticks;
-  printf("Arg ticks %ld \n", l_ticks);
+
+  // Return immediately if sleep time is 0 or below
+  if(ticks <= 0) return;
+
+  //printf("Start of timer_sleep called by process with id %d\n", thread_tid());
+
+  // Allocate and init p_sleep_time struct
   struct p_sleep_time* pst =(struct p_sleep_time*) malloc(sizeof(struct p_sleep_time));
   pst->pid = thread_tid();
+  sema_init(&pst->sema, 0);
   pst->sleep_ticks = ticks;
   pst->start = timer_ticks ();
+
   void* aux = NULL;
+  // Protect modification of sleep_queue by disabling interrupts
   enum intr_level old_level = intr_disable ();
+  //printf("Insert process %d into sleep queue \n", thread_tid());
   list_insert_ordered(&sleep_queue, &(pst->elem), &time_left_sleep, aux);
-
-  struct p_sleep_time* pst_t;
-  struct list_elem* e;
-  for (e = list_begin (&sleep_queue); e != list_end (&sleep_queue);
-        e = list_next (e))
-  {
-        pst_t = list_entry (e, struct p_sleep_time, elem);
-        long sleep_ticks = (long) (pst_t->sleep_ticks);
-        printf("Sleep_queue: Sleep tick %ld \n", sleep_ticks);
-  } 
-
   intr_set_level (old_level);
-  sema_down(&sleep_sema);
-  printf("After sema down in timer sleep \n");
-  printf("Process with %ld sleep ticks has awaken \n", (long) ticks);
-  enum intr_level old_level_2 = intr_disable ();
-  list_pop_front(&sleep_queue);
-  intr_set_level (old_level_2);
-  //list_remove(&(pst->elem));
-  free(pst);          // TODO: Does it work this way? */
+
+  // Block until awoken by timer_interrupt when sleep time has run out
+  sema_down(&pst->sema);
   
+  //printf("Process with %d id has awaken \n", thread_tid());
+
+  free(pst);
 }
 
 /* Suspends execution for approximately MS milliseconds. */
@@ -184,29 +174,31 @@ timer_print_stats (void)
 static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
-  // Check if first sleeping thread in tick_queue 
-  if( ! list_empty(&sleep_queue)) {
-    struct list_elem* first = list_front(&sleep_queue);
-    struct p_sleep_time* ready = list_entry(first, struct p_sleep_time, elem);
-    if (timer_elapsed(ready->start) <=  ready->sleep_ticks)
-      {
-	printf("Time of a sleeping process (with sleep_ticks %ld) ran out! \n", (long) ready->sleep_ticks);
-	struct list* wait_queue = &(sleep_sema.waiters);
-	struct list_elem* e;
-	struct thread* sleep_th;
-
-	for (e = list_begin (wait_queue); e != list_end (wait_queue);e = list_next (e)) {
-	  sleep_th = list_entry (e, struct thread, elem);
-          if(sleep_th->tid == ready->pid) break;
-	} 
-	 list_push_front(wait_queue,e);
-         printf("Before sema up\n");
-	 sema_up(&sleep_sema);
-      }
-  }
-  //sema_up(&sleep_sema);
   ticks++;
   thread_tick ();
+
+  // Protect reading and modifying of sleep list by disabling interrupts
+  enum intr_level old_level = intr_disable ();
+
+  // Check if first sleeping thread in tick_queue
+  // If time has run out for that thread, continue to look until
+  // list is empty or a process which time has not run out is found
+  while(! list_empty(&sleep_queue))
+    {
+      struct p_sleep_time* first = list_entry(list_front(&sleep_queue), struct p_sleep_time, elem);
+      
+      if( timer_elapsed(first->start) >= first->sleep_ticks )
+        {
+
+	  //printf("Time of a sleeping process (with sleep_ticks %ld) ran out! \n", (long)list_entry(list_front(&sleep_queue), struct p_sleep_time, elem) ->sleep_ticks);
+          //printf("Time of sleeping process with id %d has ran out \n", thread_tid());
+          sema_up(&list_entry(list_front(&sleep_queue), struct p_sleep_time, elem)->sema);
+          list_pop_front(&sleep_queue);
+        }
+      else break;
+    }
+  intr_set_level (old_level);
+
 }
 
 /* Returns true if LOOPS iterations waits for more than one timer
@@ -277,8 +269,8 @@ bool time_left_sleep(const struct list_elem* new_e, const struct list_elem* cmp_
   struct p_sleep_time* cmp = list_entry(cmp_e, struct p_sleep_time, elem);
   struct p_sleep_time* new = list_entry(new_e, struct p_sleep_time, elem);
   long time_left = (long) (cmp->sleep_ticks - timer_elapsed(cmp->start));
-  printf("Process passed in comparator with sleep_ticks %ld ", (long) cmp->sleep_ticks);
-  printf("has %ld ticks remaining. \n", (long) time_left);
+  //printf("Process passed in comparator with sleep_ticks %ld ", (long) cmp->sleep_ticks);
+  //printf("has %ld ticks remaining. \n", (long) time_left);
  
   return (cmp->sleep_ticks - timer_elapsed(cmp->start)) > (new->sleep_ticks - timer_elapsed(new->start));
 }

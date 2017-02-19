@@ -119,6 +119,13 @@ TODO: Clean up code, remove prints and remove thread pid from our p_time_sleep s
 
 TODO: Check for mem leaks? 
 
+--- 19/2/17 ---
+M: 
+Extracted code in timer_interrupt into a recursive function. (kept all old things commented). And REMOVED disable interrupt protection around the editing of the list in timer_interrupt. 
+  Ran every test several times, succesful. Thereby the enabling of interrupts do not seem to have had an impact. Bare in mind though! 
+TODO: Same as last log. 
+TODO: Bad with recursion in the timer_interrupt? Takes longer time?? 
+
 
 
 

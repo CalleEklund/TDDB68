@@ -70,6 +70,7 @@ void clear(struct list_item *first) {
 		item = temp;
 	}
 	while(item->next != NULL);
+	free(item);
 }
 
 void main(int argc, char **argv) {

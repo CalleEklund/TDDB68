@@ -1,0 +1,1064 @@
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..4110281
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,3 @@
++# Compiler generated files
++*.o
++*.d
+diff --git a/curr_files.txt b/curr_files.txt
+new file mode 100644
+index 0000000..0d4a68e
+--- /dev/null
++++ b/curr_files.txt
+@@ -0,0 +1,15 @@
++./lib/user/syscall.c
++./lib/user/syscall.h
++./lib/syscall-nr.h
++./threads/interrupt.c
++./threads/interrupt.h
++./userprog/syscall.c
++./userprog/syscall.h
++./threads/thread.c 
++./threads/thread.h
++./filesys/filesys.c 
++./filesys/filesys.h 
++./filesys/file.h 
++./filesys/file.c
++./examples/custom_lab1.c 
++
+diff --git a/lab00/debugthis-lab00.c b/lab00/debugthis-lab00.c
+new file mode 100644
+index 0000000..9aedc1c
+--- /dev/null
++++ b/lab00/debugthis-lab00.c
+@@ -0,0 +1,33 @@
++#include <stdio.h>
++
++int main(int argc, char ** argv)
++{
++  char str[] = "sihtgubed";
++  char *stri = &str[8];
++  char *buf[9];
++  char **bufi, **bufend;
++  bufi = buf;
++  bufend = &buf[9];
++
++  while (bufi != bufend){
++    *bufi = stri;
++    bufi++;
++    stri--;
++  }
++
++	// compensate for extra ++ in above loop - caused the segmentation fault!
++	bufi--;
++
++  while (bufi != buf-1){          // added -1 so to cover first letter
++    **bufi -= 32;
++	  bufi--;
++  }
++
++	// compensate for extra -- in above loop
++	bufi++;
++
++  while (bufi != bufend){
++    printf("%c", **bufi);
++    bufi++;
++  }
++}
+diff --git a/lab00/debugthis.o b/lab00/debugthis.o
+new file mode 100755
+index 0000000..a6085bc
+Binary files /dev/null and b/lab00/debugthis.o differ
+diff --git a/lab00/link.o b/lab00/link.o
+new file mode 100755
+index 0000000..1fdee3e
+Binary files /dev/null and b/lab00/link.o differ
+diff --git a/lab00/linked-list-lab00.c b/lab00/linked-list-lab00.c
+new file mode 100644
+index 0000000..1f23ab2
+--- /dev/null
++++ b/lab00/linked-list-lab00.c
+@@ -0,0 +1,105 @@
++#include <stdio.h>
++#include <stdlib.h>
++
++struct list_item {
++	int value;
++	struct list_item* next;
++};
++
++void append(struct list_item *first, int x) {
++	struct list_item *item = first;
++	while(item->next != NULL) {
++		item = item->next;
++	}
++	struct list_item *last = (struct list_item*)malloc(sizeof(struct list_item));
++	item->next = last;
++	last->value = x; 
++	last->next = NULL;
++}
++
++void prepend(struct list_item *first, int x) {
++	struct list_item *new = (struct list_item*)malloc(sizeof(struct list_item));
++	new->value = x;
++	new->next = first->next;
++	first->next = new;
++	printf("%p\n", new);
++	printf("%p\n", first->next);
++}
++
++void print(struct list_item *first) {
++	struct list_item *item = first;
++	// Skip the root (if exists any other items)
++	if(first->next != NULL){
++		item = first->next;
++	}
++	else{
++		return;
++	}
++	while(item->next != NULL) {
++		printf("%d \n", item->value);
++		item = item->next;
++	}
++	printf("%d \n\n", item->value);
++}
++
++void input_sorted(struct list_item *first, int x) {
++	struct list_item *new = (struct list_item*) malloc(sizeof(struct list_item));	
++	struct list_item *item = first;
++	struct list_item *previous = NULL;
++	while(item->next != NULL) {
++		previous = item;
++		item = item->next;
++		if(item->value >= x) {
++			previous->next = new;
++			new->next = item;
++			break;
++		}
++		else if(item->next == NULL) {
++			item->next = new;
++			new->next = NULL;
++		}
++	}
++	new->value = x;
++}
++
++void clear(struct list_item *first) {
++	struct list_item *item = first->next;
++	do{
++		struct list_item *temp = item->next;
++		free(item);
++		item = temp;
++	}
++	while(item->next != NULL);
++}
++
++void main(int argc, char **argv) {
++	struct list_item root;
++	root.value = -1;
++	root.next = NULL;
++
++	// Testing the linked list
++	append(&root, 2);
++	append(&root, 3);
++	append(&root, 5);
++	append(&root, 6);
++	print(&root);
++	prepend(&root, 1);
++	print(&root);
++	input_sorted(&root, 4);
++	input_sorted(&root, 7);
++	print(&root);
++	clear(&root);
++}
++
++
++
++
++
++
++
++
++
++
++
++
++
+diff --git a/pintos/src/examples/Makefile b/pintos/src/examples/Makefile
+index 10da438..92d9038 100644
+--- a/pintos/src/examples/Makefile
++++ b/pintos/src/examples/Makefile
+@@ -5,13 +5,14 @@ SRCDIR = ..
+ # and then add a name_SRC line that lists its source files.
+ PROGS = cat cmp cp echo halt hex-dump ls mcat mcp mkdir pwd rm shell \
+ 	bubsort insult lineup matmult recursor \
+-	sumargv lab2test lab1test pfs pfs_reader pfs_writer dummy longrun \
++	sumargv lab2test lab1test lab1test2 pfs pfs_reader pfs_writer dummy longrun \
+ 	child parent create-bad
+ 
+ # Added test programs
+ sumargv_SRC = sumargv.c
+ lab2test_SRC = lab2test.c
+ lab1test_SRC = lab1test.c
++lab1test2_SRC = lab1test2.c
+ pfs_SRC = pfs.c
+ pfs_reader_SRC = pfs_reader.c
+ pfs_writer_SRC = pfs_writer.c
+diff --git a/pintos/src/examples/custom_lab1.c b/pintos/src/examples/custom_lab1.c
+new file mode 100644
+index 0000000..5a6dcae
+--- /dev/null
++++ b/pintos/src/examples/custom_lab1.c
+@@ -0,0 +1,16 @@
++#include <syscall.h>
++#include <stdbool.h>
++#include <stdlib.h>
++#include <stdio.h>
++
++int
++main (void)
++{
++  printf("Start of customlab1\n");
++  char filename[6] = {'t','1','.','t','x','t'};
++  char filename_a[5] = {'a','.','t','x','t'};
++  int fd =  open(filename_a);
++  //bool success = create(filename,20);
++  //if(success) printf("Sucessfully created file");
++  printf("End of customlab1 \n");
++}
+diff --git a/pintos/src/examples/halt.c b/pintos/src/examples/halt.c
+index bad7250..b1f4d0c 100644
+--- a/pintos/src/examples/halt.c
++++ b/pintos/src/examples/halt.c
+@@ -11,4 +11,5 @@ main (void)
+ {
+   halt ();
+   /* not reached */
++  printf("Förbi syscall i halt\n");
+ }
+diff --git a/pintos/src/threads/thread.c b/pintos/src/threads/thread.c
+index 92d1aa8..8e41160 100644
+--- a/pintos/src/threads/thread.c
++++ b/pintos/src/threads/thread.c
+@@ -13,6 +13,7 @@
+ #include "threads/vaddr.h"
+ #ifdef USERPROG
+ #include "userprog/process.h"
++#include "filesys/file.h"
+ #endif
+ 
+ /* Random value for struct thread's `magic' member.
+@@ -93,6 +94,7 @@ thread_init (void)
+   init_thread (initial_thread, "main", PRI_DEFAULT);
+   initial_thread->status = THREAD_RUNNING;
+   initial_thread->tid = allocate_tid ();
++
+ }
+ 
+ /* Starts preemptive thread scheduling by enabling interrupts.
+@@ -277,6 +279,16 @@ thread_exit (void)
+   ASSERT (!intr_context ());
+ 
+ #ifdef USERPROG
++  struct thread* t = thread_current();
++   if (t->nr_open_files > 0) { 
++     int i;
++     for(i=0; i<t->max_nr_open_files; i++) {
++       struct file* file = t->fd_table[i];
++       if(file != NULL) {
++         file_close(file);
++       }
++     } 
++  }
+   process_exit ();
+ #endif
+ 
+@@ -436,6 +448,17 @@ init_thread (struct thread *t, const char *name, int priority)
+   t->stack = (uint8_t *) t + PGSIZE;
+   t->priority = priority;
+   t->magic = THREAD_MAGIC;
++
++  #ifdef USERPROG
++  /* Initalize file descriptor table and constants */
++  t->max_nr_open_files = 128;
++  t->fd_table_offset = 2;
++  t->nr_open_files = 0;
++  int i;
++  for(i=0; i<t->max_nr_open_files; i++) {
++    t->fd_table[i] = NULL;
++  }
++  #endif
+ }
+ 
+ /* Allocates a SIZE-byte frame at the top of thread T's stack and
+diff --git a/pintos/src/threads/thread.h b/pintos/src/threads/thread.h
+index 0039560..440ba4c 100644
+--- a/pintos/src/threads/thread.h
++++ b/pintos/src/threads/thread.h
+@@ -4,6 +4,7 @@
+ #include <debug.h>
+ #include <list.h>
+ #include <stdint.h>
++#include "filesys/file.h"
+ 
+ /* States in a thread's life cycle. */
+ enum thread_status
+@@ -95,6 +96,14 @@ struct thread
+ #ifdef USERPROG
+     /* Owned by userprog/process.c. */
+     uint32_t *pagedir;                  /* Page directory. */
++
++    /* Owned by userprog/syscall.c. */
++    struct file* fd_table[128];         /* File descriptor table */
++    int nr_open_files;
++    int max_nr_open_files;
++    int fd_table_offset;                /* Used to calculate actual index in fd_table. 
++                                           (needed since fd nr 0 and 1 are reserved and not stored
++                                           in fd table)*/
+ #endif
+ 
+     /* Owned by thread.c. */
+diff --git a/pintos/src/userprog/build/Makefile b/pintos/src/userprog/build/Makefile
+new file mode 100644
+index 0000000..1fbf29b
+--- /dev/null
++++ b/pintos/src/userprog/build/Makefile
+@@ -0,0 +1,106 @@
++# -*- makefile -*-
++
++SRCDIR = ../..
++
++all: os.dsk
++
++include ../../Make.config
++include ../Make.vars
++include ../../tests/Make.tests
++
++# Compiler and assembler options.
++os.dsk: CPPFLAGS += -I$(SRCDIR)/lib/kernel
++
++# Core kernel.
++threads_SRC  = threads/init.c		# Main program.
++threads_SRC += threads/thread.c		# Thread management core.
++threads_SRC += threads/switch.S		# Thread switch routine.
++threads_SRC += threads/interrupt.c	# Interrupt core.
++threads_SRC += threads/intr-stubs.S	# Interrupt stubs.
++threads_SRC += threads/synch.c		# Synchronization.
++threads_SRC += threads/palloc.c		# Page allocator.
++threads_SRC += threads/malloc.c		# Subpage allocator.
++threads_SRC += threads/start.S		# Startup code.
++threads_SRC += threads/boundedbuffer.c	# bounded buffer code
++threads_SRC += threads/synchlist.c	# synchronized list code
++
++# Device driver code.
++devices_SRC  = devices/timer.c		# Timer device.
++devices_SRC += devices/kbd.c		# Keyboard device.
++devices_SRC += devices/vga.c		# Video device.
++devices_SRC += devices/serial.c		# Serial port device.
++devices_SRC += devices/disk.c		# IDE disk device.
++devices_SRC += devices/input.c		# Serial and keyboard input.
++devices_SRC += devices/intq.c		# Interrupt queue.
++
++# Library code shared between kernel and user programs.
++lib_SRC  = lib/debug.c			# Debug helpers.
++lib_SRC += lib/random.c			# Pseudo-random numbers.
++lib_SRC += lib/stdio.c			# I/O library.
++lib_SRC += lib/stdlib.c			# Utility functions.
++lib_SRC += lib/string.c			# String functions.
++lib_SRC += lib/arithmetic.c
++
++# Kernel-specific library code.
++lib/kernel_SRC  = lib/kernel/debug.c	# Debug helpers.
++lib/kernel_SRC += lib/kernel/list.c	# Doubly-linked lists.
++lib/kernel_SRC += lib/kernel/bitmap.c	# Bitmaps.
++lib/kernel_SRC += lib/kernel/hash.c	# Hash tables.
++lib/kernel_SRC += lib/kernel/console.c	# printf(), putchar().
++lib/kernel_SRC += lib/kernel/slist.c    # simple list
++
++# User process code.
++userprog_SRC  = userprog/process.c	# Process loading.
++userprog_SRC += userprog/pagedir.c	# Page directories.
++userprog_SRC += userprog/exception.c	# User exception handler.
++userprog_SRC += userprog/syscall.c	# System call handler.
++userprog_SRC += userprog/gdt.c		# GDT initialization.
++userprog_SRC += userprog/tss.c		# TSS management.
++
++# No virtual memory code yet.
++#vm_SRC = vm/file.c			# Some file.
++
++# Filesystem code.
++filesys_SRC  = filesys/filesys.c	# Filesystem core.
++filesys_SRC += filesys/free-map.c	# Free sector bitmap.
++filesys_SRC += filesys/file.c		# Files.
++filesys_SRC += filesys/directory.c	# Directories.
++filesys_SRC += filesys/inode.c		# File headers.
++filesys_SRC += filesys/fsutil.c		# Utilities.
++
++SOURCES = $(foreach dir,$(KERNEL_SUBDIRS),$($(dir)_SRC))
++OBJECTS = $(patsubst %.c,%.o,$(patsubst %.S,%.o,$(SOURCES)))
++DEPENDS = $(patsubst %.o,%.d,$(OBJECTS))
++
++threads/kernel.lds.s: CPPFLAGS += -P
++threads/kernel.lds.s: threads/kernel.lds.S threads/loader.h
++
++kernel.o: threads/kernel.lds.s $(OBJECTS) 
++	$(LD) -T $< -o $@ $(OBJECTS)
++
++kernel.bin: kernel.o
++	$(OBJCOPY) -O binary -R .note -R .comment -S $< $@.tmp
++	dd if=$@.tmp of=$@ bs=4096 conv=sync
++	rm $@.tmp
++
++threads/loader.o: threads/loader.S kernel.bin
++	$(CC) -c $< -o $@ $(ASFLAGS) $(CPPFLAGS) $(DEFINES) -DKERNEL_LOAD_PAGES=`perl -e 'print +(-s "kernel.bin") / 4096;'`
++
++loader.bin: threads/loader.o
++	$(LD) -N -e start -Ttext 0x7c00 --oformat binary -o $@ $<
++
++os.dsk: loader.bin kernel.bin
++	cat $^ > $@
++
++clean::
++	rm -f $(OBJECTS) $(DEPENDS) 
++	rm -f threads/loader.o threads/kernel.lds.s threads/loader.d
++	rm -f kernel.o kernel.lds.s
++	rm -f kernel.bin loader.bin os.dsk
++	rm -f bochsout.txt bochsrc.txt
++	rm -f results grade
++
++Makefile: $(SRCDIR)/Makefile.build
++	cp $< $@
++
++-include $(DEPENDS)
+diff --git a/pintos/src/userprog/build/bochsrc.txt b/pintos/src/userprog/build/bochsrc.txt
+new file mode 100644
+index 0000000..92100cd
+--- /dev/null
++++ b/pintos/src/userprog/build/bochsrc.txt
+@@ -0,0 +1,11 @@
++romimage: file=$BXSHARE/BIOS-bochs-latest, address=0xf0000
++vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest
++boot: disk
++cpu: ips=1000000
++megs: 4
++log: bochsout.txt
++panic: action=fatal
++clock: sync=none, time0=0
++ata0-master: type=disk, path=/tmp/ecuWGMV4Ns.dsk, mode=flat, cylinders=1, heads=16, spt=63, translation=none
++ata0-slave: type=disk, path=fs.dsk, mode=flat, cylinders=4, heads=16, spt=63, translation=none
++com1: enabled=1, mode=term, dev=/dev/stdout
+diff --git a/pintos/src/userprog/build/fs.dsk b/pintos/src/userprog/build/fs.dsk
+new file mode 100644
+index 0000000..bc88863
+Binary files /dev/null and b/pintos/src/userprog/build/fs.dsk differ
+diff --git a/pintos/src/userprog/build/kernel.bin b/pintos/src/userprog/build/kernel.bin
+new file mode 100644
+index 0000000..856327a
+Binary files /dev/null and b/pintos/src/userprog/build/kernel.bin differ
+diff --git a/pintos/src/userprog/build/libc.a b/pintos/src/userprog/build/libc.a
+new file mode 100644
+index 0000000..2fe520e
+Binary files /dev/null and b/pintos/src/userprog/build/libc.a differ
+diff --git a/pintos/src/userprog/build/loader.bin b/pintos/src/userprog/build/loader.bin
+new file mode 100755
+index 0000000..46ad495
+Binary files /dev/null and b/pintos/src/userprog/build/loader.bin differ
+diff --git a/pintos/src/userprog/build/os.dsk b/pintos/src/userprog/build/os.dsk
+new file mode 100644
+index 0000000..5e68e5d
+Binary files /dev/null and b/pintos/src/userprog/build/os.dsk differ
+diff --git a/pintos/src/userprog/build/tests/userprog/args-dbl-space b/pintos/src/userprog/build/tests/userprog/args-dbl-space
+new file mode 100755
+index 0000000..837937f
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/args-dbl-space differ
+diff --git a/pintos/src/userprog/build/tests/userprog/args-many b/pintos/src/userprog/build/tests/userprog/args-many
+new file mode 100755
+index 0000000..837937f
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/args-many differ
+diff --git a/pintos/src/userprog/build/tests/userprog/args-multiple b/pintos/src/userprog/build/tests/userprog/args-multiple
+new file mode 100755
+index 0000000..837937f
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/args-multiple differ
+diff --git a/pintos/src/userprog/build/tests/userprog/args-none b/pintos/src/userprog/build/tests/userprog/args-none
+new file mode 100755
+index 0000000..837937f
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/args-none differ
+diff --git a/pintos/src/userprog/build/tests/userprog/args-single b/pintos/src/userprog/build/tests/userprog/args-single
+new file mode 100755
+index 0000000..837937f
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/args-single differ
+diff --git a/pintos/src/userprog/build/tests/userprog/child-args b/pintos/src/userprog/build/tests/userprog/child-args
+new file mode 100755
+index 0000000..837937f
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/child-args differ
+diff --git a/pintos/src/userprog/build/tests/userprog/child-bad b/pintos/src/userprog/build/tests/userprog/child-bad
+new file mode 100755
+index 0000000..c15423c
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/child-bad differ
+diff --git a/pintos/src/userprog/build/tests/userprog/child-close b/pintos/src/userprog/build/tests/userprog/child-close
+new file mode 100755
+index 0000000..2afb380
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/child-close differ
+diff --git a/pintos/src/userprog/build/tests/userprog/child-rox b/pintos/src/userprog/build/tests/userprog/child-rox
+new file mode 100755
+index 0000000..d011d2e
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/child-rox differ
+diff --git a/pintos/src/userprog/build/tests/userprog/child-simple b/pintos/src/userprog/build/tests/userprog/child-simple
+new file mode 100755
+index 0000000..2aed7e1
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/child-simple differ
+diff --git a/pintos/src/userprog/build/tests/userprog/close-bad-fd b/pintos/src/userprog/build/tests/userprog/close-bad-fd
+new file mode 100755
+index 0000000..4a8b55d
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/close-bad-fd differ
+diff --git a/pintos/src/userprog/build/tests/userprog/close-normal b/pintos/src/userprog/build/tests/userprog/close-normal
+new file mode 100755
+index 0000000..161dd6a
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/close-normal differ
+diff --git a/pintos/src/userprog/build/tests/userprog/close-stdin b/pintos/src/userprog/build/tests/userprog/close-stdin
+new file mode 100755
+index 0000000..8c664f5
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/close-stdin differ
+diff --git a/pintos/src/userprog/build/tests/userprog/close-stdout b/pintos/src/userprog/build/tests/userprog/close-stdout
+new file mode 100755
+index 0000000..43759f9
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/close-stdout differ
+diff --git a/pintos/src/userprog/build/tests/userprog/create-bad-ptr b/pintos/src/userprog/build/tests/userprog/create-bad-ptr
+new file mode 100755
+index 0000000..b998a25
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/create-bad-ptr differ
+diff --git a/pintos/src/userprog/build/tests/userprog/create-bound b/pintos/src/userprog/build/tests/userprog/create-bound
+new file mode 100755
+index 0000000..677a05b
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/create-bound differ
+diff --git a/pintos/src/userprog/build/tests/userprog/create-empty b/pintos/src/userprog/build/tests/userprog/create-empty
+new file mode 100755
+index 0000000..1f966bb
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/create-empty differ
+diff --git a/pintos/src/userprog/build/tests/userprog/create-exists b/pintos/src/userprog/build/tests/userprog/create-exists
+new file mode 100755
+index 0000000..954f1de
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/create-exists differ
+diff --git a/pintos/src/userprog/build/tests/userprog/create-long b/pintos/src/userprog/build/tests/userprog/create-long
+new file mode 100755
+index 0000000..33709a2
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/create-long differ
+diff --git a/pintos/src/userprog/build/tests/userprog/create-normal b/pintos/src/userprog/build/tests/userprog/create-normal
+new file mode 100755
+index 0000000..6d9a8f5
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/create-normal differ
+diff --git a/pintos/src/userprog/build/tests/userprog/create-null b/pintos/src/userprog/build/tests/userprog/create-null
+new file mode 100755
+index 0000000..03acaa9
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/create-null differ
+diff --git a/pintos/src/userprog/build/tests/userprog/exec-arg b/pintos/src/userprog/build/tests/userprog/exec-arg
+new file mode 100755
+index 0000000..977d383
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/exec-arg differ
+diff --git a/pintos/src/userprog/build/tests/userprog/exec-bad-ptr b/pintos/src/userprog/build/tests/userprog/exec-bad-ptr
+new file mode 100755
+index 0000000..cb2374f
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/exec-bad-ptr differ
+diff --git a/pintos/src/userprog/build/tests/userprog/exec-missing b/pintos/src/userprog/build/tests/userprog/exec-missing
+new file mode 100755
+index 0000000..f4820c3
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/exec-missing differ
+diff --git a/pintos/src/userprog/build/tests/userprog/exec-multiple b/pintos/src/userprog/build/tests/userprog/exec-multiple
+new file mode 100755
+index 0000000..2d5c26c
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/exec-multiple differ
+diff --git a/pintos/src/userprog/build/tests/userprog/exec-once b/pintos/src/userprog/build/tests/userprog/exec-once
+new file mode 100755
+index 0000000..309ba21
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/exec-once differ
+diff --git a/pintos/src/userprog/build/tests/userprog/exit b/pintos/src/userprog/build/tests/userprog/exit
+new file mode 100755
+index 0000000..b7a05b0
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/exit differ
+diff --git a/pintos/src/userprog/build/tests/userprog/halt b/pintos/src/userprog/build/tests/userprog/halt
+new file mode 100755
+index 0000000..3cd177d
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/halt differ
+diff --git a/pintos/src/userprog/build/tests/userprog/multi-recurse b/pintos/src/userprog/build/tests/userprog/multi-recurse
+new file mode 100755
+index 0000000..90e1531
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/multi-recurse differ
+diff --git a/pintos/src/userprog/build/tests/userprog/open-bad-ptr b/pintos/src/userprog/build/tests/userprog/open-bad-ptr
+new file mode 100755
+index 0000000..1baa4c1
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/open-bad-ptr differ
+diff --git a/pintos/src/userprog/build/tests/userprog/open-boundary b/pintos/src/userprog/build/tests/userprog/open-boundary
+new file mode 100755
+index 0000000..70edbb5
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/open-boundary differ
+diff --git a/pintos/src/userprog/build/tests/userprog/open-empty b/pintos/src/userprog/build/tests/userprog/open-empty
+new file mode 100755
+index 0000000..4ac829e
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/open-empty differ
+diff --git a/pintos/src/userprog/build/tests/userprog/open-missing b/pintos/src/userprog/build/tests/userprog/open-missing
+new file mode 100755
+index 0000000..4355b63
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/open-missing differ
+diff --git a/pintos/src/userprog/build/tests/userprog/open-normal b/pintos/src/userprog/build/tests/userprog/open-normal
+new file mode 100755
+index 0000000..e92065d
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/open-normal differ
+diff --git a/pintos/src/userprog/build/tests/userprog/open-null b/pintos/src/userprog/build/tests/userprog/open-null
+new file mode 100755
+index 0000000..ec80745
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/open-null differ
+diff --git a/pintos/src/userprog/build/tests/userprog/open-twice b/pintos/src/userprog/build/tests/userprog/open-twice
+new file mode 100755
+index 0000000..747c887
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/open-twice differ
+diff --git a/pintos/src/userprog/build/tests/userprog/read-bad-fd b/pintos/src/userprog/build/tests/userprog/read-bad-fd
+new file mode 100755
+index 0000000..6ba90e9
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/read-bad-fd differ
+diff --git a/pintos/src/userprog/build/tests/userprog/read-bad-ptr b/pintos/src/userprog/build/tests/userprog/read-bad-ptr
+new file mode 100755
+index 0000000..dac75ef
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/read-bad-ptr differ
+diff --git a/pintos/src/userprog/build/tests/userprog/read-boundary b/pintos/src/userprog/build/tests/userprog/read-boundary
+new file mode 100755
+index 0000000..ba6e7be
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/read-boundary differ
+diff --git a/pintos/src/userprog/build/tests/userprog/read-stdout b/pintos/src/userprog/build/tests/userprog/read-stdout
+new file mode 100755
+index 0000000..a82a66d
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/read-stdout differ
+diff --git a/pintos/src/userprog/build/tests/userprog/read-zero b/pintos/src/userprog/build/tests/userprog/read-zero
+new file mode 100755
+index 0000000..237abe1
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/read-zero differ
+diff --git a/pintos/src/userprog/build/tests/userprog/sc-bad-arg b/pintos/src/userprog/build/tests/userprog/sc-bad-arg
+new file mode 100755
+index 0000000..1b44393
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/sc-bad-arg differ
+diff --git a/pintos/src/userprog/build/tests/userprog/sc-bad-sp b/pintos/src/userprog/build/tests/userprog/sc-bad-sp
+new file mode 100755
+index 0000000..b398a20
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/sc-bad-sp differ
+diff --git a/pintos/src/userprog/build/tests/userprog/sc-boundary b/pintos/src/userprog/build/tests/userprog/sc-boundary
+new file mode 100755
+index 0000000..56045a0
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/sc-boundary differ
+diff --git a/pintos/src/userprog/build/tests/userprog/sc-boundary-2 b/pintos/src/userprog/build/tests/userprog/sc-boundary-2
+new file mode 100755
+index 0000000..90345b5
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/sc-boundary-2 differ
+diff --git a/pintos/src/userprog/build/tests/userprog/wait-bad-pid b/pintos/src/userprog/build/tests/userprog/wait-bad-pid
+new file mode 100755
+index 0000000..fc07827
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/wait-bad-pid differ
+diff --git a/pintos/src/userprog/build/tests/userprog/wait-killed b/pintos/src/userprog/build/tests/userprog/wait-killed
+new file mode 100755
+index 0000000..e83511b
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/wait-killed differ
+diff --git a/pintos/src/userprog/build/tests/userprog/wait-simple b/pintos/src/userprog/build/tests/userprog/wait-simple
+new file mode 100755
+index 0000000..c1690c8
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/wait-simple differ
+diff --git a/pintos/src/userprog/build/tests/userprog/wait-twice b/pintos/src/userprog/build/tests/userprog/wait-twice
+new file mode 100755
+index 0000000..98560a3
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/wait-twice differ
+diff --git a/pintos/src/userprog/build/tests/userprog/write-bad-fd b/pintos/src/userprog/build/tests/userprog/write-bad-fd
+new file mode 100755
+index 0000000..44eb87b
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/write-bad-fd differ
+diff --git a/pintos/src/userprog/build/tests/userprog/write-bad-ptr b/pintos/src/userprog/build/tests/userprog/write-bad-ptr
+new file mode 100755
+index 0000000..5782c35
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/write-bad-ptr differ
+diff --git a/pintos/src/userprog/build/tests/userprog/write-boundary b/pintos/src/userprog/build/tests/userprog/write-boundary
+new file mode 100755
+index 0000000..036e07a
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/write-boundary differ
+diff --git a/pintos/src/userprog/build/tests/userprog/write-normal b/pintos/src/userprog/build/tests/userprog/write-normal
+new file mode 100755
+index 0000000..e0cc331
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/write-normal differ
+diff --git a/pintos/src/userprog/build/tests/userprog/write-stdin b/pintos/src/userprog/build/tests/userprog/write-stdin
+new file mode 100755
+index 0000000..b444b21
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/write-stdin differ
+diff --git a/pintos/src/userprog/build/tests/userprog/write-zero b/pintos/src/userprog/build/tests/userprog/write-zero
+new file mode 100755
+index 0000000..4f67494
+Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/write-zero differ
+diff --git a/pintos/src/userprog/build/threads/kernel.lds.s b/pintos/src/userprog/build/threads/kernel.lds.s
+new file mode 100644
+index 0000000..0f841da
+--- /dev/null
++++ b/pintos/src/userprog/build/threads/kernel.lds.s
+@@ -0,0 +1,17 @@
++OUTPUT_FORMAT("elf32-i386")
++OUTPUT_ARCH("i386")
++ENTRY(start)
++SECTIONS
++{
++  . = 0xc0000000 + 0x100000;
++  _start = .;
++  .text : { *(.start) *(.text) } = 0x90
++  .rodata : { *(.rodata) *(.rodata.*)
++       . = ALIGN(0x1000);
++       _end_kernel_text = .; }
++  .data : { *(.data) }
++  _start_bss = .;
++  .bss : { *(.bss) }
++  _end_bss = .;
++  _end = .;
++}
+diff --git a/pintos/src/userprog/process.c b/pintos/src/userprog/process.c
+index b3e16bb..3553623 100644
+--- a/pintos/src/userprog/process.c
++++ b/pintos/src/userprog/process.c
+@@ -88,6 +88,9 @@ start_process (void *file_name_)
+ int
+ process_wait (tid_t child_tid UNUSED) 
+ {
++  while(true){
++    continue;
++  }
+   return -1;
+ }
+ 
+@@ -476,7 +479,7 @@ setup_stack (void **esp)
+     {
+       success = install_page (((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
+       if (success)
+-        *esp = PHYS_BASE;
++        *esp = PHYS_BASE - 12;   // Makeshift change! (until arguments passing implemented)
+       else
+         palloc_free_page (kpage);
+     }
+diff --git a/pintos/src/userprog/syscall.c b/pintos/src/userprog/syscall.c
+index 370c89b..bea8e5b 100644
+--- a/pintos/src/userprog/syscall.c
++++ b/pintos/src/userprog/syscall.c
+@@ -1,8 +1,35 @@
+-#include "userprog/syscall.h"
+ #include <stdio.h>
++#include <stdbool.h>
++#include <stdlib.h>
+ #include <syscall-nr.h>
++#include "userprog/syscall.h"
+ #include "threads/interrupt.h"
+ #include "threads/thread.h"
++#include "filesys/filesys.h"
++#include "filesys/off_t.h"
++#include "lib/kernel/console.h"
++#include "devices/input.h"
++
++
++void halt(void);
++
++void exit(int status);
++
++bool create (const char *file, unsigned initial_size);
++
++int open (const char *file); 
++
++void close(int fd);
++
++int write(int fd, const void *buffer, unsigned size);
++
++int read (int fd, void *buffer, unsigned size);
++
++int add_file_to_fd_table(struct file* openfile, struct thread* current_thread);
++
++void get_args(int nr_args, int* args, void* esp);
++
++bool validate_fd(int fd, struct thread* current_thread);
+ 
+ static void syscall_handler (struct intr_frame *);
+ 
+@@ -13,8 +40,198 @@ syscall_init (void)
+ }
+ 
+ static void
+-syscall_handler (struct intr_frame *f UNUSED) 
++syscall_handler (struct intr_frame *f) 
++{
++  uint32_t return_value = NULL;
++  int syscall_nr =  *((int*)f->esp);
++
++  int args[3];                      // Used to store syscall args, max nr args 3
++
++  switch(syscall_nr) {
++
++  case SYS_HALT :                   /* Halt the operating system.*/
++    halt();
++    break;
++    
++  case SYS_EXIT :                   /* Terminate this process. */
++    get_args(1, args, f->esp);
++    exit((int) args[0]);
++    break; 
++
++  case SYS_CREATE :                 /* Create a file. */
++    get_args(2, args, f->esp);
++    return_value = (uint32_t) create((const char*)args[0], (unsigned)args[1]);
++    break;
++
++  case SYS_OPEN :                   /* Open a file. */
++    get_args(1, args, f->esp);
++    return_value = (uint32_t) open((const char*) args[0]);
++    break;
++
++  case SYS_READ :                   /* Read from a file. */
++    get_args(3, args, f->esp);
++    return_value = (uint32_t) read((int)args[0], (void*)args[1], (unsigned)args[2]);
++    break;
++
++  case SYS_WRITE :                  /* Write to a file. */
++    get_args(3, args, f->esp);
++    return_value = (uint32_t) write((int)args[0], (const void*)args[1], (unsigned)args[2]);
++    break;
++
++  case SYS_CLOSE :                  /* Close a file. */
++    get_args(1, args, f->esp);
++    close((int) args[0]);
++    break;
++  }
++
++  f->eax = return_value;
++}
++
++void halt(void)
++{
++  power_off();  
++}
++
++void exit(int status UNUSED)
++{
++  thread_exit();
++}
++
++bool create (const char *file, unsigned initial_size)
++{
++  off_t init_size = (off_t) initial_size;
++  return filesys_create(file, init_size);
++}
++
++int open (const char *file)
++{
++  struct thread* current_thread = thread_current();
++  struct file* openfile = filesys_open(file);
++  if(openfile == NULL) {
++    return -1;
++  }
++  int index = add_file_to_fd_table(openfile, current_thread);
++  int fd = index + current_thread->fd_table_offset;              //offset is 2 in our case
++
++  return fd;
++} 
++
++void close(int fd)
++{ 
++  struct thread* current_thread = thread_current();
++  if (!(validate_fd(fd, current_thread))) return;
++  int i = fd - current_thread->fd_table_offset;
++  struct file* closing_file = current_thread->fd_table[i];
++  if (closing_file != NULL)
++    { file_close(closing_file);
++      current_thread->fd_table[i] = NULL;
++      (current_thread->nr_open_files)-- ;  
++    }
++}
++
++int write(int fd, const void *buffer, unsigned size)
++{
++  int nr_bytes_written = -1;
++  
++  if(fd == 1) {
++    // File descriptor 1 writes to console
++    const unsigned  max_size = 500;            // bytes
++    const void *curr_buffer = buffer;
++    unsigned curr_size = size;
++    while(curr_size > max_size) {
++      putbuf(curr_buffer, (size_t) max_size);
++      curr_size -= max_size;
++      curr_buffer += max_size;
++    }
++    putbuf(curr_buffer, (size_t) curr_size);
++    return (int) size;   
++  }
++
++  // Deal with all file descriptors stored in current thread's 
++  // file descriptor table.
++  
++  struct thread* current_thread = thread_current();
++  if ( !(validate_fd(fd, current_thread))) return nr_bytes_written;
++  int i = fd - current_thread->fd_table_offset;
++  struct file* file = current_thread->fd_table[i];
++
++  off_t size_var = (off_t)size;
++  if (file == NULL || buffer == NULL) {
++    nr_bytes_written = -1;
++  }
++  else{ 
++    nr_bytes_written = (int)file_write(file, buffer, size_var);
++    if (nr_bytes_written == 0){    
++      nr_bytes_written = -1;
++  }
++ }
++  return nr_bytes_written;
++}
++
++int read (int fd, void *buffer, unsigned size) 
++{
++  int nr_bytes_read = -1;
++  
++  if (fd == 0) 
++  {
++    uint8_t* curr_buffer = (uint8_t*)buffer; 
++    unsigned i;
++    for(i=0 ; i<size; i++){               // read from the keyboard
++      uint8_t key; 
++      key = input_getc();
++      curr_buffer[i]=key;
++      }
++    return size;
++  }
++  struct thread* current_thread = thread_current();
++  if ( !(validate_fd(fd, current_thread))) return nr_bytes_read;
++  int i = fd - current_thread->fd_table_offset;
++  struct file* file = current_thread->fd_table[i];
++  if ( file != NULL && buffer != NULL)
++    {
++      nr_bytes_read = (int)file_read(file, buffer, (off_t)size);
++    }
++  return nr_bytes_read;
++}
++
++/* 
++Puts the file at the first found avaiable spot in the file descriptor table,
++and returns the index or -1 if the file descriptor table is full.
++ */
++int add_file_to_fd_table(struct file* openfile, struct thread* current_thread)
++{
++  if(current_thread->nr_open_files <= current_thread->max_nr_open_files) {
++      int i;
++      for(i=0; i < current_thread->max_nr_open_files; i++) {
++        if(current_thread->fd_table[i]==NULL){
++          current_thread->fd_table[i] = openfile;
++	  current_thread->nr_open_files++;
++	  break;
++        }
++      }
++      return i;
++  }
++  return -1;
++}
++
++/*
++Retrieves nr_args arguments from the stack pointed to by esp. Stores them in args.
++ */
++void get_args(int nr_args, int* args, void* esp)
++{
++  int i;
++  int* p;
++  for(i=0; i < nr_args; i++) {
++    p = (int*) esp + 1 + i;
++    args[i] = *p;
++  }
++}
++
++/*
++Confirms that the file descriptor is within the acceptable bounds (2 - 127). 
++STDIN and STDOUT for values 0 and 1 are not accounted for. 
++ */
++bool validate_fd(int fd, struct thread* current_thread)
+ {
+-  printf ("system call!\n");
+-  thread_exit ();
++  return ((fd < current_thread->max_nr_open_files) & (fd > 1)); 
+ }
+diff --git a/pintos/src/userprog/syscall.h b/pintos/src/userprog/syscall.h
+index 9059096..98901f7 100644
+--- a/pintos/src/userprog/syscall.h
++++ b/pintos/src/userprog/syscall.h
+@@ -1,3 +1,5 @@
++#include <stdbool.h>
++
+ #ifndef USERPROG_SYSCALL_H
+ #define USERPROG_SYSCALL_H
+ 
+diff --git a/work-log.txt b/work-log.txt
+new file mode 100644
+index 0000000..00dd967
+--- /dev/null
++++ b/work-log.txt
+@@ -0,0 +1,68 @@
++----------------------------------------------------
++NOTES TO KEEP TRACK OF PROGRESS, IDEAS, PROBLEMS EG.
++----------------------------------------------------
++
++--- 1/23/17 ---
++Matildha:
++Created git repo. Copied fhresh pintos files into it and commited, 
++none of my previous changes to lab1 added yet. 
++  Made all the tests in lab0 and added commands to .bashrc. Unsure if it works 
++properly though. Added the tags to emacs and ran the alarm-single with and without gdb.
++  
++TODO: Try to understand what changes I made to lab1 and then transfer them into new 
++project if seems correct. !DONE!
++
++--- 1/27/17 ---
++Matildha:
++Changed the *esp pointer to PYSBASE - 12 and set process_wait() to infinite loop. 
++   Much of what I did previously in lab1 seem to be kinda of wrong... 
++
++--- 1/31/17 ---
++Matildha:
++Copied old halt() function to present. 
++   
++TODO: Should all syscall functions be declared static? 
++
++--- 2/1/17 ---
++Matildha:
++Create file function seems to work. Does not test arguments. 
++   Found useful read and write operations in file.c. (good filename lol)
++
++Added nr_open_files to 'struct thread' and pointer to dynamically allocated array for file descriptor table - which consists of 'struct file*' pointers. Failed to allocate array in thread_init() since #ifdef USERPROG made it unavaiable.
++   Wrote something quick in syscall, a function callled init_fd_table that allocates the array and sets nr_open_files to 0. Not finished, not tested. 
++TODO: Try to initialize fd_table and nr_open_files in syscall.c. 
++
++--- 2/2/17 ---
++Matildha:
++You are allowed to put fd_table array i thread struct. Set all elements to NULL in thread_init. 
++  Succeeded to open a file and put it at the first position in the fd_table. Added max_nr_open_files in thread struct. 
++TODO: Should this be constant? HOW?
++TODO: Fix get_new_fd() to handle several open calls.
++
++--- 2/3/17 ---
++Matildha & Dominique:
++We have done the write and close functions, the write function is tested and seems to work. We moved initialasion of thread struct variables to init_thread instead of thread_init. 
++
++--- 2/7/17 --- 
++Matildha & Dominique:
++Done write and read functions, works both from files and from console. Haven't confirmed that read works from keyboard. 
++TODO: Unsure what/how to test?
++  Close seems to work, at least for a single open file. 
++
++PROBLEM: Can't have 2 open files at the same time. First open call fails if there is a second open call afterwards. Close in between don't matter. 
++
++-- 2/7/17 ---
++Matildha:
++Wrote skeleton for switch statement in syscall handler. Created a custom test in examples. Is going to test create which is the only case with function call in handler.
++TODO: Fix compilation errors and test the create syscall. (Does retreiving of arguments work as I've written it now?)
++
++-- 2/8/17 ---
++Matildha:
++Finished switch statement with call to all out functions. Created a function get_args() which puts the right number of arguments into an array allocated in syscall_handler. Create, write and open and exit seems to work. Not tested halt yet. 
++   I thiiiink the problem with opening 2 files did not appear to be a problem when running lab1test. 
++PROBLEM: Read from console deos however NOT work with lab1test. I can't currently rule out that it's because of the ssh x11 connection i used in doing the test. 
++TODO: Test lab1test from school pc.  
++
++-- 2/9/17 ---
++Dominique & Matildha
++Passed the lab1test. Fixed the problems when reading on the console. Adding the validate_fd function into several other functions. Closed the files that the user did not close in exit(). 

@@ -1,0 +1,308 @@
+Writing command line to /tmp/UAA3ler9AQ.dsk...
+qemu -hda /tmp/UAA3ler9AQ.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q run alarm-multiple
+Pintos booting with 4,088 kB RAM...
+371 pages available in kernel pool.
+371 pages available in user pool.
+Before init sleep_queue
+Calibrating timer...  405,913,600 loops/s.
+Boot complete.
+Executing 'alarm-multiple':
+(alarm-multiple) begin
+(alarm-multiple) Creating 5 threads to sleep 7 times each.
+(alarm-multiple) Thread 0 sleeps 10 ticks each time,
+(alarm-multiple) thread 1 sleeps 20 ticks each time, and so on.
+(alarm-multiple) If successful, product of iteration count and
+(alarm-multiple) sleep duration will appear in nondescending order.
+Start of timer_sleep
+Arg ticks 550 
+Start of timer_sleep
+Arg ticks 110 
+Process passed in comparator with sleep_ticks 550 has 550 ticks remaining. 
+Start of timer_sleep
+Arg ticks 120 
+Process passed in comparator with sleep_ticks 110 has 110 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 550 ticks remaining. 
+Start of timer_sleep
+Arg ticks 130 
+Process passed in comparator with sleep_ticks 110 has 110 ticks remaining. 
+Process passed in comparator with sleep_ticks 120 has 120 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 550 ticks remaining. 
+Start of timer_sleep
+Time of a sleeping process (with sleep_ticks 110) ran out! 
+Arg ticks 140 
+Process passed in comparator with sleep_ticks 110 has 109 ticks remaining. 
+Process passed in comparator with sleep_ticks 120 has 119 ticks remaining. 
+Process passed in comparator with sleep_ticks 130 has 129 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 549 ticks remaining. 
+Start of timer_sleep
+Arg ticks 149 
+Process passed in comparator with sleep_ticks 110 has 109 ticks remaining. 
+Process passed in comparator with sleep_ticks 120 has 119 ticks remaining. 
+Process passed in comparator with sleep_ticks 130 has 129 ticks remaining. 
+Process passed in comparator with sleep_ticks 140 has 140 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 549 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 110) ran out! 
+Process with 110 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 118 
+Process passed in comparator with sleep_ticks 120 has 118 ticks remaining. 
+Process passed in comparator with sleep_ticks 130 has 128 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 120) ran out! 
+Process with 120 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 137 
+Process passed in comparator with sleep_ticks 118 has 117 ticks remaining. 
+Process passed in comparator with sleep_ticks 130 has 127 ticks remaining. 
+Process passed in comparator with sleep_ticks 140 has 138 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 118) ran out! 
+Process with 118 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 126 
+Process passed in comparator with sleep_ticks 130 has 126 ticks remaining. 
+Process passed in comparator with sleep_ticks 137 has 136 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 130) ran out! 
+Process with 130 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 155 
+Process passed in comparator with sleep_ticks 126 has 125 ticks remaining. 
+Process passed in comparator with sleep_ticks 137 has 135 ticks remaining. 
+Process passed in comparator with sleep_ticks 140 has 136 ticks remaining. 
+Process passed in comparator with sleep_ticks 149 has 145 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 545 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 126) ran out! 
+Process with 126 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 134 
+Process passed in comparator with sleep_ticks 137 has 134 ticks remaining. 
+Process passed in comparator with sleep_ticks 140 has 135 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 137) ran out! 
+Process with 137 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 153 
+Process passed in comparator with sleep_ticks 134 has 133 ticks remaining. 
+Process passed in comparator with sleep_ticks 140 has 134 ticks remaining. 
+Process passed in comparator with sleep_ticks 149 has 143 ticks remaining. 
+Process passed in comparator with sleep_ticks 155 has 153 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 543 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 134) ran out! 
+Process with 134 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 142 
+Process passed in comparator with sleep_ticks 140 has 133 ticks remaining. 
+Process passed in comparator with sleep_ticks 149 has 142 ticks remaining. 
+Process passed in comparator with sleep_ticks 155 has 152 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 140) ran out! 
+Process with 140 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 171 
+Process passed in comparator with sleep_ticks 149 has 141 ticks remaining. 
+Process passed in comparator with sleep_ticks 142 has 141 ticks remaining. 
+Process passed in comparator with sleep_ticks 155 has 151 ticks remaining. 
+Process passed in comparator with sleep_ticks 153 has 151 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 541 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 149) ran out! 
+Process with 149 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 190 
+Process passed in comparator with sleep_ticks 142 has 140 ticks remaining. 
+Process passed in comparator with sleep_ticks 155 has 150 ticks remaining. 
+Process passed in comparator with sleep_ticks 153 has 150 ticks remaining. 
+Process passed in comparator with sleep_ticks 171 has 170 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 540 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 142) ran out! 
+Process with 142 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 149 
+Process passed in comparator with sleep_ticks 155 has 149 ticks remaining. 
+Process passed in comparator with sleep_ticks 153 has 149 ticks remaining. 
+Process passed in comparator with sleep_ticks 171 has 169 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 155) ran out! 
+Process with 155 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 178 
+Process passed in comparator with sleep_ticks 153 has 148 ticks remaining. 
+Process passed in comparator with sleep_ticks 149 has 148 ticks remaining. 
+Process passed in comparator with sleep_ticks 171 has 168 ticks remaining. 
+Process passed in comparator with sleep_ticks 190 has 188 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 153) ran out! 
+Process with 153 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 167 
+Process passed in comparator with sleep_ticks 149 has 147 ticks remaining. 
+Process passed in comparator with sleep_ticks 171 has 167 ticks remaining. 
+Process passed in comparator with sleep_ticks 178 has 177 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 149) ran out! 
+Process with 149 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 156 
+Process passed in comparator with sleep_ticks 171 has 166 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 156) ran out! 
+Process with 156 sleep ticks has awaken 
+Time of a sleeping process (with sleep_ticks 171) ran out! 
+Process with 171 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 204 
+Process passed in comparator with sleep_ticks 167 has 164 ticks remaining. 
+Process passed in comparator with sleep_ticks 178 has 174 ticks remaining. 
+Process passed in comparator with sleep_ticks 190 has 184 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 534 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 167) ran out! 
+Process with 167 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 183 
+Process passed in comparator with sleep_ticks 178 has 173 ticks remaining. 
+Process passed in comparator with sleep_ticks 190 has 183 ticks remaining. 
+Process passed in comparator with sleep_ticks 204 has 203 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 178) ran out! 
+Process with 178 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 202 
+Process passed in comparator with sleep_ticks 190 has 182 ticks remaining. 
+Process passed in comparator with sleep_ticks 183 has 182 ticks remaining. 
+Process passed in comparator with sleep_ticks 204 has 202 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 532 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 190) ran out! 
+Process with 190 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 231 
+Process passed in comparator with sleep_ticks 183 has 181 ticks remaining. 
+Process passed in comparator with sleep_ticks 204 has 201 ticks remaining. 
+Process passed in comparator with sleep_ticks 202 has 201 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 531 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 183) ran out! 
+Process with 183 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 200 
+Process passed in comparator with sleep_ticks 204 has 200 ticks remaining. 
+Process passed in comparator with sleep_ticks 202 has 200 ticks remaining. 
+Process passed in comparator with sleep_ticks 231 has 230 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 204) ran out! 
+Process with 204 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 239 
+Process passed in comparator with sleep_ticks 202 has 199 ticks remaining. 
+Process passed in comparator with sleep_ticks 200 has 199 ticks remaining. 
+Process passed in comparator with sleep_ticks 231 has 229 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 529 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 202) ran out! 
+Process with 202 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 228 
+Process passed in comparator with sleep_ticks 200 has 198 ticks remaining. 
+Process passed in comparator with sleep_ticks 231 has 228 ticks remaining. 
+Process passed in comparator with sleep_ticks 239 has 238 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 200) ran out! 
+Process with 200 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 217 
+Process passed in comparator with sleep_ticks 231 has 227 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 217) ran out! 
+Process with 217 sleep ticks has awaken 
+Time of a sleeping process (with sleep_ticks 231) ran out! 
+Process with 231 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 275 
+Process passed in comparator with sleep_ticks 228 has 225 ticks remaining. 
+Process passed in comparator with sleep_ticks 239 has 235 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 525 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 228) ran out! 
+Process with 228 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 254 
+Process passed in comparator with sleep_ticks 239 has 234 ticks remaining. 
+Process passed in comparator with sleep_ticks 275 has 274 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 239) ran out! 
+Process with 239 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 273 
+Process passed in comparator with sleep_ticks 254 has 253 ticks remaining. 
+Process passed in comparator with sleep_ticks 275 has 273 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 523 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 254) ran out! 
+Process with 254 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 282 
+Process passed in comparator with sleep_ticks 275 has 272 ticks remaining. 
+Process passed in comparator with sleep_ticks 273 has 272 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 522 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 275) ran out! 
+Process with 275 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 321 
+Process passed in comparator with sleep_ticks 273 has 271 ticks remaining. 
+Process passed in comparator with sleep_ticks 282 has 281 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 521 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 273) ran out! 
+Process with 273 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 310 
+Process passed in comparator with sleep_ticks 282 has 280 ticks remaining. 
+Process passed in comparator with sleep_ticks 321 has 320 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 282) ran out! 
+Process with 282 sleep ticks has awaken 
+Time of a sleeping process (with sleep_ticks 310) ran out! 
+Process with 310 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 348 
+Process passed in comparator with sleep_ticks 321 has 318 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 518 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 321) ran out! 
+Process with 321 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 367 
+Process passed in comparator with sleep_ticks 348 has 347 ticks remaining. 
+Process passed in comparator with sleep_ticks 550 has 517 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 348) ran out! 
+Process with 348 sleep ticks has awaken 
+Time of a sleeping process (with sleep_ticks 367) ran out! 
+Process with 367 sleep ticks has awaken 
+Start of timer_sleep
+Arg ticks 415 
+Process passed in comparator with sleep_ticks 550 has 515 ticks remaining. 
+Time of a sleeping process (with sleep_ticks 415) ran out! 
+Process with 415 sleep ticks has awaken 
+Time of a sleeping process (with sleep_ticks 550) ran out! 
+Process with 550 sleep ticks has awaken 
+(alarm-multiple) thread 0: duration=10, iteration=1, product=10
+(alarm-multiple) thread 1: duration=20, iteration=1, product=20
+(alarm-multiple) thread 0: duration=10, iteration=2, product=20
+(alarm-multiple) thread 2: duration=30, iteration=1, product=30
+(alarm-multiple) thread 0: duration=10, iteration=3, product=30
+(alarm-multiple) thread 1: duration=20, iteration=2, product=40
+(alarm-multiple) thread 0: duration=10, iteration=4, product=40
+(alarm-multiple) thread 3: duration=40, iteration=1, product=40
+(alarm-multiple) thread 4: duration=50, iteration=1, product=50
+(alarm-multiple) thread 0: duration=10, iteration=5, product=50
+(alarm-multiple) thread 2: duration=30, iteration=2, product=60
+(alarm-multiple) thread 1: duration=20, iteration=3, product=60
+(alarm-multiple) thread 0: duration=10, iteration=6, product=60
+(alarm-multiple) thread 0: duration=10, iteration=7, product=70
+(alarm-multiple) thread 3: duration=40, iteration=2, product=80
+(alarm-multiple) thread 1: duration=20, iteration=4, product=80
+(alarm-multiple) thread 2: duration=30, iteration=3, product=90
+(alarm-multiple) thread 4: duration=50, iteration=2, product=100
+(alarm-multiple) thread 1: duration=20, iteration=5, product=100
+(alarm-multiple) thread 3: duration=40, iteration=3, product=120
+(alarm-multiple) thread 2: duration=30, iteration=4, product=120
+(alarm-multiple) thread 1: duration=20, iteration=6, product=120
+(alarm-multiple) thread 1: duration=20, iteration=7, product=140
+(alarm-multiple) thread 4: duration=50, iteration=3, product=150
+(alarm-multiple) thread 2: duration=30, iteration=5, product=150
+(alarm-multiple) thread 3: duration=40, iteration=4, product=160
+(alarm-multiple) thread 2: duration=30, iteration=6, product=180
+(alarm-multiple) thread 4: duration=50, iteration=4, product=200
+(alarm-multiple) thread 3: duration=40, iteration=5, product=200
+(alarm-multiple) thread 2: duration=30, iteration=7, product=210
+(alarm-multiple) thread 3: duration=40, iteration=6, product=240
+(alarm-multiple) thread 4: duration=50, iteration=5, product=250
+(alarm-multiple) thread 3: duration=40, iteration=7, product=280
+(alarm-multiple) thread 4: duration=50, iteration=6, product=300
+(alarm-multiple) thread 4: duration=50, iteration=7, product=350
+(alarm-multiple) end
+Execution of 'alarm-multiple' complete.
+Timer: 67 ticks
+Thread: 35 idle ticks, 32 kernel ticks, 0 user ticks
+Console: 15949 characters output
+Keyboard: 0 keys pressed
+Powering off...

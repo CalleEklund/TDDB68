@@ -10,11 +10,12 @@
 /* Number of timer interrupts per second. */
 #define TIMER_FREQ 100
 
-/*Struct to be placed in the tick list to map the time of sleep(in ticks) of each thread*/
+/*Struct to be placed in the sleep_queue. The struct contains the
+starting time and desired time of sleep. It also contains a semaphore to be used for 
+the sleeping process. */
 struct p_sleep_time 
 {
   int64_t sleep_ticks;
-  int pid;
   int64_t start;
   struct semaphore sema;
   struct list_elem elem;

@@ -28,11 +28,6 @@ static unsigned loops_per_tick;
 /* List for sleeping processes */
 struct list sleep_queue;
 
-/*Sleep semaphore*/
-//struct semaphore sleep_sema;
-
-/*Semaphore wait list*/
-//struct list wait_queue;
 
 static intr_handler_func timer_interrupt;
 static bool too_many_loops (unsigned loops);
@@ -58,10 +53,7 @@ timer_init (void)
 
   intr_register_ext (0x20, timer_interrupt, "8254 Timer");
 
-  printf("Before init sleep_queue\n");
   list_init(&sleep_queue);
-  //sleep_sema.waiters = wait_queue;
-  //sema_init(&sleep_sema, 0);
 }
 
 /* Calibrates loops_per_tick, used to implement brief delays. */
@@ -119,11 +111,8 @@ timer_sleep (int64_t ticks)
   // Return immediately if sleep time is 0 or below
   if(ticks <= 0) return;
 
-  //printf("Start of timer_sleep called by process with id %d\n", thread_tid());
-
   // Allocate and init p_sleep_time struct
   struct p_sleep_time* pst =(struct p_sleep_time*) malloc(sizeof(struct p_sleep_time));
-  pst->pid = thread_tid();
   sema_init(&pst->sema, 0);
   pst->sleep_ticks = ticks;
   pst->start = timer_ticks ();
@@ -131,14 +120,11 @@ timer_sleep (int64_t ticks)
   void* aux = NULL;
   // Protect modification of sleep_queue by disabling interrupts
   enum intr_level old_level = intr_disable ();
-  //printf("Insert process %d into sleep queue \n", thread_tid());
   list_insert_ordered(&sleep_queue, &(pst->elem), &time_left_sleep, aux);
   intr_set_level (old_level);
 
   // Block until awoken by timer_interrupt when sleep time has run out
   sema_down(&pst->sema);
-  
-  //printf("Process with %d id has awaken \n", thread_tid());
 
   free(pst);
 }
@@ -178,32 +164,12 @@ timer_interrupt (struct intr_frame *args UNUSED)
   ticks++;
   thread_tick ();
 
-  // Protect reading and modifying of sleep list by disabling interrupts
+  // Protect reading and modifying of sleep list by disabling interrupts ? 
   //enum intr_level old_level = intr_disable ();
 
-  // Check if first sleeping thread in tick_queue
-  // If time has run out for that thread, continue to look until
-  // list is empty or a process which time has not run out is found
-  //while(! list_empty(&sleep_queue))
-  //{
-      /* struct p_sleep_time* first = list_entry(list_front(&sleep_queue), struct p_sleep_time, elem);
-      
-      if( timer_elapsed(first->start) >= first->sleep_ticks )
-        {
-
-	  //printf("Time of a sleeping process (with sleep_ticks %ld) ran out! \n", (long)list_entry(list_front(&sleep_queue), struct p_sleep_time, elem) ->sleep_ticks);
-          //printf("Time of sleeping process with id %d has ran out \n", thread_tid());
-          //sema_up(&list_entry(list_front(&sleep_queue), struct p_sleep_time, elem)->sema);
-          sema_up(&first->sema);
-          list_pop_front(&sleep_queue);
-        }
-	else break;*/
-      //if(!check_sleep_time()) break;
   check_sleep_time();
       
-      // }
   //intr_set_level (old_level);
-
 }
 
 /* Recursively checks whether the sleep time has ran out for items in the 
@@ -286,6 +252,8 @@ real_time_sleep (int64_t num, int32_t denom)
     }
 }
 
+/* Used to calculate time left for p_sleep_time structs stored in the sleep_queue.
+  Returns true if the new item's time left is less then the cmp item's.*/
 bool time_left_sleep(const struct list_elem* new_e, const struct list_elem* cmp_e, void* aux UNUSED)
 {
   struct p_sleep_time* cmp = list_entry(cmp_e, struct p_sleep_time, elem);

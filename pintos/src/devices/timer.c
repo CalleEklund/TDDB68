@@ -165,11 +165,11 @@ timer_interrupt (struct intr_frame *args UNUSED)
   thread_tick ();
 
   // Protect reading and modifying of sleep list by disabling interrupts ? 
-  //enum intr_level old_level = intr_disable ();
+  enum intr_level old_level = intr_disable ();
 
   check_sleep_time();
       
-  //intr_set_level (old_level);
+  intr_set_level (old_level);
 }
 
 /* Recursively checks whether the sleep time has ran out for items in the 

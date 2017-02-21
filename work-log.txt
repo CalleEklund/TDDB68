@@ -126,6 +126,19 @@ Extracted code in timer_interrupt into a recursive function. (kept all old thing
 TODO: Same as last log. 
 TODO: Bad with recursion in the timer_interrupt? Takes longer time?? 
 
+--- 20/2/17 ---
+M&D:
+Does child process inherit file descriptors??
+
+is_user_vaddr() in vaddr.h
+
+--- 21/2/17 ---
+M:
+"Alive counting to decide who should free dynamically allocated memory" ?
+
+From pintos doc: "Currently, process_execute() does not support passing arguments to new processes. Implement this functionality, by extending process_execute() so that instead of simply taking a program file name as its argument, it divides it into words at spaces."
+
+TODO: How does our exec syscall know if the program was LOADED succesfully???
 
 
 

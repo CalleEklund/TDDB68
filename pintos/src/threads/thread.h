@@ -115,7 +115,19 @@ struct thread
 
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
+
+    struct parent_child parent;
   };
+
+struct parent_child 
+{
+  //struct thread* parent;
+  //struct thread* child;
+  tid_t child;              // Needed for wait (struct or just tid?)         
+  int exit_status;
+  int alive_count;
+}
+
 
 /* If false (default), use round-robin scheduler.
    If true, use multi-level feedback queue scheduler.

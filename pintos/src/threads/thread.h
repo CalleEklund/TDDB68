@@ -116,17 +116,19 @@ struct thread
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
 
-    struct parent_child parent;
+    struct parent_child* parent;
+    struct list children;  
   };
 
 struct parent_child 
 {
-  //struct thread* parent;
-  //struct thread* child;
   tid_t child;              // Needed for wait (struct or just tid?)         
   int exit_status;
   int alive_count;
-}
+  struct lock alive_lock;
+  struct list_elem elem;
+  struct semaphore wait_sema;
+};
 
 
 /* If false (default), use round-robin scheduler.

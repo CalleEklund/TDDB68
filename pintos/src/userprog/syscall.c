@@ -9,11 +9,16 @@
 #include "filesys/off_t.h"
 #include "lib/kernel/console.h"
 #include "devices/input.h"
+#include "userprog/process.h"
 
 
 void halt(void);
 
+pid_t exec (const char *cmd_line);
+
 void exit(int status);
+
+int wait (pid_t pid);
 
 bool create (const char *file, unsigned initial_size);
 
@@ -92,9 +97,26 @@ void halt(void)
   power_off();  
 }
 
-void exit(int status UNUSED)
+pid_t exec (const char *cmd_line)
 {
+  return (pid_t)process_execute(cmd_line);
+}
+
+void exit(int status)
+{
+  printf("%s: exit(%d)\n", thread_current()->name, status);
+  thread_current()->parent->exit_status = status;
+  
+  lock_acquire(&thread_current()->parent->alive_lock);
+  thread_current()->parent->alive_count--;
+  lock_release(&thread_current()->parent->alive_lock);
+  
   thread_exit();
+}
+
+int wait (pid_t pid) 
+{
+  return process_wait ((tid_t) pid);
 }
 
 bool create (const char *file, unsigned initial_size)

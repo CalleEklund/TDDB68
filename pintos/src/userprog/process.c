@@ -17,6 +17,7 @@
 #include "threads/palloc.h"
 #include "threads/thread.h"
 #include "threads/vaddr.h"
+#include "threads/malloc.h"
 
 static thread_func start_process NO_RETURN;
 static bool load (const char *cmdline, void (**eip) (void), void **esp);
@@ -41,8 +42,27 @@ process_execute (const char *file_name)
   /* Create a new thread to execute FILE_NAME. */
   // Put parent_child struct in  child thread struct
   // along with 'load_lock' (alt put in struct to replace fn_copy)
-  tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
+  struct new_proc_args* pr_args;
+  sema_init(&pr_args->load_sema,0);
+  pr_args->file_name = fn_copy;
+  struct parent_child* child = (struct parent_child*) malloc(sizeof(struct parent_child));
+  list_push_back(&thread_current()->children, &child->elem);
+  
+  // initialise alive_count protected by its lock
+  lock_init(&(child->alive_lock));
+  lock_acquire(&(child->alive_lock));
+  child->alive_count = 2;
+  lock_release(&(child->alive_lock));
+  
+  //initialisation of the wait_lock of the child
+  sema_init(&(child->wait_sema),0);
+
+  pr_args->parent = child;
+  tid = thread_create (file_name, PRI_DEFAULT, start_process, pr_args);
   // Wait for program to load (lock_acquire)
+  sema_up(&pr_args->load_sema);
+  child->child = tid;
+  free(pr_args);
   if (tid == TID_ERROR)
     palloc_free_page (fn_copy); 
   return tid;
@@ -51,11 +71,13 @@ process_execute (const char *file_name)
 /* A thread function that loads a user process and starts it
    running. */
 static void
-start_process (void *file_name_)
+start_process (void *aux)
 {
-  char *file_name = file_name_;
+  char *file_name = ((struct new_proc_args*) aux)->file_name;
   struct intr_frame if_;
   bool success;
+
+  thread_current()->parent = ((struct new_proc_args*) aux)->parent;
 
   /* Initialize interrupt frame and load executable. */
   memset (&if_, 0, sizeof if_);
@@ -64,6 +86,7 @@ start_process (void *file_name_)
   if_.eflags = FLAG_IF | FLAG_MBS;
   success = load (file_name, &if_.eip, &if_.esp);
   // Release load_lock so parent process can continue executing
+  sema_down(&((struct new_proc_args*) aux)->load_sema);
 
   /* If load failed, quit. */
   palloc_free_page (file_name);
@@ -90,12 +113,34 @@ start_process (void *file_name_)
    This function will be implemented in problem 2-2.  For now, it
    does nothing. */
 int
-process_wait (tid_t child_tid UNUSED) 
+process_wait (tid_t child_tid) 
 {
-  while(true){
-    continue;
-  }
-  return -1;
+  //while(true){
+  // continue;
+  //}
+  //return -1;
+  struct thread* t = thread_current();
+  struct list_elem* e; 
+  int exit_status = -1;
+  for (e = list_begin (&(t->children)); e != list_end (&(t->children)); e = list_next (e))
+      {
+          struct parent_child *child = list_entry (e, struct parent_child, elem);
+          if (child->child == child_tid) 
+	    {
+	      if (child->alive_count == 1) 
+		{
+		  exit_status = child->exit_status;
+		}
+	      else 
+		{
+		  sema_up(&child->wait_sema);
+		  exit_status = child->exit_status;
+		}
+	      child->exit_status = -1;
+	      break;
+	    }
+      }
+  return exit_status;
 }
 
 /* Free the current process's resources. */
@@ -104,6 +149,9 @@ process_exit (void)
 {
   struct thread *cur = thread_current ();
   uint32_t *pd;
+  // release the lock managing the process_wait()
+  
+  sema_down(&cur->parent->wait_sema);
 
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */

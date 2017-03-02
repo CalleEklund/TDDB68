@@ -140,9 +140,14 @@ From pintos doc: "Currently, process_execute() does not support passing argument
 
 TODO: How does our exec syscall know if the program was LOADED succesfully???
 
+--- 2/3/17 ---
+M&D:
 
-
-
+TODO: Access to exit status when no call to wait?
+Working on part A of lab 3. We worked on the exec(), exit() and wait() functions in syscall.  
+We initialised the children and parent lists in thread_init and process_execute. We also added the load lock in start_process and process_execute. We initialised the parent to NULL in the init_thread for the main process that does not have any parent. 
+We added a for loop in process_wait() to go through all children and wait if the child has not already terminated(protected by a lock). 
+We changed the wait_lock and load_lock to semaphores. 
 
 
 

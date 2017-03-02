@@ -96,7 +96,7 @@ thread_init (void)
   init_thread (initial_thread, "main", PRI_DEFAULT);
   initial_thread->status = THREAD_RUNNING;
   initial_thread->tid = allocate_tid ();
-
+  initial_thread->parent = NULL;   //for the main process
 }
 
 /* Starts preemptive thread scheduling by enabling interrupts.
@@ -292,6 +292,15 @@ thread_exit (void)
        }
      } 
   }
+#endif
+  struct list_elem* e; 
+  for (e = list_begin (&(t->children)); e != list_end (&(t->children)); e = list_next (e))
+      {
+          struct parent_child *child = list_entry (e, struct parent_child, elem);
+          free(child);
+      }
+  free(t->parent);
+#ifdef USERPROG
   process_exit ();
 #endif
 
@@ -452,6 +461,7 @@ init_thread (struct thread *t, const char *name, int priority)
   t->priority = priority;
   t->magic = THREAD_MAGIC;
 
+  list_init(&(t->children));
   #ifdef USERPROG
   /* Initalize file descriptor table and constants */
   t->nr_open_files = 0;

@@ -10,4 +10,5 @@
 ./userprog/syscall.h
 ./userprog/pagedir.c
 ./userprog/pagedir.h
-
+./lib/string.c
+./lib/string.h

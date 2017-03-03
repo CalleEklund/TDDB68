@@ -60,7 +60,7 @@ process_execute (const char *file_name)
   pr_args->parent = child;
   tid = thread_create (file_name, PRI_DEFAULT, start_process, pr_args);
   // Wait for program to load (lock_acquire)
-  sema_up(&pr_args->load_sema);
+  sema_down(&pr_args->load_sema);
   child->child = tid;
   free(pr_args);
   if (tid == TID_ERROR)
@@ -86,7 +86,7 @@ start_process (void *aux)
   if_.eflags = FLAG_IF | FLAG_MBS;
   success = load (file_name, &if_.eip, &if_.esp);
   // Release load_lock so parent process can continue executing
-  sema_down(&((struct new_proc_args*) aux)->load_sema);
+  sema_up(&((struct new_proc_args*) aux)->load_sema);
 
   /* If load failed, quit. */
   palloc_free_page (file_name);
@@ -133,7 +133,7 @@ process_wait (tid_t child_tid)
 		}
 	      else 
 		{
-		  sema_up(&child->wait_sema);
+		  sema_down(&child->wait_sema);
 		  exit_status = child->exit_status;
 		}
 	      child->exit_status = -1;
@@ -149,9 +149,40 @@ process_exit (void)
 {
   struct thread *cur = thread_current ();
   uint32_t *pd;
-  // release the lock managing the process_wait()
+  struct parent_child* par = cur->parent;
+
+  // release the sema  managing the process_wait()
+  sema_up(&cur->parent->wait_sema);
   
-  sema_down(&cur->parent->wait_sema);
+  // alive count is decremented
+  lock_acquire(&par->alive_lock);
+  par->alive_count--;
+  
+   // Alive count goes from 2 to 1 (terminate before parent) (decr parent struct)
+  // Alive count goes from 1 to 0 (terminate after parent)  (decr parent struct)
+  // free our parent struct
+  if (par->alive_count == 0)
+    {
+      lock_release(&par->alive_lock);
+      free(par);
+    }
+  
+  // Go through all children and decrement alive count
+  // Alive count goes from 2 to 1 (terminate before its child) (decr child struct)
+  // Alive count goes from 1 to 0 (terminate after its child) (decr child struct)
+  // free the childs struct and remove from the list
+  struct list_elem* e; 
+  for (e = list_begin (&(cur->children)); e != list_end (&(cur->children)); e = list_next (e))
+      {
+          struct parent_child *child = list_entry (e, struct parent_child, elem);
+	  lock_acquire(&child->alive_lock);
+	  child->alive_count--;
+          if (child->alive_count == 0) 
+	    {
+	      lock_release(&child->alive_lock);
+	      free(child);
+	    }
+      }
 
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
@@ -531,7 +562,7 @@ setup_stack (void **esp)
     {
       success = install_page (((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
       if (success)
-        *esp = PHYS_BASE - 12;   // Makeshift change! (until arguments passing implemented)
+        *esp = PHYS_BASE;  
       else
         palloc_free_page (kpage);
     }

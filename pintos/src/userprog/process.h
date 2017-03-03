@@ -8,6 +8,8 @@ struct new_proc_args {
   struct semaphore load_sema;
   struct parent_child* parent;
   char* file_name;
+  char** args[32];
+  int argc;
 };
 
 tid_t process_execute (const char *file_name);

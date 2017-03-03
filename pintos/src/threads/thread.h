@@ -118,6 +118,9 @@ struct thread
 
     struct parent_child* parent;
     struct list children;  
+    
+    char** args[32];                   /* Array of all args, maximum nr of args allowed 32 */
+    int argc;
   };
 
 struct parent_child 

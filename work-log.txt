@@ -149,7 +149,13 @@ We initialised the children and parent lists in thread_init and process_execute.
 We added a for loop in process_wait() to go through all children and wait if the child has not already terminated(protected by a lock). 
 We changed the wait_lock and load_lock to semaphores. 
 
+--- 3/3/17 ---
+M&D:
 
+Wrote all code of part A of lab 3 without any test done. Start of part B, we added args and argc in both struct (thread and new_proc_args). We changed the line with PHYSBASE -12. We change the name of the parameter in process_execute to be cmd_line. We split the cmd_line into arguments and the file_name and stored them into the struct new_proc_args. 
+
+TODO : transfer the args and argc in the thread struct (in start_process).
+TODO2 : put them on the stack. 
 
 
 

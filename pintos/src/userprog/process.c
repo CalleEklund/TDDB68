@@ -27,24 +27,43 @@ static bool load (const char *cmdline, void (**eip) (void), void **esp);
    before process_execute() returns.  Returns the new process's
    thread id, or TID_ERROR if the thread cannot be created. */
 tid_t
-process_execute (const char *file_name) 
+process_execute (const char *cmd_line) 
 {
-  char *fn_copy;
+  char *cmd_copy;
   tid_t tid;
 
   /* Make a copy of FILE_NAME.
      Otherwise there's a race between the caller and load(). */
-  fn_copy = palloc_get_page (0);
-  if (fn_copy == NULL)
+  cmd_copy = palloc_get_page (0);
+  if (cmd_copy == NULL)
     return TID_ERROR;
-  strlcpy (fn_copy, file_name, PGSIZE);
+  strlcpy (cmd_copy, cmd_line, PGSIZE);
+
 
   /* Create a new thread to execute FILE_NAME. */
   // Put parent_child struct in  child thread struct
   // along with 'load_lock' (alt put in struct to replace fn_copy)
   struct new_proc_args* pr_args;
+  pr_args->argc = 0 ;
+
+  char *token, *save_ptr;
+   
+  for (token = strtok_r (cmd_copy, " ", &save_ptr); token != NULL;
+	token = strtok_r (NULL, " ", &save_ptr))
+     {
+       if (pr_args->argc == 0)
+	 {
+	   strlcpy(pr_args->file_name,token,PGSIZE);
+	 }
+       else
+	 {
+	   strlcpy(pr_args->args[pr_args->argc-1],token,PGSIZE); 
+	 }
+       pr_args->argc++;
+     }
+
   sema_init(&pr_args->load_sema,0);
-  pr_args->file_name = fn_copy;
+  ///////pr_args->cmd_line = fn_copy;
   struct parent_child* child = (struct parent_child*) malloc(sizeof(struct parent_child));
   list_push_back(&thread_current()->children, &child->elem);
   
@@ -58,13 +77,13 @@ process_execute (const char *file_name)
   sema_init(&(child->wait_sema),0);
 
   pr_args->parent = child;
-  tid = thread_create (file_name, PRI_DEFAULT, start_process, pr_args);
+  ////////tid = thread_create (file_name, PRI_DEFAULT, start_process, pr_args);
   // Wait for program to load (lock_acquire)
   sema_down(&pr_args->load_sema);
   child->child = tid;
   free(pr_args);
   if (tid == TID_ERROR)
-    palloc_free_page (fn_copy); 
+    palloc_free_page (cmd_copy); 
   return tid;
 }
 

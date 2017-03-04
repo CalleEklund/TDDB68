@@ -96,7 +96,7 @@ thread_init (void)
   init_thread (initial_thread, "main", PRI_DEFAULT);
   initial_thread->status = THREAD_RUNNING;
   initial_thread->tid = allocate_tid ();
-  initial_thread->parent = NULL;   //for the main process
+  initial_thread->parent = NULL;             //initial thread has non parent
 }
 
 /* Starts preemptive thread scheduling by enabling interrupts.
@@ -460,8 +460,9 @@ init_thread (struct thread *t, const char *name, int priority)
   t->stack = (uint8_t *) t + PGSIZE;
   t->priority = priority;
   t->magic = THREAD_MAGIC;
-
+  
   list_init(&(t->children));
+
   #ifdef USERPROG
   /* Initalize file descriptor table and constants */
   t->nr_open_files = 0;

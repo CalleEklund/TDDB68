@@ -109,7 +109,6 @@ struct thread
     /* Owned by userprog/syscall.c. */
     struct file* fd_table[128];         /* File descriptor table */
     int nr_open_files;
-    //int max_nr_open_files;
     int fd_table_offset;                
 #endif
 
@@ -119,13 +118,13 @@ struct thread
     struct parent_child* parent;
     struct list children;  
     
-    char** args[32];                   /* Array of all args, maximum nr of args allowed 32 */
+    char** argv;                   /* Pointer to the array of all args*/
     int argc;
   };
 
 struct parent_child 
 {
-  tid_t child;              // Needed for wait (struct or just tid?)         
+  tid_t child;                           
   int exit_status;
   int alive_count;
   struct lock alive_lock;

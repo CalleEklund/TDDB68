@@ -157,6 +157,23 @@ Wrote all code of part A of lab 3 without any test done. Start of part B, we add
 TODO : transfer the args and argc in the thread struct (in start_process).
 TODO2 : put them on the stack. 
 
+--- 4/3/17 ---
+M:
+
+Need to palloc_get_page for strlcpy??
+Is it possible the parent parent_child struct is destroyed when thread_exit (the part we've not written?) 
+"palloc_free_page (file_name);" L118 process.c Ok?? Risk of being freed twice? 
+
+Have to make sure children list has been init before calling exit. " If thread_start() has been called, then the new thread may be
+   scheduled before thread_create() returns.  It could even exit
+   before thread_create() returns."
+Or not a problem if can't run (can't exit) until put into ready queue? 
+
+Changed how the loop to extract args from CMD_LINE. 
+
+Added all things to the stack in setup_stack(). Changed the name of the char*[32] new_proc_args to argv. And the type was wrong before. In thread struct has to be char** so we can modify it. Ok? 
+
+TODO: How can we free shared rescources when child terminates abnormally? Is thread_exit still called??? 
 
 
 

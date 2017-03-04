@@ -8,7 +8,7 @@ struct new_proc_args {
   struct semaphore load_sema;
   struct parent_child* parent;
   char* file_name;
-  char** args[32];
+  char* argv[32];
   int argc;
 };
 

@@ -22,8 +22,8 @@
 static thread_func start_process NO_RETURN;
 static bool load (const char *cmdline, void (**eip) (void), void **esp);
 
-/* Starts a new thread running a user program loaded from
-   FILENAME.  The new thread may be scheduled (and may even exit)
+/* Starts a new thread running a user program with given arguments loaded from
+   CMD_LINE.  The new thread may be scheduled (and may even exit)
    before process_execute() returns.  Returns the new process's
    thread id, or TID_ERROR if the thread cannot be created. */
 tid_t
@@ -32,38 +32,44 @@ process_execute (const char *cmd_line)
   char *cmd_copy;
   tid_t tid;
 
-  /* Make a copy of FILE_NAME.
+  /* Make a copy of CMD_LINE.
      Otherwise there's a race between the caller and load(). */
   cmd_copy = palloc_get_page (0);
   if (cmd_copy == NULL)
     return TID_ERROR;
   strlcpy (cmd_copy, cmd_line, PGSIZE);
 
-
   /* Create a new thread to execute FILE_NAME. */
-  // Put parent_child struct in  child thread struct
-  // along with 'load_lock' (alt put in struct to replace fn_copy)
+
+  // Create new_proc_args to hold filename, arguments, argc,
+  // load_sema and pointer to parent's parent_child struct.
   struct new_proc_args* pr_args;
+  sema_init(&pr_args->load_sema,0);
   pr_args->argc = 0 ;
 
+  // Extract filename and all arguments from CMD_LINE
   char *token, *save_ptr;
-   
   for (token = strtok_r (cmd_copy, " ", &save_ptr); token != NULL;
 	token = strtok_r (NULL, " ", &save_ptr))
      {
        if (pr_args->argc == 0)
 	 {
-	   strlcpy(pr_args->file_name,token,PGSIZE);
+	   //strlcpy(pr_args->file_name, token, PGSIZE);
+	   pr_args->file_name = token;
+	 }
+       else if(pr_args->argc == 31)
+	 {
+	   // We do not allow more than 32 arguments
+	   break;
 	 }
        else
 	 {
-	   strlcpy(pr_args->args[pr_args->argc-1],token,PGSIZE); 
+	   //strlcpy(pr_args->args[pr_args->argc - 1], token, PGSIZE); 
+	   pr_args->argv[pr_args->argc -1] = token;
+	   pr_args->argc++;
 	 }
-       pr_args->argc++;
      }
 
-  sema_init(&pr_args->load_sema,0);
-  ///////pr_args->cmd_line = fn_copy;
   struct parent_child* child = (struct parent_child*) malloc(sizeof(struct parent_child));
   list_push_back(&thread_current()->children, &child->elem);
   
@@ -77,11 +83,14 @@ process_execute (const char *cmd_line)
   sema_init(&(child->wait_sema),0);
 
   pr_args->parent = child;
-  ////////tid = thread_create (file_name, PRI_DEFAULT, start_process, pr_args);
-  // Wait for program to load (lock_acquire)
+
+  tid = thread_create (pr_args->file_name, PRI_DEFAULT, start_process, pr_args);
+  // Wait for program to load
   sema_down(&pr_args->load_sema);
+
   child->child = tid;
   free(pr_args);
+
   if (tid == TID_ERROR)
     palloc_free_page (cmd_copy); 
   return tid;
@@ -92,11 +101,15 @@ process_execute (const char *cmd_line)
 static void
 start_process (void *aux)
 {
-  char *file_name = ((struct new_proc_args*) aux)->file_name;
+  char* file_name = ((struct new_proc_args*) aux)->file_name;
   struct intr_frame if_;
   bool success;
 
-  thread_current()->parent = ((struct new_proc_args*) aux)->parent;
+  // Transfer info from aux to the new thread
+  struct new_proc_args* pr_args = ((struct new_proc_args*) aux);
+  thread_current()->parent = pr_args->parent;
+  thread_current()->argv = pr_args->argv;
+  thread_current()->argc = pr_args->argc;
 
   /* Initialize interrupt frame and load executable. */
   memset (&if_, 0, sizeof if_);
@@ -170,15 +183,16 @@ process_exit (void)
   uint32_t *pd;
   struct parent_child* par = cur->parent;
 
-  // release the sema  managing the process_wait()
+  // release the sema holding process_wait()
   sema_up(&cur->parent->wait_sema);
   
   // alive count is decremented
   lock_acquire(&par->alive_lock);
   par->alive_count--;
   
-   // Alive count goes from 2 to 1 (terminate before parent) (decr parent struct)
-  // Alive count goes from 1 to 0 (terminate after parent)  (decr parent struct)
+  // Alive count goes from 2 to 1 (terminate before parent) (decr parent struct)
+  // do nothing other then the decrement itself
+  //   Alive count goes from 1 to 0 (terminate after parent)  (decr parent struct)
   // free our parent struct
   if (par->alive_count == 0)
     {
@@ -189,7 +203,7 @@ process_exit (void)
   // Go through all children and decrement alive count
   // Alive count goes from 2 to 1 (terminate before its child) (decr child struct)
   // Alive count goes from 1 to 0 (terminate after its child) (decr child struct)
-  // free the childs struct and remove from the list
+  // free the childs struct and remove it from the list
   struct list_elem* e; 
   for (e = list_begin (&(cur->children)); e != list_end (&(cur->children)); e = list_next (e))
       {
@@ -569,7 +583,7 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
 }
 
 /* Create a minimal stack by mapping a zeroed page at the top of
-   user virtual memory. */
+   user virtual memory. Also sets up the arguments passed to the user program. */
 static bool
 setup_stack (void **esp) 
 {
@@ -581,7 +595,39 @@ setup_stack (void **esp)
     {
       success = install_page (((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
       if (success)
-        *esp = PHYS_BASE;  
+	{
+	  *esp = PHYS_BASE;  
+	  // Setup the user's arguments to the stack
+	  // Actual strings
+	  struct thread* t = thread_current();
+	  int* p = (int*) *esp;
+	  unsigned i, j;
+	  for(i=0; i<t->argc; i++) {
+	    for(j=0; j<strlen(t->argv[i]); j++) { 
+	      *p = t->argv[i][j];
+	      t->argv[i] = p;
+	      p--;
+	    }
+	  }
+	  // Word allign (to make stack pointer divisable by 4)
+	  while(*p % 4 != 0) {
+	    p--;
+	  }
+	  *p = NULL;
+	  p--;
+	  // Argv (pointers to the strings)
+	  for(i=t->argc; i>=0; i++) {
+	    *p = t->argv[i];
+	    p--;
+	  }
+	  *p = t->argv;
+	  p--;
+	  *p = t->argc;
+	  void* dummy;
+	  p--;
+	  *p = dummy;
+	  *esp = p;
+	}
       else
         palloc_free_page (kpage);
     }

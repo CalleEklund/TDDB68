@@ -43,8 +43,8 @@ process_execute (const char *cmd_line)
 
   // Create new_proc_args to hold filename, arguments, argc,
   // load_sema and pointer to parent's parent_child struct.
-  struct new_proc_args* pr_args;
-  sema_init(&pr_args->load_sema,0);
+  struct new_proc_args* pr_args = (struct new_proc_args*) malloc(sizeof(struct new_proc_args));
+  sema_init(&(pr_args->load_sema),0);
   pr_args->argc = 0 ;
 
   // Extract filename and all arguments from CMD_LINE
@@ -71,7 +71,9 @@ process_execute (const char *cmd_line)
      }
 
   struct parent_child* child = (struct parent_child*) malloc(sizeof(struct parent_child));
-  list_push_back(&thread_current()->children, &child->elem);
+  printf("Before child push back");
+  //list_push_back(&thread_current()->children, &child->elem);
+  printf("After child push back");
   
   // initialise alive_count protected by its lock
   lock_init(&(child->alive_lock));
@@ -86,7 +88,7 @@ process_execute (const char *cmd_line)
 
   tid = thread_create (pr_args->file_name, PRI_DEFAULT, start_process, pr_args);
   // Wait for program to load
-  sema_down(&pr_args->load_sema);
+  sema_down(&(pr_args->load_sema));
 
   child->child = tid;
   free(pr_args);
@@ -118,7 +120,7 @@ start_process (void *aux)
   if_.eflags = FLAG_IF | FLAG_MBS;
   success = load (file_name, &if_.eip, &if_.esp);
   // Release load_lock so parent process can continue executing
-  sema_up(&((struct new_proc_args*) aux)->load_sema);
+  sema_up(&((struct new_proc_args*)aux)->load_sema);
 
   /* If load failed, quit. */
   palloc_free_page (file_name);
@@ -154,7 +156,7 @@ process_wait (tid_t child_tid)
   struct thread* t = thread_current();
   struct list_elem* e; 
   int exit_status = -1;
-  for (e = list_begin (&(t->children)); e != list_end (&(t->children)); e = list_next (e))
+  /*for (e = list_begin (&(t->children)); e != list_end (&(t->children)); e = list_next (e))
       {
           struct parent_child *child = list_entry (e, struct parent_child, elem);
           if (child->child == child_tid) 
@@ -171,7 +173,7 @@ process_wait (tid_t child_tid)
 	      child->exit_status = -1;
 	      break;
 	    }
-      }
+	    }*/
   return exit_status;
 }
 
@@ -184,10 +186,10 @@ process_exit (void)
   struct parent_child* par = cur->parent;
 
   // release the sema holding process_wait()
-  sema_up(&cur->parent->wait_sema);
+  sema_up(&(cur->parent->wait_sema));
   
   // alive count is decremented
-  lock_acquire(&par->alive_lock);
+  lock_acquire(&(par->alive_lock));
   par->alive_count--;
   
   // Alive count goes from 2 to 1 (terminate before parent) (decr parent struct)
@@ -196,7 +198,7 @@ process_exit (void)
   // free our parent struct
   if (par->alive_count == 0)
     {
-      lock_release(&par->alive_lock);
+      lock_release(&(par->alive_lock));
       free(par);
     }
   
@@ -204,7 +206,7 @@ process_exit (void)
   // Alive count goes from 2 to 1 (terminate before its child) (decr child struct)
   // Alive count goes from 1 to 0 (terminate after its child) (decr child struct)
   // free the childs struct and remove it from the list
-  struct list_elem* e; 
+  /*struct list_elem* e; 
   for (e = list_begin (&(cur->children)); e != list_end (&(cur->children)); e = list_next (e))
       {
           struct parent_child *child = list_entry (e, struct parent_child, elem);
@@ -212,10 +214,12 @@ process_exit (void)
 	  child->alive_count--;
           if (child->alive_count == 0) 
 	    {
-	      lock_release(&child->alive_lock);
+	      lock_release(&(child->alive_lock));
+	      list_remove(e);
+	      printf("Removed child from children list\n");
 	      free(child);
 	    }
-      }
+	    }*/
 
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
@@ -601,32 +605,33 @@ setup_stack (void **esp)
 	  // Actual strings
 	  struct thread* t = thread_current();
 	  int* p = (int*) *esp;
-	  unsigned i, j;
+	  int i;
+	  unsigned j;
 	  for(i=0; i<t->argc; i++) {
 	    for(j=0; j<strlen(t->argv[i]); j++) { 
-	      *p = t->argv[i][j];
-	      t->argv[i] = p;
+	      *p = (int) t->argv[i][j];
+	      t->argv[i] = (char*) p;
 	      p--;
 	    }
 	  }
 	  // Word allign (to make stack pointer divisable by 4)
-	  while(*p % 4 != 0) {
+	  while((int)p % 4 != 0) {
 	    p--;
 	  }
 	  *p = NULL;
 	  p--;
 	  // Argv (pointers to the strings)
-	  for(i=t->argc; i>=0; i++) {
-	    *p = t->argv[i];
+	  for(i=t->argc; i>=0; i--) {
+	    *p = (int) t->argv[i];
 	    p--;
 	  }
-	  *p = t->argv;
+	  *p = (int) t->argv;
 	  p--;
-	  *p = t->argc;
+	  *p =  t->argc;
 	  void* dummy;
 	  p--;
-	  *p = dummy;
-	  *esp = p;
+	  *p = (int) dummy;
+	  *esp = (void*) p;
 	}
       else
         palloc_free_page (kpage);

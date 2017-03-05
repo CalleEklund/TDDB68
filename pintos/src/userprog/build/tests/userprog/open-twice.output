@@ -1,0 +1,47 @@
+Copying tests/userprog/open-twice into /tmp/39x_H9bUcA.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/39x_H9bUcA.dsk...
+Writing command line to /tmp/g1RV60T79m.dsk...
+qemu -hda /tmp/g1RV60T79m.dsk -hdb /tmp/EhOxbrTGRS.dsk -hdc /tmp/39x_H9bUcA.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put open-twice put sample.txt run open-twice
+Pintos booting with 4,088 kB RAM...
+372 pages available in kernel pool.
+371 pages available in user pool.
+Calibrating timer...  419,020,800 loops/s.
+hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 101 sector (50 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'open-twice' into the file system...
+Putting 'sample.txt' into the file system...
+Executing 'open-twice':
+Page fault at 0xc011e028: rights violation error reading page in user context.
+open-twice: dying due to interrupt 0x0e (#PF Page-Fault Exception).
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x8048135
+ cr2=c011e028 error=00000005
+ eax=c011e028 ebx=00000000 ecx=00000000 edx=00000000
+ esi=00000000 edi=00000000 esp=bfffffb0 ebp=bfffffcc
+ cs=001b ds=0023 es=0023 ss=0023
+Page fault at 0xcccccccc: not present error reading page in kernel context.
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc01076cf
+ cr2=cccccccc error=00000000
+ eax=cccccccc ebx=cccccccc ecx=00000009 edx=00000000
+ esi=c011f03c edi=00000001 esp=c011f03c ebp=c0120000
+ cs=0008 ds=0010 es=0010 ss=3b1c
+Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
+Call stack: 0xc01070eb 0xc01076cf 0Page fault at 0x3: not present error reading page in kernel context.
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0105327
+ cr2=00000003 error=00000000
+ eax=00000002 ebx=00000003 ecx=000007a3 edx=000003d4
+ esi=00000064 edi=c010cd25 esp=c010dfcb ebp=c0120d58
+ cs=0008 ds=0010 es=0010 ss=0000
+Kernel PANIC recursion at ../../userprog/exception.c:100 in kill().
+Timer: 61 ticks
+Thread: 32 idle ticks, 25 kernel ticks, 4 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 86 reads, 212 writes
+hd1:0: 101 reads, 0 writes
+Console: 1954 characters output
+Keyboard: 0 keys pressed
+Exception: 3 page faults
+Powering off...

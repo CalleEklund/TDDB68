@@ -1,0 +1,33 @@
+Copying tests/userprog/multi-recurse into /tmp/QwrjmJl6Gy.dsk...
+Writing command line to /tmp/kZy0fEq_yO.dsk...
+qemu -hda /tmp/kZy0fEq_yO.dsk -hdb /tmp/gZnd5puEGs.dsk -hdc /tmp/QwrjmJl6Gy.dsk -m 4 -net none -nographic -monitor null
+Kernel command line: -q -f put multi-recurse run 'multi-recurse 15'
+Pintos booting with 4,088 kB RAM...
+372 pages available in kernel pool.
+371 pages available in user pool.
+Calibrating timer...  314,163,200 loops/s.
+hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
+hd1:0: detected 110 sector (55 kB) disk, model "QEMU HARDDISK", serial "QM00003"
+Formatting file system...done.
+Boot complete.
+Putting 'multi-recurse' into the file system...
+Executing 'multi-recurse 15':
+load: 15: open failed
+Kernel PANIC at ../../threads/palloc.c:130 in palloc_free_multiple(): assertion `pg_ofs (pages) == 0' failed.
+Call stack: 0xc01070eb 0Page fault at 0x3: not present error reading page in kernel context.
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0105327
+ cr2=00000003 error=00000000
+ eax=00000002 ebx=00000003 ecx=00000658 edx=000003d4
+ esi=00000082 edi=c010c5d0 esp=c010dfcb ebp=c0120e40
+ cs=0008 ds=0010 es=0010 ss=0000
+Kernel PANIC recursion at ../../userprog/exception.c:100 in kill().
+Timer: 60 ticks
+Thread: 33 idle ticks, 25 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 47 reads, 228 writes
+hd1:0: 110 reads, 0 writes
+Console: 1255 characters output
+Keyboard: 0 keys pressed
+Exception: 1 page faults
+Powering off...

@@ -45,20 +45,24 @@ process_execute (const char *cmd_line)
   // load_sema and pointer to parent's parent_child struct.
   struct new_proc_args* pr_args = (struct new_proc_args*) malloc(sizeof(struct new_proc_args));
   sema_init(&(pr_args->load_sema),0);
-  pr_args->argc = 0;
+  pr_args->argc = -1;
 
   // Extract filename and all arguments from CMD_LINE
   char *token, *save_ptr;
+
+  printf("Cmd_line: %s \n", cmd_copy);
+
   for (token = strtok_r (cmd_copy, " ", &save_ptr); token != NULL;
 	token = strtok_r (NULL, " ", &save_ptr))
      {
+       pr_args->argc++;
        if (pr_args->argc == 0)
 	 {
 	   //strlcpy(pr_args->file_name, token, PGSIZE);
 	   pr_args->file_name = token;
 	   printf("Filename extracted: %s \n", token);
 	 }
-       else if(pr_args->argc == 31)
+       else if(pr_args->argc == 32)
 	 {
 	   // We do not allow more than 32 arguments
 	   break;
@@ -66,16 +70,16 @@ process_execute (const char *cmd_line)
        else
 	 {
 	   //strlcpy(pr_args->args[pr_args->argc - 1], token, PGSIZE); 
-	   pr_args->argv[pr_args->argc -1] = token;
+	   pr_args->argv[pr_args->argc-1] = token;
 	   printf("Argument extracted: %s \n", token);
-	   pr_args->argc++;
 	 }
      }
+  printf("Nr of args extracted: %d\n", pr_args->argc);
 
   struct parent_child* child = (struct parent_child*) malloc(sizeof(struct parent_child));
-  //printf("Before child push back\n");
-  //list_push_back(&thread_current()->children, &child->elem);
-  //printf("After child push back\n");
+  printf("Before child push back\n");
+  list_push_back(&thread_current()->children, &child->elem);
+  printf("After child push back\n");
   
   // initialise alive_count protected by its lock
   lock_init(&(child->alive_lock));
@@ -131,9 +135,10 @@ start_process (void *aux)
 
   /* If load failed, quit. */
   palloc_free_page (file_name);
-  if (!success) 
+  if (!success) {
     printf("Unsuccesfully loaded file_name\n");
     thread_exit ();
+  }
 
   printf("Before last line in start_process()\n");
   /* Start the user process by simulating a return from an
@@ -161,11 +166,12 @@ process_wait (tid_t child_tid)
   //while(true){
     //continue;
      //}
-  return -1;
-  /*struct thread* t = thread_current();
+  //return -1;
+  printf("In process_wait()\n");
+  struct thread* t = thread_current();
   struct list_elem* e; 
-  int exit_status = -1;*/
-  /*for (e = list_begin (&(t->children)); e != list_end (&(t->children)); e = list_next (e))
+  int exit_status = -1;
+  for (e = list_begin (&(t->children)); e != list_end (&(t->children)); e = list_next (e))
       {
           struct parent_child *child = list_entry (e, struct parent_child, elem);
           if (child->child == child_tid) 
@@ -176,14 +182,15 @@ process_wait (tid_t child_tid)
 		}
 	      else 
 		{
+		  printf("Waiting for child to terminate...\n");
 		  sema_down(&child->wait_sema);
 		  exit_status = child->exit_status;
 		}
 	      child->exit_status = -1;
 	      break;
 	    }
-	    }*/
-  //return exit_status;
+      }
+  return exit_status;
 }
 
 /* Free the current process's resources. */
@@ -203,9 +210,9 @@ process_exit (void)
 
     // alive count is decremented
     lock_acquire(&(par->alive_lock));
-    printf("Reached in process_exit()\n");
+    //printf("Reached in process_exit()\n");
     par->alive_count--;
-  
+          
     // Alive count goes from 2 to 1 (terminate before parent) (decr parent struct)
     // do nothing other then the decrement itself
     //   Alive count goes from 1 to 0 (terminate after parent)  (decr parent struct)
@@ -221,7 +228,7 @@ process_exit (void)
   // Alive count goes from 2 to 1 (terminate before its child) (decr child struct)
   // Alive count goes from 1 to 0 (terminate after its child) (decr child struct)
   // free the childs struct and remove it from the list
-  /*struct list_elem* e; 
+  struct list_elem* e; 
   for (e = list_begin (&(cur->children)); e != list_end (&(cur->children)); e = list_next (e))
       {
           struct parent_child *child = list_entry (e, struct parent_child, elem);
@@ -234,9 +241,9 @@ process_exit (void)
 	      printf("Removed child from children list\n");
 	      free(child);
 	    }
-	    }*/
+      }
 
-  printf("Before the page dir destruction in process_exit()\n");
+  //printf("Before the page dir destruction in process_exit()\n");
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
   pd = cur->pagedir;
@@ -369,7 +376,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
    /* Uncomment the following line to print some debug
      information. This will be useful when you debug the program
      stack.*/
-  //#define STACK_DEBUG
+#define STACK_DEBUG
 
 #ifdef STACK_DEBUG
   printf("*esp is %p\nstack contents:\n", *esp);
@@ -618,38 +625,46 @@ setup_stack (void **esp)
       if (success)
 	{
 	  *esp = PHYS_BASE;  
+
 	  // Setup the user's arguments to the stack
 	  // Actual strings
 	  struct thread* t = thread_current();
-	  int* p = (int*) *esp;
+	  void* p = *esp;
 	  int i;
-	  unsigned j;
 	  for(i=0; i<t->argc; i++) {
-	    for(j=0; j<strlen(t->argv[i]); j++) { 
-	      *p = (int) t->argv[i][j];
-	      t->argv[i] = (char*) p;
-	      p--;
-	    }
+	    p -= strlen(t->argv[i]) +1;
+	    printf("Writing %s to stack\n", t->argv[i]);
+	    memcpy(p, &(t->argv[i]), strlen(t->argv[i]) +1);
 	  }
 	  // Word allign (to make stack pointer divisable by 4)
 	  while((int)p % 4 != 0) {
 	    p--;
 	  }
-	  *p = NULL;
-	  p--;
+	  // Add extra last element in array, set to NULL
+	  if(t->argc != 0) {
+	    char* nl_sent = NULL;
+	    memcpy(p, &nl_sent, sizeof(char*));
+	    p -= sizeof(char*);
+	  }
+
 	  // Argv (pointers to the strings)
 	  for(i=t->argc; i>0; i--) {
-	    *p = (int) t->argv[i];
-	    p--;
+	    p -= sizeof(char*);
+	    memcpy(p, &(t->argv[i]), sizeof(char*));
 	  }
-	  *p = (int) t->argv;
+	  p -= sizeof(char**);
+	  memcpy(p, &(t->argv), sizeof(char**));
 	  printf("Put argv at addr %p\n", p);
-	  p--;
-	  *p =  t->argc;
+
+	  p -= sizeof(int);
+	  memcpy(p, &(t->argc), sizeof(int));
 	  printf("Put argc at addr %p\n", p);
+
+	  // Fake return addr
 	  void* dummy;
-	  p--;
-	  *p = (int) dummy;
+	  p -= sizeof(dummy);
+          memcpy(p, &dummy, sizeof(dummy));
+
 	  *esp = (void*) p;
 	}
       else

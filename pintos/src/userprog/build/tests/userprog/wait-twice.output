@@ -1,7 +1,7 @@
-Copying tests/userprog/wait-twice into /tmp/iG1frvxkUZ.dsk...
-Copying tests/userprog/child-simple into /tmp/iG1frvxkUZ.dsk...
-Writing command line to /tmp/3lyQy9PSup.dsk...
-qemu -hda /tmp/3lyQy9PSup.dsk -hdb /tmp/a85fvQEpx6.dsk -hdc /tmp/iG1frvxkUZ.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/wait-twice into /tmp/_HlVtKwnik.dsk...
+Copying tests/userprog/child-simple into /tmp/_HlVtKwnik.dsk...
+Writing command line to /tmp/fhZRsvnofi.dsk...
+qemu -hda /tmp/fhZRsvnofi.dsk -hdb /tmp/yZZc8bvFIT.dsk -hdc /tmp/_HlVtKwnik.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put wait-twice put child-simple run wait-twice
 Pintos booting with 4,088 kB RAM...
 372 pages available in kernel pool.
@@ -15,33 +15,27 @@ Boot complete.
 Putting 'wait-twice' into the file system...
 Putting 'child-simple' into the file system...
 Executing 'wait-twice':
-Page fault at 0xc011e028: rights violation error reading page in user context.
-wait-twice: dying due to interrupt 0x0e (#PF Page-Fault Exception).
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x80480f3
- cr2=c011e028 error=00000005
- eax=c011e028 ebx=00000000 ecx=00000000 edx=00000000
- esi=00000000 edi=00000000 esp=bfffffb0 ebp=bfffffcc
- cs=001b ds=0023 es=0023 ss=0023
-Page fault at 0xcccccccc: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc01076cf
- cr2=cccccccc error=00000000
- eax=cccccccc ebx=cccccccc ecx=00000009 edx=00000000
- esi=c011f03c edi=00000001 esp=c011f03c ebp=c0120000
- cs=0008 ds=0010 es=0010 ss=3b1c
-Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070eb 0xc01076cf 0Page fault at 0x3: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0105327
- cr2=00000003 error=00000000
- eax=00000002 ebx=00000003 ecx=000007a3 edx=000003d4
- esi=00000064 edi=c010cd25 esp=c010dfcb ebp=c0120d58
- cs=0008 ds=0010 es=0010 ss=0000
-Kernel PANIC recursion at ../../userprog/exception.c:100 in kill().
-Timer: 63 ticks
-Thread: 36 idle ticks, 24 kernel ticks, 3 user ticks
+Filename extracted: wait-twice 
+Before child push back
+After child push back
+Before waiting in load_sema
+Put argv at addr 0xbffffffc
+Put argc at addr 0xbffffff8
+End of setup_stack()
+Start of process_exit()
+After sema up in process_exit()
+Before the page dir destruction in process_exit()
+At end of process_exit()
+Awoke from load_sema
+End of process execute
+In process_wait()
+Execution of 'wait-twice' complete.
+Timer: 64 ticks
+Thread: 32 idle ticks, 31 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 86 reads, 398 writes
 hd1:0: 194 reads, 0 writes
-Console: 1958 characters output
+Console: 1189 characters output
 Keyboard: 0 keys pressed
-Exception: 3 page faults
+Exception: 0 page faults
 Powering off...

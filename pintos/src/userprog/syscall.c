@@ -99,17 +99,19 @@ void halt(void)
 
 pid_t exec (const char *cmd_line)
 {
+  printf("Syscall exec\n");
   return (pid_t)process_execute(cmd_line);
 }
 
 void exit(int status)
 {
+  printf("Syscall exit\n");
   printf("%s: exit(%d)\n", thread_current()->name, status);
   thread_current()->parent->exit_status = status;
   
-  lock_acquire(&thread_current()->parent->alive_lock);
+  /*lock_acquire(&thread_current()->parent->alive_lock);
   thread_current()->parent->alive_count--;
-  lock_release(&thread_current()->parent->alive_lock);
+  lock_release(&thread_current()->parent->alive_lock);*/
   
   thread_exit();
 }

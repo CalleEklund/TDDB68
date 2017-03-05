@@ -175,6 +175,20 @@ Added all things to the stack in setup_stack(). Changed the name of the char*[32
 
 TODO: How can we free shared rescources when child terminates abnormally? Is thread_exit still called??? 
 
+--- 5/3/17 ---
+M:
+
+Something is wrong with the wait_sema. When called (by kernel thread?) in process_exit() the list_begin fails. Page fault reading page in user context. 
+
+TODO: Have to change how do mod 4. I understood that the wrong way. (hmm... no might be ok as it is....) 
+
+I think we should use memcpy() to put things on stack properly. 
+
+Ok, so i didn't realize (DESPITE STARING MYSELF BLIND ON THE STACK PICS) that the file name also should be on the stack. 
+TODO: Fix that and add the last null element in argv somewhere. 
+
+
+
 
 
 

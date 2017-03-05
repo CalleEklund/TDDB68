@@ -1,6 +1,33 @@
 FAIL
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070eb 0xc01076cf
-Translation of call stack:
-0xc01070eb: debug_panic (.../../lib/kernel/debug.c:34)
-0xc01076cf: is_interior (..../../lib/kernel/list.c:49)
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (wait-twice) begin
+  (child-simple) run
+  child-simple: exit(81)
+  (wait-twice) wait(exec()) = 81
+  (wait-twice) wait(exec()) = -1
+  (wait-twice) end
+  wait-twice: exit(0)
+Differences in `diff -u' format:
+- (wait-twice) begin
+- (child-simple) run
+- child-simple: exit(81)
+- (wait-twice) wait(exec()) = 81
+- (wait-twice) wait(exec()) = -1
+- (wait-twice) end
+- wait-twice: exit(0)
++ Filename extracted: wait-twice 
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Put argv at addr 0xbffffffc
++ Put argc at addr 0xbffffff8
++ End of setup_stack()
++ Start of process_exit()
++ After sema up in process_exit()
++ Before the page dir destruction in process_exit()
++ At end of process_exit()
++ Awoke from load_sema
++ End of process execute
++ In process_wait()

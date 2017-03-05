@@ -1,6 +1,6 @@
-Copying tests/userprog/halt into /tmp/J0Kf6rzyRR.dsk...
-Writing command line to /tmp/QHKIGBghmK.dsk...
-qemu -hda /tmp/QHKIGBghmK.dsk -hdb /tmp/QKrz56m3ua.dsk -hdc /tmp/J0Kf6rzyRR.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/halt into /tmp/Da_r93CRRT.dsk...
+Writing command line to /tmp/FbzWOa22ku.dsk...
+qemu -hda /tmp/FbzWOa22ku.dsk -hdb /tmp/ZuqvXeQea3.dsk -hdc /tmp/Da_r93CRRT.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put halt run halt
 Pintos booting with 4,088 kB RAM...
 372 pages available in kernel pool.
@@ -14,24 +14,26 @@ Boot complete.
 Putting 'halt' into the file system...
 Executing 'halt':
 Filename extracted: halt 
+Before child push back
+After child push back
 Before waiting in load_sema
 Put argv at addr 0xbffffffc
 Put argc at addr 0xbffffff8
 End of setup_stack()
 Start of process_exit()
 After sema up in process_exit()
-Reached in process_exit()
 Before the page dir destruction in process_exit()
 At end of process_exit()
 Awoke from load_sema
 End of process execute
+In process_wait()
 Execution of 'halt' complete.
-Timer: 60 ticks
-Thread: 33 idle ticks, 26 kernel ticks, 1 user ticks
+Timer: 58 ticks
+Thread: 33 idle ticks, 24 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 59 reads, 202 writes
 hd1:0: 97 reads, 0 writes
-Console: 1050 characters output
+Console: 1087 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

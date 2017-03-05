@@ -293,13 +293,13 @@ thread_exit (void)
      } 
   }
 #endif
-  struct list_elem* e; 
+   /*struct list_elem* e; 
   for (e = list_begin (&(t->children)); e != list_end (&(t->children)); e = list_next (e))
       {
           struct parent_child *child = list_entry (e, struct parent_child, elem);
           free(child);
-      }
-  free(t->parent);
+	  }*/
+   //free(t->parent);
 #ifdef USERPROG
   process_exit ();
 #endif
@@ -461,10 +461,12 @@ init_thread (struct thread *t, const char *name, int priority)
   t->priority = priority;
   t->magic = THREAD_MAGIC;
   
-  //list_init(&(t->children));
+  list_init(&(t->children));
+  // initialisation of the wait_lock (only if current thread is a child)
+  if(t->parent != NULL) sema_init(&(t->parent->wait_sema),0);
 
   #ifdef USERPROG
-  /* Initalize file descriptor table and constants */
+  /* Initalize file descriptor table*/
   t->nr_open_files = 0;
   int i;
   for(i=0; i<MAX_NR_OPEN_FILES; i++) {

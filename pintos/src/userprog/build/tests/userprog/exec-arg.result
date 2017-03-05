@@ -1,6 +1,80 @@
 FAIL
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070eb 0xc01076cf
-Translation of call stack:
-0xc01070eb: debug_panic (.../../lib/kernel/debug.c:34)
-0xc01076cf: is_interior (..../../lib/kernel/list.c:49)
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (exec-arg) begin
+  (args) begin
+  (args) argc = 2
+  (args) argv[0] = 'child-args'
+  (args) argv[1] = 'childarg'
+  (args) argv[2] = null
+  (args) end
+  child-args: exit(0)
+  (exec-arg) end
+  exec-arg: exit(0)
+Differences in `diff -u' format:
+- (exec-arg) begin
+- (args) begin
+- (args) argc = 2
+- (args) argv[0] = 'child-args'
+- (args) argv[1] = 'childarg'
+- (args) argv[2] = null
+- (args) end
+- child-args: exit(0)
+- (exec-arg) end
+- exec-arg: exit(0)
++ Cmd_line: exec-arg 
++ Filename extracted: exec-arg 
++ Nr of args extracted: 0
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Put argv at addr 0xbffffffc
++ Put argc at addr 0xbffffff8
++ End of setup_stack()
++ *esp is 0xbffffff4
++ stack contents:
++ bffffff0              00 00 00 00-00 00 00 00 28 f0 11 c0 |    ........(...|
++ c0000000  00 00 00 00 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |....S.......S...|
++ c000000f	 	
++ c000000e	 	
++ c000000d	 	
++ c000000c	S	f000ff53	
++ --------------------------------------------------------------
++ c000000b	 	
++ c000000a	 	
++ c0000009	 	
++ c0000008	 	f000e2c3	
++ --------------------------------------------------------------
++ c0000007	 	
++ c0000006	 	
++ c0000005	 	
++ c0000004	S	f000ff53	
++ --------------------------------------------------------------
++ c0000003	 	
++ c0000002	 	
++ c0000001	 	
++ c0000000	 	0	
++ ------- the border between KERNEL SPACE and USER SPACE -------
++ bfffffff	 	
++ bffffffe	 	
++ bffffffd	 	
++ bffffffc	(	c011f028	
++ --------------------------------------------------------------
++ bffffffb	 	
++ bffffffa	 	
++ bffffff9	 	
++ bffffff8	 	0	
++ --------------------------------------------------------------
++ bffffff7	 	
++ bffffff6	 	
++ bffffff5	 	
++ bffffff4	 	0	
++ --------------------------------------------------------------
++ Start of process_exit()
++ After sema up in process_exit()
++ Before the page dir destruction in process_exit()
++ At end of process_exit()
++ Awoke from load_sema
++ End of process execute
++ In process_wait()

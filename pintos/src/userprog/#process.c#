@@ -205,7 +205,7 @@ process_exit (void)
     lock_acquire(&(par->alive_lock));
     printf("Reached in process_exit()\n");
     par->alive_count--;
-  
+          
     // Alive count goes from 2 to 1 (terminate before parent) (decr parent struct)
     // do nothing other then the decrement itself
     //   Alive count goes from 1 to 0 (terminate after parent)  (decr parent struct)

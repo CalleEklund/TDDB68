@@ -1,11 +1,11 @@
-Copying tests/userprog/exit into /tmp/hfDgxi9wik.dsk...
-Writing command line to /tmp/quOXOnoCDD.dsk...
-qemu -hda /tmp/quOXOnoCDD.dsk -hdb /tmp/TFhPufjGjk.dsk -hdc /tmp/hfDgxi9wik.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/exit into /tmp/LW2u8S8vuv.dsk...
+Writing command line to /tmp/80hzTzGegm.dsk...
+qemu -hda /tmp/80hzTzGegm.dsk -hdb /tmp/RVTWYIiqZR.dsk -hdc /tmp/LW2u8S8vuv.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put exit run exit
 Pintos booting with 4,088 kB RAM...
 372 pages available in kernel pool.
 371 pages available in user pool.
-Calibrating timer...  261,734,400 loops/s.
+Calibrating timer...  418,201,600 loops/s.
 hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 97 sector (48 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -13,30 +13,25 @@ Formatting file system...done.
 Boot complete.
 Putting 'exit' into the file system...
 Executing 'exit':
-Before child push backAfter child push backPage fault at 0xc011e028: rights violation error reading page in user context.
-exit: dying due to interrupt 0x0e (#PF Page-Fault Exception).
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x80480bb
- cr2=c011e028 error=00000005
- eax=c011e028 ebx=00000000 ecx=00000000 edx=00000000
- esi=00000000 edi=00000000 esp=bfffffb0 ebp=bfffffcc
- cs=001b ds=0023 es=0023 ss=0023
-Page fault at 0xfffff000: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0102fe0
- cr2=fffff000 error=00000000
- eax=ffffffdc ebx=ffffffdc ecx=fffff000 edx=000003d4
- esi=c0120000 edi=c012023c esp=c0113ff8 ebp=c0120fe8
- cs=0008 ds=0010 es=0010 ss=0f18
-Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070eb 0xc0102fe0 0x80480bb.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Timer: 62 ticks
-Thread: 31 idle ticks, 29 kernel ticks, 2 user ticks
+Filename extracted: exit 
+Before waiting in load_sema
+Put argv at addr 0xbffffffc
+Put argc at addr 0xbffffff8
+End of setup_stack()
+Start of process_exit()
+After sema up in process_exit()
+Reached in process_exit()
+Before the page dir destruction in process_exit()
+At end of process_exit()
+Awoke from load_sema
+End of process execute
+Execution of 'exit' complete.
+Timer: 61 ticks
+Thread: 32 idle ticks, 27 kernel ticks, 2 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 59 reads, 202 writes
 hd1:0: 97 reads, 0 writes
-Console: 1704 characters output
+Console: 1050 characters output
 Keyboard: 0 keys pressed
-Exception: 2 page faults
+Exception: 0 page faults
 Powering off...

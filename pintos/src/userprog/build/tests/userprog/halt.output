@@ -1,11 +1,11 @@
-Copying tests/userprog/halt into /tmp/PDwEJoosJn.dsk...
-Writing command line to /tmp/kxEwa5AZVH.dsk...
-qemu -hda /tmp/kxEwa5AZVH.dsk -hdb /tmp/tESP8gEbFs.dsk -hdc /tmp/PDwEJoosJn.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/halt into /tmp/J0Kf6rzyRR.dsk...
+Writing command line to /tmp/QHKIGBghmK.dsk...
+qemu -hda /tmp/QHKIGBghmK.dsk -hdb /tmp/QKrz56m3ua.dsk -hdc /tmp/J0Kf6rzyRR.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put halt run halt
 Pintos booting with 4,088 kB RAM...
 372 pages available in kernel pool.
 371 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
+Calibrating timer...  419,020,800 loops/s.
 hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 97 sector (48 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -13,33 +13,25 @@ Formatting file system...done.
 Boot complete.
 Putting 'halt' into the file system...
 Executing 'halt':
-Before child push backAfter child push backPage fault at 0xc011e028: rights violation error reading page in user context.
-halt: dying due to interrupt 0x0e (#PF Page-Fault Exception).
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x80480b4
- cr2=c011e028 error=00000005
- eax=c011e028 ebx=00000000 ecx=00000000 edx=00000000
- esi=00000000 edi=00000000 esp=bfffffb0 ebp=bfffffcc
- cs=001b ds=0023 es=0023 ss=0023
-Page fault at 0xcccccccc: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc01076cf
- cr2=cccccccc error=00000000
- eax=cccccccc ebx=cccccccc ecx=00000009 edx=00000000
- esi=c011f03c edi=00000001 esp=c011f03c ebp=c0120000
- cs=0008 ds=0010 es=0010 ss=3b1c
-Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070eb 0xc01076cf 0Page fault at 0x3: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0105327
- cr2=00000003 error=00000000
- eax=00000002 ebx=00000003 ecx=000007a3 edx=000003d4
- esi=00000064 edi=c010cd25 esp=c010dfcb ebp=c0120d58
- cs=0008 ds=0010 es=0010 ss=0000
-Kernel PANIC recursion at ../../userprog/exception.c:100 in kill().
-Timer: 62 ticks
-Thread: 31 idle ticks, 28 kernel ticks, 3 user ticks
+Filename extracted: halt 
+Before waiting in load_sema
+Put argv at addr 0xbffffffc
+Put argc at addr 0xbffffff8
+End of setup_stack()
+Start of process_exit()
+After sema up in process_exit()
+Reached in process_exit()
+Before the page dir destruction in process_exit()
+At end of process_exit()
+Awoke from load_sema
+End of process execute
+Execution of 'halt' complete.
+Timer: 60 ticks
+Thread: 33 idle ticks, 26 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 59 reads, 202 writes
 hd1:0: 97 reads, 0 writes
-Console: 1905 characters output
+Console: 1050 characters output
 Keyboard: 0 keys pressed
-Exception: 3 page faults
+Exception: 0 page faults
 Powering off...

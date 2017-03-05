@@ -1,12 +1,21 @@
 FAIL
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070eb 0xc0102fe0 0x80480bb
-Translation of call stack:
-In kernel.o:
-0xc01070eb: debug_panic (.../../lib/kernel/debug.c:34)
-0xc0102fe0: block_to_arena (..../../threads/malloc.c:274)
-In tests/userprog/exit:
-0x080480bb: main (...uild/../../tests/main.c:8)
-Translations of user virtual addresses above are based on a guess at
-the binary to use.  If this guess is incorrect, then those
-translations will be misleading.
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (exit) begin
+  exit: exit(57)
+Differences in `diff -u' format:
+- (exit) begin
+- exit: exit(57)
++ Filename extracted: exit 
++ Before waiting in load_sema
++ Put argv at addr 0xbffffffc
++ Put argc at addr 0xbffffff8
++ End of setup_stack()
++ Start of process_exit()
++ After sema up in process_exit()
++ Reached in process_exit()
++ Before the page dir destruction in process_exit()
++ At end of process_exit()
++ Awoke from load_sema
++ End of process execute

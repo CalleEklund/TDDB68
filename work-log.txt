@@ -187,6 +187,23 @@ I think we should use memcpy() to put things on stack properly.
 Ok, so i didn't realize (DESPITE STARING MYSELF BLIND ON THE STACK PICS) that the file name also should be on the stack. 
 TODO: Fix that and add the last null element in argv somewhere. 
 
+--- 6/3/2017 ---
+M:
+
+Added missing cases in syscall_handler (-___-')... And changed where args are extracted from cmd_line. Did extra palloc with the filename in start_process. Now only pointer to the pr_args struct is stored in thread.
+   I think things are stored properly on stack now, no longer get page faults at every test. 
+TODO: Add condition whether to print debug. 
+
+Test wait-twice fails. Gives wrong exit status I think. 
+
+So the parameter of syscall wait() is strange. When running wait-twice and wait-once we only ever get pid 0. I made a custom test and only wait (without calling exec) and we get that pid through allright. 
+   Do we mess up the stack somehow so we can't get the real pid?  
+
+FIXED IT!!!!! .......... didn't set return value in syscall_handler..... shoot me.... 
+
+Test wait-killed failed. Cause we put new thread into children list even though it failed to load!! Then we wait for it and match -1 to -1. Badillibad. 
+TODO: Fix this!
+
 
 
 

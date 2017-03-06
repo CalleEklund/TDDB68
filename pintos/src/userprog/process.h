@@ -1,6 +1,7 @@
 #ifndef USERPROG_PROCESS_H
 #define USERPROG_PROCESS_H
 
+#include <stdbool.h>
 #include "threads/thread.h"
 #include "threads/synch.h"
 
@@ -8,9 +9,8 @@ struct new_proc_args {
   struct semaphore load_sema;
   struct parent_child* parent;
   char* file_name;
-  //char* argv[32];
-  //int argc;
   char* cmd_line;
+  bool load_success;
 };
 
 tid_t process_execute (const char *cmd_line);

@@ -1,7 +1,7 @@
-Copying tests/userprog/exec-once into /tmp/e2fEmdRu5Y.dsk...
-Copying tests/userprog/child-simple into /tmp/e2fEmdRu5Y.dsk...
-Writing command line to /tmp/hAC7QbIEHD.dsk...
-qemu -hda /tmp/hAC7QbIEHD.dsk -hdb /tmp/hRnJ_CVIki.dsk -hdc /tmp/e2fEmdRu5Y.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/exec-once into /tmp/5CdqHt6CZ6.dsk...
+Copying tests/userprog/child-simple into /tmp/5CdqHt6CZ6.dsk...
+Writing command line to /tmp/RHC4YkbAbB.dsk...
+qemu -hda /tmp/RHC4YkbAbB.dsk -hdb /tmp/F1jklIu0IS.dsk -hdc /tmp/5CdqHt6CZ6.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put exec-once put child-simple run exec-once
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
@@ -18,81 +18,19 @@ Executing 'exec-once':
 Before child push back
 After child push back
 Before waiting in load_sema
+Value of load_sema in pr_execute: 0
 Writing exec-once to stack
 Put argv at addr 0xbfffffe8
 Put argc at addr 0xbfffffe4
 End of setup_stack()
-*esp is 0xbfffffe0
-stack contents:
-bfffffe0  00 00 00 00 01 00 00 00-ec ff ff bf f6 ff ff bf |................|
-bffffff0  00 00 00 00 00 00 65 78-65 63 2d 6f 6e 63 65 00 |......exec-once.|
-c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
-c000000f	 	
-c000000e	 	
-c000000d	 	
-c000000c	S	f000ff53	
---------------------------------------------------------------
-c000000b	 	
-c000000a	 	
-c0000009	 	
-c0000008	 	f000e2c3	
---------------------------------------------------------------
-c0000007	 	
-c0000006	 	
-c0000005	 	
-c0000004	S	f000ff53	
---------------------------------------------------------------
-c0000003	 	
-c0000002	 	
-c0000001	 	
-c0000000	S	f000ff53	
-------- the border between KERNEL SPACE and USER SPACE -------
-bfffffff	 	
-bffffffe	e	
-bffffffd	c	
-bffffffc	n	65636e	
---------------------------------------------------------------
-bffffffb	o	
-bffffffa	-	
-bffffff9	c	
-bffffff8	e	6f2d6365	
---------------------------------------------------------------
-bffffff7	x	
-bffffff6	e	
-bffffff5	 	
-bffffff4	 	78650000	
---------------------------------------------------------------
-bffffff3	 	
-bffffff2	 	
-bffffff1	 	
-bffffff0	 	0	
---------------------------------------------------------------
-bfffffef	 	
-bfffffee	 	
-bfffffed	 	
-bfffffec	 	bffffff6	
---------------------------------------------------------------
-bfffffeb	 	
-bfffffea	 	
-bfffffe9	 	
-bfffffe8	 	bfffffec	
---------------------------------------------------------------
-bfffffe7	 	
-bfffffe6	 	
-bfffffe5	 	
-bfffffe4	 	1	
---------------------------------------------------------------
-bfffffe3	 	
-bfffffe2	 	
-bfffffe1	 	
-bfffffe0	 	0	
---------------------------------------------------------------
+Before load sema up
 Before last line in start_process()
 (exec-once) begin
 Syscall exec
 Before child push back
 After child push back
 Before waiting in load_sema
+Value of load_sema in pr_execute: 0
 Awoke from load_sema
 End of process execute
 In process_wait()
@@ -101,77 +39,7 @@ Writing child-simple to stack
 Put argv at addr 0xbfffffe4
 Put argc at addr 0xbfffffe0
 End of setup_stack()
-*esp is 0xbfffffdc
-stack contents:
-bfffffd0                                      00 00 00 00 |            ....|
-bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
-bffffff0  00 00 00 63 68 69 6c 64-2d 73 69 6d 70 6c 65 00 |...child-simple.|
-c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
-c000000f	 	
-c000000e	 	
-c000000d	 	
-c000000c	S	f000ff53	
---------------------------------------------------------------
-c000000b	 	
-c000000a	 	
-c0000009	 	
-c0000008	 	f000e2c3	
---------------------------------------------------------------
-c0000007	 	
-c0000006	 	
-c0000005	 	
-c0000004	S	f000ff53	
---------------------------------------------------------------
-c0000003	 	
-c0000002	 	
-c0000001	 	
-c0000000	S	f000ff53	
-------- the border between KERNEL SPACE and USER SPACE -------
-bfffffff	 	
-bffffffe	e	
-bffffffd	l	
-bffffffc	p	656c70	
---------------------------------------------------------------
-bffffffb	m	
-bffffffa	i	
-bffffff9	s	
-bffffff8	-	6d69732d	
---------------------------------------------------------------
-bffffff7	d	
-bffffff6	l	
-bffffff5	i	
-bffffff4	h	646c6968	
---------------------------------------------------------------
-bffffff3	c	
-bffffff2	 	
-bffffff1	 	
-bffffff0	 	63000000	
---------------------------------------------------------------
-bfffffef	 	
-bfffffee	 	
-bfffffed	 	
-bfffffec	 	0	
---------------------------------------------------------------
-bfffffeb	 	
-bfffffea	 	
-bfffffe9	 	
-bfffffe8	 	bffffff3	
---------------------------------------------------------------
-bfffffe7	 	
-bfffffe6	 	
-bfffffe5	 	
-bfffffe4	 	bfffffe8	
---------------------------------------------------------------
-bfffffe3	 	
-bfffffe2	 	
-bfffffe1	 	
-bfffffe0	 	1	
---------------------------------------------------------------
-bfffffdf	 	
-bfffffde	 	
-bfffffdd	 	
-bfffffdc	 	0	
---------------------------------------------------------------
+Before load sema up
 Before last line in start_process()
 (child-simple) run
 Syscall exit
@@ -189,12 +57,12 @@ exec-once: exit(0)
 Start of process_exit()
 After sema up in process_exit()
 Execution of 'exec-once' complete.
-Timer: 77 ticks
-Thread: 33 idle ticks, 29 kernel ticks, 15 user ticks
+Timer: 66 ticks
+Thread: 34 idle ticks, 28 kernel ticks, 4 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 122 reads, 396 writes
 hd1:0: 193 reads, 0 writes
-Console: 5245 characters output
+Console: 1793 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

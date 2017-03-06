@@ -293,13 +293,7 @@ thread_exit (void)
      } 
   }
 #endif
-   /*struct list_elem* e; 
-  for (e = list_begin (&(t->children)); e != list_end (&(t->children)); e = list_next (e))
-      {
-          struct parent_child *child = list_entry (e, struct parent_child, elem);
-          free(child);
-	  }*/
-   //free(t->parent);
+
 #ifdef USERPROG
   process_exit ();
 #endif

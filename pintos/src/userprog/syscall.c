@@ -60,7 +60,7 @@ syscall_handler (struct intr_frame *f)
     
   case SYS_EXEC :
     get_args(1, args, f->esp);
-    exec((const char*) args[0]);
+    return_value = (pid_t) exec((const char*) args[0]);
     break;
 
   case SYS_EXIT :                   /* Terminate this process. */
@@ -70,7 +70,7 @@ syscall_handler (struct intr_frame *f)
 
   case SYS_WAIT :
     get_args(1, args, f->esp);
-    wait((pid_t) args[0]);
+    return_value = (int) wait((pid_t) args[0]);
     break;
 
   case SYS_CREATE :                 /* Create a file. */
@@ -110,25 +110,23 @@ void halt(void)
 pid_t exec (const char *cmd_line)
 {
   printf("Syscall exec\n");
-  return (pid_t)process_execute(cmd_line);
+  pid_t pid = process_execute(cmd_line);
+  //return (pid_t)process_execute(cmd_line);
+  printf("Created process with pid %d\n", pid);
+  return pid;
 }
 
 void exit(int status)
 {
   printf("Syscall exit\n");
-  printf("%s: exit(%d)\n", thread_current()->name, status);
   thread_current()->parent->exit_status = status;
-  
-  /*lock_acquire(&thread_current()->parent->alive_lock);
-  thread_current()->parent->alive_count--;
-  lock_release(&thread_current()->parent->alive_lock);*/
   
   thread_exit();
 }
 
 int wait (pid_t pid) 
 {
-  printf("Syscall wait\n");
+  printf("Syscall wait, wait for child with pid %d\n", (int) pid);
   return process_wait ((tid_t) pid);
 }
 

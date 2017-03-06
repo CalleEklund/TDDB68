@@ -46,47 +46,18 @@ process_execute (const char *cmd_line)
   struct new_proc_args* pr_args = (struct new_proc_args*) malloc(sizeof(struct new_proc_args));
   pr_args->cmd_line = cmd_copy;
   sema_init(&(pr_args->load_sema),0);
-  //pr_args->argc = -1;
-
-  // Extract filename and all arguments from CMD_LINE
-  /*char *token, *save_ptr;
-
-  printf("Cmd_line: %s \n", cmd_copy);
-
-  for (token = strtok_r (cmd_copy, " ", &save_ptr); token != NULL;
-	token = strtok_r (NULL, " ", &save_ptr))
-     {
-       pr_args->argc++;
-       if (pr_args->argc == 0)
-	 {
-	   //strlcpy(pr_args->file_name, token, PGSIZE);
-	   pr_args->file_name = token;
-	   printf("Filename extracted: %s \n", token);
-	 }
-       else if(pr_args->argc == 32)
-	 {
-	   // We do not allow more than 32 arguments
-	   break;
-	 }
-       else
-	 {
-	   //strlcpy(pr_args->args[pr_args->argc - 1], token, PGSIZE); 
-	   pr_args->argv[pr_args->argc-1] = token;
-	   printf("Argument extracted: %s \n", token);
-	 }
-     }
-     printf("Nr of args extracted: %d\n", pr_args->argc);*/
 
   struct parent_child* child = (struct parent_child*) malloc(sizeof(struct parent_child));
-  printf("Before child push back\n");
-  list_push_back(&thread_current()->children, &child->elem);
-  printf("After child push back\n");
+  //printf("Before child push back\n");
+  list_push_back(&thread_current()->children, &(child->elem));
+  //printf("After child push back\n");
   
   // initialise alive_count protected by its lock
   lock_init(&(child->alive_lock));
   lock_acquire(&(child->alive_lock));
   child->alive_count = 2;
   lock_release(&(child->alive_lock));
+  child->exit_status = -1;
   
   //initialisation of the wait_lock of the child
   sema_init(&(child->wait_sema),0);
@@ -105,10 +76,13 @@ process_execute (const char *cmd_line)
   tid = thread_create (file_name_extr, PRI_DEFAULT, start_process, pr_args);
   // Wait for program to load
   printf("Before waiting in load_sema\n");
+  //printf("Value of load_sema in pr_execute: %d\n", (int) pr_args->load_sema.value);
   sema_down(&(pr_args->load_sema));
+  if(!pr_args->load_success) tid = TID_ERROR;
   printf("Awoke from load_sema\n");
 
   child->child = tid;
+  printf("Set new child id to %d\n", (int) child->child);
   free(pr_args);
 
   if (tid == TID_ERROR)
@@ -132,8 +106,6 @@ start_process (void *aux)
   struct new_proc_args* pr_args = ((struct new_proc_args*) aux);
   // Store parent pnt separetely since pr_args will be freed in process_execute()
   thread_current()->parent = pr_args->parent;
-  //thread_current()->argv = pr_args->argv;
-  //thread_current()->argc = pr_args->argc;
   thread_current()->pr_args = pr_args;
 
   /* Initialize interrupt frame and load executable. */
@@ -143,7 +115,9 @@ start_process (void *aux)
   if_.eflags = FLAG_IF | FLAG_MBS;
   success = load (file_name, &if_.eip, &if_.esp);
   // Release load_lock so parent process can continue executing
-  sema_up(&((struct new_proc_args*)aux)->load_sema);
+  pr_args->load_success = success;
+  printf("Before load sema up\n");
+  sema_up(&(pr_args->load_sema));
 
   /* If load failed, quit. */
   palloc_free_page (file_name);
@@ -175,10 +149,6 @@ start_process (void *aux)
 int
 process_wait (tid_t child_tid) 
 {
-  //while(true){
-    //continue;
-     //}
-  //return -1;
   printf("In process_wait()\n");
   struct thread* t = thread_current();
   struct list_elem* e; 
@@ -186,17 +156,23 @@ process_wait (tid_t child_tid)
   for (e = list_begin (&(t->children)); e != list_end (&(t->children)); e = list_next (e))
       {
           struct parent_child *child = list_entry (e, struct parent_child, elem);
+	  printf("Cmp children ids: %d and given %d\n", child->child, child_tid);
           if (child->child == child_tid) 
 	    {
+	      printf("Child found in wait\n");
+	      // Child has terminated
 	      if (child->alive_count == 1) 
 		{
 		  exit_status = child->exit_status;
+		  printf("Child with exit status %d has already exited\n", exit_status);
 		}
+	      // Wait for child to terminate
 	      else 
 		{
 		  printf("Waiting for child to terminate...\n");
-		  sema_down(&child->wait_sema);
+		  sema_down(&(child->wait_sema));
 		  exit_status = child->exit_status;
+		  printf("Child with exit status %d has now exited\n", exit_status);
 		}
 	      child->exit_status = -1;
 	      break;
@@ -213,33 +189,40 @@ process_exit (void)
   struct thread *cur = thread_current ();
   uint32_t *pd;
   struct parent_child* par = cur->parent;
+  int debug_status = par->exit_status;
+  
 
   // Do if the current thread is not the initial thread
   if(par != NULL) { 
-    // release the sema holding process_wait()
-    sema_up(&(cur->parent->wait_sema));
-    printf("After sema up in process_exit()\n");
 
     // alive count is decremented
     lock_acquire(&(par->alive_lock));
     //printf("Reached in process_exit()\n");
     par->alive_count--;
-          
-    // Alive count goes from 2 to 1 (terminate before parent) (decr parent struct)
-    // do nothing other then the decrement itself
+            
     //   Alive count goes from 1 to 0 (terminate after parent)  (decr parent struct)
     // free our parent struct
+    // (parent did not call wait)
     if (par->alive_count == 0)
       {
 	lock_release(&(par->alive_lock));
 	free(par);
+      }
+    // Alive count goes from 2 to 1 (terminate before parent) (decr parent struct)
+    // do sema up on wait_sema
+    else
+      {
+	// release the sema holding process_wait()
+	printf("%s: exit(%d)\n", cur->name, debug_status);
+	sema_up(&(cur->parent->wait_sema));
+	printf("After sema up in process_exit() Exiting with status %d\n", par->exit_status);
       }
   }
   
   // Go through all children and decrement alive count
   // Alive count goes from 2 to 1 (terminate before its child) (decr child struct)
   // Alive count goes from 1 to 0 (terminate after its child) (decr child struct)
-  // free the childs struct and remove it from the list
+  //   free the child's struct and remove it from the list
   struct list_elem* e; 
   for (e = list_begin (&(cur->children)); e != list_end (&(cur->children)); e = list_next (e))
       {
@@ -388,7 +371,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
    /* Uncomment the following line to print some debug
      information. This will be useful when you debug the program
      stack.*/
-#define STACK_DEBUG
+  //#define STACK_DEBUG
 
 #ifdef STACK_DEBUG
   printf("*esp is %p\nstack contents:\n", *esp);
@@ -657,7 +640,7 @@ setup_stack (void **esp)
 	       token = strtok_r (NULL, " ", &save_ptr))
 	    {
 	      p -= strlen(token) +1;
-	      printf("Writing %s to stack\n", token);
+	      //printf("Writing %s to stack\n", token);
 	      memcpy(p, token, strlen(token) +1);
 	      argv[argc] = p;
 	      argc++;
@@ -687,11 +670,11 @@ setup_stack (void **esp)
 	  }
 	  p -= sizeof(char**);
 	  memcpy(p, &argvpnt, sizeof(char**));
-	  printf("Put argv at addr %p\n", p);
+	  //printf("Put argv at addr %p\n", p);
 
 	  p -= sizeof(int);
 	  memcpy(p, &argc, sizeof(int));
-	  printf("Put argc at addr %p\n", p);
+	  //printf("Put argc at addr %p\n", p);
 
 	  // Fake return addr
 	  void* dummy;

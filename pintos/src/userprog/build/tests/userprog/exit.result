@@ -5,20 +5,17 @@ Acceptable output:
   (exit) begin
   exit: exit(57)
 Differences in `diff -u' format:
-- (exit) begin
-- exit: exit(57)
-+ Cmd_line: exit 
-+ Filename extracted: exit 
-+ Nr of args extracted: 0
 + Before child push back
 + After child push back
 + Before waiting in load_sema
-+ Put argv at addr 0xbffffffc
-+ Put argc at addr 0xbffffff8
++ Writing exit to stack
++ Put argv at addr 0xbfffffec
++ Put argc at addr 0xbfffffe8
 + End of setup_stack()
-+ *esp is 0xbffffff4
++ *esp is 0xbfffffe4
 + stack contents:
-+ bffffff0              00 00 00 00-00 00 00 00 28 f0 11 c0 |    ........(...|
++ bfffffe0              00 00 00 00-01 00 00 00 f0 ff ff bf |    ............|
++ bffffff0  fb ff ff bf 00 00 00 00-00 00 00 65 78 69 74 00 |...........exit.|
 + c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
 + c000000f	 	
 + c000000e	 	
@@ -41,28 +38,44 @@ Differences in `diff -u' format:
 + c0000000	S	f000ff53	
 + ------- the border between KERNEL SPACE and USER SPACE -------
 + bfffffff	 	
-+ bffffffe	 	
-+ bffffffd	 	
-+ bffffffc	(	c011f028	
++ bffffffe	t	
++ bffffffd	i	
++ bffffffc	x	746978	
 + --------------------------------------------------------------
-+ bffffffb	 	
++ bffffffb	e	
 + bffffffa	 	
 + bffffff9	 	
-+ bffffff8	 	0	
++ bffffff8	 	65000000	
 + --------------------------------------------------------------
 + bffffff7	 	
 + bffffff6	 	
 + bffffff5	 	
 + bffffff4	 	0	
 + --------------------------------------------------------------
++ bffffff3	 	
++ bffffff2	 	
++ bffffff1	 	
++ bffffff0	 	bffffffb	
++ --------------------------------------------------------------
++ bfffffef	 	
++ bfffffee	 	
++ bfffffed	 	
++ bfffffec	 	bffffff0	
++ --------------------------------------------------------------
++ bfffffeb	 	
++ bfffffea	 	
++ bfffffe9	 	
++ bfffffe8	 	1	
++ --------------------------------------------------------------
++ bfffffe7	 	
++ bfffffe6	 	
++ bfffffe5	 	
++ bfffffe4	 	0	
++ --------------------------------------------------------------
 + Before last line in start_process()
-+ Page fault at 0xc011f028: rights violation error reading page in user context.
-+ exit: dying due to interrupt 0x0e (#PF Page-Fault Exception).
-+ Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x80480bb
-+  cr2=c011f028 error=00000005
-+  eax=c011f028 ebx=00000000 ecx=00000000 edx=00000000
-+  esi=00000000 edi=00000000 esp=bfffffc0 ebp=bfffffd0
-+  cs=001b ds=0023 es=0023 ss=0023
+  (exit) begin
++ Syscall exit
+  exit: exit(57)
 + Start of process_exit()
 + After sema up in process_exit()
 + At end of process_exit()

@@ -1,5 +1,2 @@
 FAIL
-Kernel panic in run: PANIC at ../../threads/palloc.c:130 in palloc_free_multiple(): assertion `pg_ofs (pages) == 0' failed.
-Call stack: 0xc01070eb
-Translation of call stack:
-0xc01070eb: debug_panic (.../../lib/kernel/debug.c:34)
+run: wait(exec("multi-recurse 14")) returned 0: FAILED

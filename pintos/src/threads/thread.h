@@ -118,8 +118,9 @@ struct thread
     struct parent_child* parent;
     struct list children;  
     
-    char** argv;                   /* Pointer to the array of all args*/
-    int argc;
+    //char** argv;                   /* Pointer to the array of all args*/
+    //int argc;
+    struct new_proc_args* pr_args;
   };
 
 struct parent_child 

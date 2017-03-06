@@ -1,6 +1,89 @@
 FAIL
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070eb 0xc01076cf
-Translation of call stack:
-0xc01070eb: debug_panic (.../../lib/kernel/debug.c:34)
-0xc01076cf: is_interior (..../../lib/kernel/list.c:49)
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (sc-boundary) begin
+  sc-boundary: exit(42)
+Differences in `diff -u' format:
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Writing sc-boundary to stack
++ Put argv at addr 0xbfffffe8
++ Put argc at addr 0xbfffffe4
++ End of setup_stack()
++ *esp is 0xbfffffe0
++ stack contents:
++ bfffffe0  00 00 00 00 01 00 00 00-ec ff ff bf f4 ff ff bf |................|
++ bffffff0  00 00 00 00 73 63 2d 62-6f 75 6e 64 61 72 79 00 |....sc-boundary.|
++ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
++ c000000f	 	
++ c000000e	 	
++ c000000d	 	
++ c000000c	S	f000ff53	
++ --------------------------------------------------------------
++ c000000b	 	
++ c000000a	 	
++ c0000009	 	
++ c0000008	 	f000e2c3	
++ --------------------------------------------------------------
++ c0000007	 	
++ c0000006	 	
++ c0000005	 	
++ c0000004	S	f000ff53	
++ --------------------------------------------------------------
++ c0000003	 	
++ c0000002	 	
++ c0000001	 	
++ c0000000	S	f000ff53	
++ ------- the border between KERNEL SPACE and USER SPACE -------
++ bfffffff	 	
++ bffffffe	y	
++ bffffffd	r	
++ bffffffc	a	797261	
++ --------------------------------------------------------------
++ bffffffb	d	
++ bffffffa	n	
++ bffffff9	u	
++ bffffff8	o	646e756f	
++ --------------------------------------------------------------
++ bffffff7	b	
++ bffffff6	-	
++ bffffff5	c	
++ bffffff4	s	622d6373	
++ --------------------------------------------------------------
++ bffffff3	 	
++ bffffff2	 	
++ bffffff1	 	
++ bffffff0	 	0	
++ --------------------------------------------------------------
++ bfffffef	 	
++ bfffffee	 	
++ bfffffed	 	
++ bfffffec	 	bffffff4	
++ --------------------------------------------------------------
++ bfffffeb	 	
++ bfffffea	 	
++ bfffffe9	 	
++ bfffffe8	 	bfffffec	
++ --------------------------------------------------------------
++ bfffffe7	 	
++ bfffffe6	 	
++ bfffffe5	 	
++ bfffffe4	 	1	
++ --------------------------------------------------------------
++ bfffffe3	 	
++ bfffffe2	 	
++ bfffffe1	 	
++ bfffffe0	 	0	
++ --------------------------------------------------------------
++ Before last line in start_process()
+  (sc-boundary) begin
++ Syscall exit
+  sc-boundary: exit(42)
++ Start of process_exit()
++ After sema up in process_exit()
++ At end of process_exit()
++ Awoke from load_sema
++ End of process execute
++ In process_wait()

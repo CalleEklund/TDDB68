@@ -1,6 +1,465 @@
 FAIL
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070eb 0xc01076cf
-Translation of call stack:
-0xc01070eb: debug_panic (.../../lib/kernel/debug.c:34)
-0xc01076cf: is_interior (..../../lib/kernel/list.c:49)
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (exec-multiple) begin
+  (child-simple) run
+  child-simple: exit(81)
+  (child-simple) run
+  child-simple: exit(81)
+  (child-simple) run
+  child-simple: exit(81)
+  (child-simple) run
+  child-simple: exit(81)
+  (exec-multiple) end
+  exec-multiple: exit(0)
+Differences in `diff -u' format:
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Writing exec-multiple to stack
++ Put argv at addr 0xbfffffe4
++ Put argc at addr 0xbfffffe0
++ End of setup_stack()
++ *esp is 0xbfffffdc
++ stack contents:
++ bfffffd0                                      00 00 00 00 |            ....|
++ bfffffe0  01 00 00 00 e8 ff ff bf-f2 ff ff bf 00 00 00 00 |................|
++ bffffff0  00 00 65 78 65 63 2d 6d-75 6c 74 69 70 6c 65 00 |..exec-multiple.|
++ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
++ c000000f	 	
++ c000000e	 	
++ c000000d	 	
++ c000000c	S	f000ff53	
++ --------------------------------------------------------------
++ c000000b	 	
++ c000000a	 	
++ c0000009	 	
++ c0000008	 	f000e2c3	
++ --------------------------------------------------------------
++ c0000007	 	
++ c0000006	 	
++ c0000005	 	
++ c0000004	S	f000ff53	
++ --------------------------------------------------------------
++ c0000003	 	
++ c0000002	 	
++ c0000001	 	
++ c0000000	S	f000ff53	
++ ------- the border between KERNEL SPACE and USER SPACE -------
++ bfffffff	 	
++ bffffffe	e	
++ bffffffd	l	
++ bffffffc	p	656c70	
++ --------------------------------------------------------------
++ bffffffb	i	
++ bffffffa	t	
++ bffffff9	l	
++ bffffff8	u	69746c75	
++ --------------------------------------------------------------
++ bffffff7	m	
++ bffffff6	-	
++ bffffff5	c	
++ bffffff4	e	6d2d6365	
++ --------------------------------------------------------------
++ bffffff3	x	
++ bffffff2	e	
++ bffffff1	 	
++ bffffff0	 	78650000	
++ --------------------------------------------------------------
++ bfffffef	 	
++ bfffffee	 	
++ bfffffed	 	
++ bfffffec	 	0	
++ --------------------------------------------------------------
++ bfffffeb	 	
++ bfffffea	 	
++ bfffffe9	 	
++ bfffffe8	 	bffffff2	
++ --------------------------------------------------------------
++ bfffffe7	 	
++ bfffffe6	 	
++ bfffffe5	 	
++ bfffffe4	 	bfffffe8	
++ --------------------------------------------------------------
++ bfffffe3	 	
++ bfffffe2	 	
++ bfffffe1	 	
++ bfffffe0	 	1	
++ --------------------------------------------------------------
++ bfffffdf	 	
++ bfffffde	 	
++ bfffffdd	 	
++ bfffffdc	 	0	
++ --------------------------------------------------------------
++ Before last line in start_process()
+  (exec-multiple) begin
++ Syscall exec
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Awoke from load_sema
++ End of process execute
++ In process_wait()
++ Waiting for child to terminate...
++ Writing child-simple to stack
++ Put argv at addr 0xbfffffe4
++ Put argc at addr 0xbfffffe0
++ End of setup_stack()
++ *esp is 0xbfffffdc
++ stack contents:
++ bfffffd0                                      00 00 00 00 |            ....|
++ bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
++ bffffff0  00 00 00 63 68 69 6c 64-2d 73 69 6d 70 6c 65 00 |...child-simple.|
++ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
++ c000000f	 	
++ c000000e	 	
++ c000000d	 	
++ c000000c	S	f000ff53	
++ --------------------------------------------------------------
++ c000000b	 	
++ c000000a	 	
++ c0000009	 	
++ c0000008	 	f000e2c3	
++ --------------------------------------------------------------
++ c0000007	 	
++ c0000006	 	
++ c0000005	 	
++ c0000004	S	f000ff53	
++ --------------------------------------------------------------
++ c0000003	 	
++ c0000002	 	
++ c0000001	 	
++ c0000000	S	f000ff53	
++ ------- the border between KERNEL SPACE and USER SPACE -------
++ bfffffff	 	
++ bffffffe	e	
++ bffffffd	l	
++ bffffffc	p	656c70	
++ --------------------------------------------------------------
++ bffffffb	m	
++ bffffffa	i	
++ bffffff9	s	
++ bffffff8	-	6d69732d	
++ --------------------------------------------------------------
++ bffffff7	d	
++ bffffff6	l	
++ bffffff5	i	
++ bffffff4	h	646c6968	
++ --------------------------------------------------------------
++ bffffff3	c	
++ bffffff2	 	
++ bffffff1	 	
++ bffffff0	 	63000000	
++ --------------------------------------------------------------
++ bfffffef	 	
++ bfffffee	 	
++ bfffffed	 	
++ bfffffec	 	0	
++ --------------------------------------------------------------
++ bfffffeb	 	
++ bfffffea	 	
++ bfffffe9	 	
++ bfffffe8	 	bffffff3	
++ --------------------------------------------------------------
++ bfffffe7	 	
++ bfffffe6	 	
++ bfffffe5	 	
++ bfffffe4	 	bfffffe8	
++ --------------------------------------------------------------
++ bfffffe3	 	
++ bfffffe2	 	
++ bfffffe1	 	
++ bfffffe0	 	1	
++ --------------------------------------------------------------
++ bfffffdf	 	
++ bfffffde	 	
++ bfffffdd	 	
++ bfffffdc	 	0	
++ --------------------------------------------------------------
++ Before last line in start_process()
+  (child-simple) run
++ Syscall exit
+  child-simple: exit(81)
++ Start of process_exit()
++ After sema up in process_exit()
++ At end of process_exit()
++ Awoke from load_sema
++ End of process execute
++ Syscall wait
++ In process_wait()
++ Syscall exec
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Writing child-simple to stack
++ Put argv at addr 0xbfffffe4
++ Put argc at addr 0xbfffffe0
++ End of setup_stack()
++ *esp is 0xbfffffdc
++ stack contents:
++ bfffffd0                                      00 00 00 00 |            ....|
++ bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
++ bffffff0  00 00 00 63 68 69 6c 64-2d 73 69 6d 70 6c 65 00 |...child-simple.|
++ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
++ c000000f	 	
++ c000000e	 	
++ c000000d	 	
++ c000000c	S	f000ff53	
++ --------------------------------------------------------------
++ c000000b	 	
++ c000000a	 	
++ c0000009	 	
++ c0000008	 	f000e2c3	
++ --------------------------------------------------------------
++ c0000007	 	
++ c0000006	 	
++ c0000005	 	
++ c0000004	S	f000ff53	
++ --------------------------------------------------------------
++ c0000003	 	
++ c0000002	 	
++ c0000001	 	
++ c0000000	S	f000ff53	
++ ------- the border between KERNEL SPACE and USER SPACE -------
++ bfffffff	 	
++ bffffffe	e	
++ bffffffd	l	
++ bffffffc	p	656c70	
++ --------------------------------------------------------------
++ bffffffb	m	
++ bffffffa	i	
++ bffffff9	s	
++ bffffff8	-	6d69732d	
++ --------------------------------------------------------------
++ bffffff7	d	
++ bffffff6	l	
++ bffffff5	i	
++ bffffff4	h	646c6968	
++ --------------------------------------------------------------
++ bffffff3	c	
++ bffffff2	 	
++ bffffff1	 	
++ bffffff0	 	63000000	
++ --------------------------------------------------------------
++ bfffffef	 	
++ bfffffee	 	
++ bfffffed	 	
++ bfffffec	 	0	
++ --------------------------------------------------------------
++ bfffffeb	 	
++ bfffffea	 	
++ bfffffe9	 	
++ bfffffe8	 	bffffff3	
++ --------------------------------------------------------------
++ bfffffe7	 	
++ bfffffe6	 	
++ bfffffe5	 	
++ bfffffe4	 	bfffffe8	
++ --------------------------------------------------------------
++ bfffffe3	 	
++ bfffffe2	 	
++ bfffffe1	 	
++ bfffffe0	 	1	
++ --------------------------------------------------------------
++ bfffffdf	 	
++ bfffffde	 	
++ bfffffdd	 	
++ bfffffdc	 	0	
++ --------------------------------------------------------------
++ Before last line in start_process()
+  (child-simple) run
++ Syscall exit
+  child-simple: exit(81)
++ Start of process_exit()
++ After sema up in process_exit()
++ At end of process_exit()
++ Awoke from load_sema
++ End of process execute
++ Syscall wait
++ In process_wait()
++ Syscall exec
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Writing child-simple to stack
++ Put argv at addr 0xbfffffe4
++ Put argc at addr 0xbfffffe0
++ End of setup_stack()
++ *esp is 0xbfffffdc
++ stack contents:
++ bfffffd0                                      00 00 00 00 |            ....|
++ bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
++ bffffff0  00 00 00 63 68 69 6c 64-2d 73 69 6d 70 6c 65 00 |...child-simple.|
++ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
++ c000000f	 	
++ c000000e	 	
++ c000000d	 	
++ c000000c	S	f000ff53	
++ --------------------------------------------------------------
++ c000000b	 	
++ c000000a	 	
++ c0000009	 	
++ c0000008	 	f000e2c3	
++ --------------------------------------------------------------
++ c0000007	 	
++ c0000006	 	
++ c0000005	 	
++ c0000004	S	f000ff53	
++ --------------------------------------------------------------
++ c0000003	 	
++ c0000002	 	
++ c0000001	 	
++ c0000000	S	f000ff53	
++ ------- the border between KERNEL SPACE and USER SPACE -------
++ bfffffff	 	
++ bffffffe	e	
++ bffffffd	l	
++ bffffffc	p	656c70	
++ --------------------------------------------------------------
++ bffffffb	m	
++ bffffffa	i	
++ bffffff9	s	
++ bffffff8	-	6d69732d	
++ --------------------------------------------------------------
++ bffffff7	d	
++ bffffff6	l	
++ bffffff5	i	
++ bffffff4	h	646c6968	
++ --------------------------------------------------------------
++ bffffff3	c	
++ bffffff2	 	
++ bffffff1	 	
++ bffffff0	 	63000000	
++ --------------------------------------------------------------
++ bfffffef	 	
++ bfffffee	 	
++ bfffffed	 	
++ bfffffec	 	0	
++ --------------------------------------------------------------
++ bfffffeb	 	
++ bfffffea	 	
++ bfffffe9	 	
++ bfffffe8	 	bffffff3	
++ --------------------------------------------------------------
++ bfffffe7	 	
++ bfffffe6	 	
++ bfffffe5	 	
++ bfffffe4	 	bfffffe8	
++ --------------------------------------------------------------
++ bfffffe3	 	
++ bfffffe2	 	
++ bfffffe1	 	
++ bfffffe0	 	1	
++ --------------------------------------------------------------
++ bfffffdf	 	
++ bfffffde	 	
++ bfffffdd	 	
++ bfffffdc	 	0	
++ --------------------------------------------------------------
++ Before last line in start_process()
+  (child-simple) run
++ Syscall exit
+  child-simple: exit(81)
++ Start of process_exit()
++ After sema up in process_exit()
++ At end of process_exit()
++ Awoke from load_sema
++ End of process execute
++ Syscall wait
++ In process_wait()
++ Syscall exec
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Writing child-simple to stack
++ Put argv at addr 0xbfffffe4
++ Put argc at addr 0xbfffffe0
++ End of setup_stack()
++ *esp is 0xbfffffdc
++ stack contents:
++ bfffffd0                                      00 00 00 00 |            ....|
++ bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
++ bffffff0  00 00 00 63 68 69 6c 64-2d 73 69 6d 70 6c 65 00 |...child-simple.|
++ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
++ c000000f	 	
++ c000000e	 	
++ c000000d	 	
++ c000000c	S	f000ff53	
++ --------------------------------------------------------------
++ c000000b	 	
++ c000000a	 	
++ c0000009	 	
++ c0000008	 	f000e2c3	
++ --------------------------------------------------------------
++ c0000007	 	
++ c0000006	 	
++ c0000005	 	
++ c0000004	S	f000ff53	
++ --------------------------------------------------------------
++ c0000003	 	
++ c0000002	 	
++ c0000001	 	
++ c0000000	S	f000ff53	
++ ------- the border between KERNEL SPACE and USER SPACE -------
++ bfffffff	 	
++ bffffffe	e	
++ bffffffd	l	
++ bffffffc	p	656c70	
++ --------------------------------------------------------------
++ bffffffb	m	
++ bffffffa	i	
++ bffffff9	s	
++ bffffff8	-	6d69732d	
++ --------------------------------------------------------------
++ bffffff7	d	
++ bffffff6	l	
++ bffffff5	i	
++ bffffff4	h	646c6968	
++ --------------------------------------------------------------
++ bffffff3	c	
++ bffffff2	 	
++ bffffff1	 	
++ bffffff0	 	63000000	
++ --------------------------------------------------------------
++ bfffffef	 	
++ bfffffee	 	
++ bfffffed	 	
++ bfffffec	 	0	
++ --------------------------------------------------------------
++ bfffffeb	 	
++ bfffffea	 	
++ bfffffe9	 	
++ bfffffe8	 	bffffff3	
++ --------------------------------------------------------------
++ bfffffe7	 	
++ bfffffe6	 	
++ bfffffe5	 	
++ bfffffe4	 	bfffffe8	
++ --------------------------------------------------------------
++ bfffffe3	 	
++ bfffffe2	 	
++ bfffffe1	 	
++ bfffffe0	 	1	
++ --------------------------------------------------------------
++ bfffffdf	 	
++ bfffffde	 	
++ bfffffdd	 	
++ bfffffdc	 	0	
++ --------------------------------------------------------------
++ Before last line in start_process()
+  (child-simple) run
++ Syscall exit
+  child-simple: exit(81)
++ Start of process_exit()
++ After sema up in process_exit()
++ At end of process_exit()
++ Awoke from load_sema
++ End of process execute
++ Syscall wait
++ In process_wait()
+  (exec-multiple) end
++ Syscall exit
+  exec-multiple: exit(0)
++ Start of process_exit()
++ After sema up in process_exit()

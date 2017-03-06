@@ -1,6 +1,8 @@
 FAIL
 Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070eb 0xc01076cf
+Call stack: 0xc01070cb 0xc01067a6 0x6e65706f
 Translation of call stack:
-0xc01070eb: debug_panic (.../../lib/kernel/debug.c:34)
-0xc01076cf: is_interior (..../../lib/kernel/list.c:49)
+In kernel.o:
+0xc01070cb: debug_panic (.../../lib/kernel/debug.c:34)
+0xc01067a6: strcmp (...ng.c:81 (discriminator 1))
+0x6e65706f: (unknown)

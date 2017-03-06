@@ -1,45 +1,114 @@
-Copying tests/userprog/close-stdout into /tmp/D1Rl7_AGhs.dsk...
-Writing command line to /tmp/8ZtGoiK2r4.dsk...
-qemu -hda /tmp/8ZtGoiK2r4.dsk -hdb /tmp/Es88EwvqCv.dsk -hdc /tmp/D1Rl7_AGhs.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/close-stdout into /tmp/AABxExa19u.dsk...
+Writing command line to /tmp/u15MLjujHH.dsk...
+qemu -hda /tmp/u15MLjujHH.dsk -hdb /tmp/euCvxD6rAH.dsk -hdc /tmp/AABxExa19u.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put close-stdout run close-stdout
 Pintos booting with 4,088 kB RAM...
-372 pages available in kernel pool.
+371 pages available in kernel pool.
 371 pages available in user pool.
-Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+Calibrating timer...  261,734,400 loops/s.
+hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 97 sector (48 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
 Boot complete.
 Putting 'close-stdout' into the file system...
 Executing 'close-stdout':
-Page fault at 0xc011e028: rights violation error reading page in user context.
-close-stdout: dying due to interrupt 0x0e (#PF Page-Fault Exception).
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x80480bf
- cr2=c011e028 error=00000005
- eax=c011e028 ebx=00000000 ecx=00000000 edx=00000000
- esi=00000000 edi=00000000 esp=bfffffb0 ebp=bfffffcc
- cs=001b ds=0023 es=0023 ss=0023
-Page fault at 0xcccccccc: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc01076cf
- cr2=cccccccc error=00000000
- eax=cccccccc ebx=cccccccc ecx=00000009 edx=00000000
- esi=c011f03c edi=00000001 esp=c011f03c ebp=c0120000
- cs=0008 ds=0010 es=0010 ss=3b1c
-Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070eb 0xc01076cf 0Page fault at 0x3: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0105327
- cr2=00000003 error=00000000
- eax=00000002 ebx=00000003 ecx=000007a3 edx=000003d4
- esi=00000064 edi=c010cd25 esp=c010dfcb ebp=c0120d58
- cs=0008 ds=0010 es=0010 ss=0000
-Kernel PANIC recursion at ../../userprog/exception.c:100 in kill().
-Timer: 60 ticks
-Thread: 33 idle ticks, 24 kernel ticks, 3 user ticks
+Before child push back
+After child push back
+Before waiting in load_sema
+Writing close-stdout to stack
+Put argv at addr 0xbfffffe4
+Put argc at addr 0xbfffffe0
+End of setup_stack()
+*esp is 0xbfffffdc
+stack contents:
+bfffffd0                                      00 00 00 00 |            ....|
+bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
+bffffff0  00 00 00 63 6c 6f 73 65-2d 73 74 64 6f 75 74 00 |...close-stdout.|
+c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
+c000000f	 	
+c000000e	 	
+c000000d	 	
+c000000c	S	f000ff53	
+--------------------------------------------------------------
+c000000b	 	
+c000000a	 	
+c0000009	 	
+c0000008	 	f000e2c3	
+--------------------------------------------------------------
+c0000007	 	
+c0000006	 	
+c0000005	 	
+c0000004	S	f000ff53	
+--------------------------------------------------------------
+c0000003	 	
+c0000002	 	
+c0000001	 	
+c0000000	S	f000ff53	
+------- the border between KERNEL SPACE and USER SPACE -------
+bfffffff	 	
+bffffffe	t	
+bffffffd	u	
+bffffffc	o	74756f	
+--------------------------------------------------------------
+bffffffb	d	
+bffffffa	t	
+bffffff9	s	
+bffffff8	-	6474732d	
+--------------------------------------------------------------
+bffffff7	e	
+bffffff6	s	
+bffffff5	o	
+bffffff4	l	65736f6c	
+--------------------------------------------------------------
+bffffff3	c	
+bffffff2	 	
+bffffff1	 	
+bffffff0	 	63000000	
+--------------------------------------------------------------
+bfffffef	 	
+bfffffee	 	
+bfffffed	 	
+bfffffec	 	0	
+--------------------------------------------------------------
+bfffffeb	 	
+bfffffea	 	
+bfffffe9	 	
+bfffffe8	 	bffffff3	
+--------------------------------------------------------------
+bfffffe7	 	
+bfffffe6	 	
+bfffffe5	 	
+bfffffe4	 	bfffffe8	
+--------------------------------------------------------------
+bfffffe3	 	
+bfffffe2	 	
+bfffffe1	 	
+bfffffe0	 	1	
+--------------------------------------------------------------
+bfffffdf	 	
+bfffffde	 	
+bfffffdd	 	
+bfffffdc	 	0	
+--------------------------------------------------------------
+Before last line in start_process()
+(close-stdout) begin
+(close-stdout) end
+Syscall exit
+close-stdout: exit(0)
+Start of process_exit()
+After sema up in process_exit()
+At end of process_exit()
+Awoke from load_sema
+End of process execute
+In process_wait()
+Execution of 'close-stdout' complete.
+Timer: 71 ticks
+Thread: 30 idle ticks, 30 kernel ticks, 11 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 59 reads, 202 writes
 hd1:0: 97 reads, 0 writes
-Console: 1902 characters output
+Console: 3073 characters output
 Keyboard: 0 keys pressed
-Exception: 3 page faults
+Exception: 0 page faults
 Powering off...

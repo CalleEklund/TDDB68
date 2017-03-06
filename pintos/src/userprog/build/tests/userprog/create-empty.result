@@ -1,6 +1,196 @@
 FAIL
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070eb 0xc01076cf
-Translation of call stack:
-0xc01070eb: debug_panic (.../../lib/kernel/debug.c:34)
-0xc01076cf: is_interior (..../../lib/kernel/list.c:49)
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (create-empty) begin
+  create-empty: exit(-1)
+Differences in `diff -u' format:
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Writing create-empty to stack
++ Put argv at addr 0xbfffffe4
++ Put argc at addr 0xbfffffe0
++ End of setup_stack()
++ *esp is 0xbfffffdc
++ stack contents:
++ bfffffd0                                      00 00 00 00 |            ....|
++ bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
++ bffffff0  00 00 00 63 72 65 61 74-65 2d 65 6d 70 74 79 00 |...create-empty.|
++ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
++ c000000f	 	
++ c000000e	 	
++ c000000d	 	
++ c000000c	S	f000ff53	
++ --------------------------------------------------------------
++ c000000b	 	
++ c000000a	 	
++ c0000009	 	
++ c0000008	 	f000e2c3	
++ --------------------------------------------------------------
++ c0000007	 	
++ c0000006	 	
++ c0000005	 	
++ c0000004	S	f000ff53	
++ --------------------------------------------------------------
++ c0000003	 	
++ c0000002	 	
++ c0000001	 	
++ c0000000	S	f000ff53	
++ ------- the border between KERNEL SPACE and USER SPACE -------
++ bfffffff	 	
++ bffffffe	y	
++ bffffffd	t	
++ bffffffc	p	797470	
++ --------------------------------------------------------------
++ bffffffb	m	
++ bffffffa	e	
++ bffffff9	-	
++ bffffff8	e	6d652d65	
++ --------------------------------------------------------------
++ bffffff7	t	
++ bffffff6	a	
++ bffffff5	e	
++ bffffff4	r	74616572	
++ --------------------------------------------------------------
++ bffffff3	c	
++ bffffff2	 	
++ bffffff1	 	
++ bffffff0	 	63000000	
++ --------------------------------------------------------------
++ bfffffef	 	
++ bfffffee	 	
++ bfffffed	 	
++ bfffffec	 	0	
++ --------------------------------------------------------------
++ bfffffeb	 	
++ bfffffea	 	
++ bfffffe9	 	
++ bfffffe8	 	bffffff3	
++ --------------------------------------------------------------
++ bfffffe7	 	
++ bfffffe6	 	
++ bfffffe5	 	
++ bfffffe4	 	bfffffe8	
++ --------------------------------------------------------------
++ bfffffe3	 	
++ bfffffe2	 	
++ bfffffe1	 	
++ bfffffe0	 	1	
++ --------------------------------------------------------------
++ bfffffdf	 	
++ bfffffde	 	
++ bfffffdd	 	
++ bfffffdc	 	0	
++ --------------------------------------------------------------
++ Before last line in start_process()
+  (create-empty) begin
+- create-empty: exit(-1)
++ Awoke from load_sema
++ End of process execute
++ In process_wait()
++ Waiting for child to terminate...
++ (create-empty) create(""): 0
++ (create-empty) end
++ Syscall exit
++ create-empty: exit(0)
++ Start of process_exit()
++ After sema up in process_exit()
++ At end of process_exit()
+Acceptable output:
+  (create-empty) begin
+  (create-empty) create(""): 0
+  (create-empty) end
+  create-empty: exit(0)
+Differences in `diff -u' format:
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Writing create-empty to stack
++ Put argv at addr 0xbfffffe4
++ Put argc at addr 0xbfffffe0
++ End of setup_stack()
++ *esp is 0xbfffffdc
++ stack contents:
++ bfffffd0                                      00 00 00 00 |            ....|
++ bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
++ bffffff0  00 00 00 63 72 65 61 74-65 2d 65 6d 70 74 79 00 |...create-empty.|
++ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
++ c000000f	 	
++ c000000e	 	
++ c000000d	 	
++ c000000c	S	f000ff53	
++ --------------------------------------------------------------
++ c000000b	 	
++ c000000a	 	
++ c0000009	 	
++ c0000008	 	f000e2c3	
++ --------------------------------------------------------------
++ c0000007	 	
++ c0000006	 	
++ c0000005	 	
++ c0000004	S	f000ff53	
++ --------------------------------------------------------------
++ c0000003	 	
++ c0000002	 	
++ c0000001	 	
++ c0000000	S	f000ff53	
++ ------- the border between KERNEL SPACE and USER SPACE -------
++ bfffffff	 	
++ bffffffe	y	
++ bffffffd	t	
++ bffffffc	p	797470	
++ --------------------------------------------------------------
++ bffffffb	m	
++ bffffffa	e	
++ bffffff9	-	
++ bffffff8	e	6d652d65	
++ --------------------------------------------------------------
++ bffffff7	t	
++ bffffff6	a	
++ bffffff5	e	
++ bffffff4	r	74616572	
++ --------------------------------------------------------------
++ bffffff3	c	
++ bffffff2	 	
++ bffffff1	 	
++ bffffff0	 	63000000	
++ --------------------------------------------------------------
++ bfffffef	 	
++ bfffffee	 	
++ bfffffed	 	
++ bfffffec	 	0	
++ --------------------------------------------------------------
++ bfffffeb	 	
++ bfffffea	 	
++ bfffffe9	 	
++ bfffffe8	 	bffffff3	
++ --------------------------------------------------------------
++ bfffffe7	 	
++ bfffffe6	 	
++ bfffffe5	 	
++ bfffffe4	 	bfffffe8	
++ --------------------------------------------------------------
++ bfffffe3	 	
++ bfffffe2	 	
++ bfffffe1	 	
++ bfffffe0	 	1	
++ --------------------------------------------------------------
++ bfffffdf	 	
++ bfffffde	 	
++ bfffffdd	 	
++ bfffffdc	 	0	
++ --------------------------------------------------------------
++ Before last line in start_process()
+  (create-empty) begin
++ Awoke from load_sema
++ End of process execute
++ In process_wait()
++ Waiting for child to terminate...
+  (create-empty) create(""): 0
+  (create-empty) end
++ Syscall exit
+  create-empty: exit(0)
++ Start of process_exit()
++ After sema up in process_exit()
++ At end of process_exit()

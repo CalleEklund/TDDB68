@@ -1,6 +1,742 @@
 FAIL
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070eb 0xc01076cf
-Translation of call stack:
-0xc01070eb: debug_panic (.../../lib/kernel/debug.c:34)
-0xc01076cf: is_interior (..../../lib/kernel/list.c:49)
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (exec-missing) begin
+  (exec-missing) exec("no-such-file"): -1
+  (exec-missing) end
+  exec-missing: exit(0)
+Differences in `diff -u' format:
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Writing exec-missing to stack
++ Put argv at addr 0xbfffffe4
++ Put argc at addr 0xbfffffe0
++ End of setup_stack()
++ *esp is 0xbfffffdc
++ stack contents:
++ bfffffd0                                      00 00 00 00 |            ....|
++ bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
++ bffffff0  00 00 00 65 78 65 63 2d-6d 69 73 73 69 6e 67 00 |...exec-missing.|
++ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
++ c000000f	 	
++ c000000e	 	
++ c000000d	 	
++ c000000c	S	f000ff53	
++ --------------------------------------------------------------
++ c000000b	 	
++ c000000a	 	
++ c0000009	 	
++ c0000008	 	f000e2c3	
++ --------------------------------------------------------------
++ c0000007	 	
++ c0000006	 	
++ c0000005	 	
++ c0000004	S	f000ff53	
++ --------------------------------------------------------------
++ c0000003	 	
++ c0000002	 	
++ c0000001	 	
++ c0000000	S	f000ff53	
++ ------- the border between KERNEL SPACE and USER SPACE -------
++ bfffffff	 	
++ bffffffe	g	
++ bffffffd	n	
++ bffffffc	i	676e69	
++ --------------------------------------------------------------
++ bffffffb	s	
++ bffffffa	s	
++ bffffff9	i	
++ bffffff8	m	7373696d	
++ --------------------------------------------------------------
++ bffffff7	-	
++ bffffff6	c	
++ bffffff5	e	
++ bffffff4	x	2d636578	
++ --------------------------------------------------------------
++ bffffff3	e	
++ bffffff2	 	
++ bffffff1	 	
++ bffffff0	 	65000000	
++ --------------------------------------------------------------
++ bfffffef	 	
++ bfffffee	 	
++ bfffffed	 	
++ bfffffec	 	0	
++ --------------------------------------------------------------
++ bfffffeb	 	
++ bfffffea	 	
++ bfffffe9	 	
++ bfffffe8	 	bffffff3	
++ --------------------------------------------------------------
++ bfffffe7	 	
++ bfffffe6	 	
++ bfffffe5	 	
++ bfffffe4	 	bfffffe8	
++ --------------------------------------------------------------
++ bfffffe3	 	
++ bfffffe2	 	
++ bfffffe1	 	
++ bfffffe0	 	1	
++ --------------------------------------------------------------
++ bfffffdf	 	
++ bfffffde	 	
++ bfffffdd	 	
++ bfffffdc	 	0	
++ --------------------------------------------------------------
++ Before last line in start_process()
+  (exec-missing) begin
+- (exec-missing) exec("no-such-file"): -1
++ Syscall exec
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Awoke from load_sema
++ End of process execute
++ In process_wait()
++ Waiting for child to terminate...
++ Writing no-such-file to stack
++ Put argv at addr 0xbfffffe4
++ Put argc at addr 0xbfffffe0
++ End of setup_stack()
++ *esp is 0xbfffffdc
++ stack contents:
++ bfffffd0                                      00 00 00 00 |            ....|
++ bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
++ bffffff0  00 00 00 6e 6f 2d 73 75-63 68 2d 66 69 6c 65 00 |...no-such-file.|
++ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
++ c000000f	 	
++ c000000e	 	
++ c000000d	 	
++ c000000c	S	f000ff53	
++ --------------------------------------------------------------
++ c000000b	 	
++ c000000a	 	
++ c0000009	 	
++ c0000008	 	f000e2c3	
++ --------------------------------------------------------------
++ c0000007	 	
++ c0000006	 	
++ c0000005	 	
++ c0000004	S	f000ff53	
++ --------------------------------------------------------------
++ c0000003	 	
++ c0000002	 	
++ c0000001	 	
++ c0000000	S	f000ff53	
++ ------- the border between KERNEL SPACE and USER SPACE -------
++ bfffffff	 	
++ bffffffe	e	
++ bffffffd	l	
++ bffffffc	i	656c69	
++ --------------------------------------------------------------
++ bffffffb	f	
++ bffffffa	-	
++ bffffff9	h	
++ bffffff8	c	662d6863	
++ --------------------------------------------------------------
++ bffffff7	u	
++ bffffff6	s	
++ bffffff5	-	
++ bffffff4	o	75732d6f	
++ --------------------------------------------------------------
++ bffffff3	n	
++ bffffff2	 	
++ bffffff1	 	
++ bffffff0	 	6e000000	
++ --------------------------------------------------------------
++ bfffffef	 	
++ bfffffee	 	
++ bfffffed	 	
++ bfffffec	 	0	
++ --------------------------------------------------------------
++ bfffffeb	 	
++ bfffffea	 	
++ bfffffe9	 	
++ bfffffe8	 	bffffff3	
++ --------------------------------------------------------------
++ bfffffe7	 	
++ bfffffe6	 	
++ bfffffe5	 	
++ bfffffe4	 	bfffffe8	
++ --------------------------------------------------------------
++ bfffffe3	 	
++ bfffffe2	 	
++ bfffffe1	 	
++ bfffffe0	 	1	
++ --------------------------------------------------------------
++ bfffffdf	 	
++ bfffffde	 	
++ bfffffdd	 	
++ bfffffdc	 	0	
++ --------------------------------------------------------------
++ load: no-such-file: open failed
++ Unsuccesfully loaded file_name
++ Start of process_exit()
++ After sema up in process_exit()
++ At end of process_exit()
++ Awoke from load_sema
++ End of process execute
++ (exec-missing) exec("no-such-file"): 0
+  (exec-missing) end
++ Syscall exit
+  exec-missing: exit(0)
++ Start of process_exit()
++ After sema up in process_exit()
+Acceptable output:
+  (exec-missing) begin
+  load: no-such-file: open failed
+  no-such-file: exit(-1)
+  (exec-missing) exec("no-such-file"): -1
+  (exec-missing) end
+  exec-missing: exit(0)
+Differences in `diff -u' format:
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Writing exec-missing to stack
++ Put argv at addr 0xbfffffe4
++ Put argc at addr 0xbfffffe0
++ End of setup_stack()
++ *esp is 0xbfffffdc
++ stack contents:
++ bfffffd0                                      00 00 00 00 |            ....|
++ bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
++ bffffff0  00 00 00 65 78 65 63 2d-6d 69 73 73 69 6e 67 00 |...exec-missing.|
++ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
++ c000000f	 	
++ c000000e	 	
++ c000000d	 	
++ c000000c	S	f000ff53	
++ --------------------------------------------------------------
++ c000000b	 	
++ c000000a	 	
++ c0000009	 	
++ c0000008	 	f000e2c3	
++ --------------------------------------------------------------
++ c0000007	 	
++ c0000006	 	
++ c0000005	 	
++ c0000004	S	f000ff53	
++ --------------------------------------------------------------
++ c0000003	 	
++ c0000002	 	
++ c0000001	 	
++ c0000000	S	f000ff53	
++ ------- the border between KERNEL SPACE and USER SPACE -------
++ bfffffff	 	
++ bffffffe	g	
++ bffffffd	n	
++ bffffffc	i	676e69	
++ --------------------------------------------------------------
++ bffffffb	s	
++ bffffffa	s	
++ bffffff9	i	
++ bffffff8	m	7373696d	
++ --------------------------------------------------------------
++ bffffff7	-	
++ bffffff6	c	
++ bffffff5	e	
++ bffffff4	x	2d636578	
++ --------------------------------------------------------------
++ bffffff3	e	
++ bffffff2	 	
++ bffffff1	 	
++ bffffff0	 	65000000	
++ --------------------------------------------------------------
++ bfffffef	 	
++ bfffffee	 	
++ bfffffed	 	
++ bfffffec	 	0	
++ --------------------------------------------------------------
++ bfffffeb	 	
++ bfffffea	 	
++ bfffffe9	 	
++ bfffffe8	 	bffffff3	
++ --------------------------------------------------------------
++ bfffffe7	 	
++ bfffffe6	 	
++ bfffffe5	 	
++ bfffffe4	 	bfffffe8	
++ --------------------------------------------------------------
++ bfffffe3	 	
++ bfffffe2	 	
++ bfffffe1	 	
++ bfffffe0	 	1	
++ --------------------------------------------------------------
++ bfffffdf	 	
++ bfffffde	 	
++ bfffffdd	 	
++ bfffffdc	 	0	
++ --------------------------------------------------------------
++ Before last line in start_process()
+  (exec-missing) begin
++ Syscall exec
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Awoke from load_sema
++ End of process execute
++ In process_wait()
++ Waiting for child to terminate...
++ Writing no-such-file to stack
++ Put argv at addr 0xbfffffe4
++ Put argc at addr 0xbfffffe0
++ End of setup_stack()
++ *esp is 0xbfffffdc
++ stack contents:
++ bfffffd0                                      00 00 00 00 |            ....|
++ bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
++ bffffff0  00 00 00 6e 6f 2d 73 75-63 68 2d 66 69 6c 65 00 |...no-such-file.|
++ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
++ c000000f	 	
++ c000000e	 	
++ c000000d	 	
++ c000000c	S	f000ff53	
++ --------------------------------------------------------------
++ c000000b	 	
++ c000000a	 	
++ c0000009	 	
++ c0000008	 	f000e2c3	
++ --------------------------------------------------------------
++ c0000007	 	
++ c0000006	 	
++ c0000005	 	
++ c0000004	S	f000ff53	
++ --------------------------------------------------------------
++ c0000003	 	
++ c0000002	 	
++ c0000001	 	
++ c0000000	S	f000ff53	
++ ------- the border between KERNEL SPACE and USER SPACE -------
++ bfffffff	 	
++ bffffffe	e	
++ bffffffd	l	
++ bffffffc	i	656c69	
++ --------------------------------------------------------------
++ bffffffb	f	
++ bffffffa	-	
++ bffffff9	h	
++ bffffff8	c	662d6863	
++ --------------------------------------------------------------
++ bffffff7	u	
++ bffffff6	s	
++ bffffff5	-	
++ bffffff4	o	75732d6f	
++ --------------------------------------------------------------
++ bffffff3	n	
++ bffffff2	 	
++ bffffff1	 	
++ bffffff0	 	6e000000	
++ --------------------------------------------------------------
++ bfffffef	 	
++ bfffffee	 	
++ bfffffed	 	
++ bfffffec	 	0	
++ --------------------------------------------------------------
++ bfffffeb	 	
++ bfffffea	 	
++ bfffffe9	 	
++ bfffffe8	 	bffffff3	
++ --------------------------------------------------------------
++ bfffffe7	 	
++ bfffffe6	 	
++ bfffffe5	 	
++ bfffffe4	 	bfffffe8	
++ --------------------------------------------------------------
++ bfffffe3	 	
++ bfffffe2	 	
++ bfffffe1	 	
++ bfffffe0	 	1	
++ --------------------------------------------------------------
++ bfffffdf	 	
++ bfffffde	 	
++ bfffffdd	 	
++ bfffffdc	 	0	
++ --------------------------------------------------------------
+  load: no-such-file: open failed
+- no-such-file: exit(-1)
+- (exec-missing) exec("no-such-file"): -1
++ Unsuccesfully loaded file_name
++ Start of process_exit()
++ After sema up in process_exit()
++ At end of process_exit()
++ Awoke from load_sema
++ End of process execute
++ (exec-missing) exec("no-such-file"): 0
+  (exec-missing) end
++ Syscall exit
+  exec-missing: exit(0)
++ Start of process_exit()
++ After sema up in process_exit()
+Acceptable output:
+  (exec-missing) begin
+  load: no-such-file: open failed
+  (exec-missing) exec("no-such-file"): -1
+  no-such-file: exit(-1)
+  (exec-missing) end
+  exec-missing: exit(0)
+Differences in `diff -u' format:
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Writing exec-missing to stack
++ Put argv at addr 0xbfffffe4
++ Put argc at addr 0xbfffffe0
++ End of setup_stack()
++ *esp is 0xbfffffdc
++ stack contents:
++ bfffffd0                                      00 00 00 00 |            ....|
++ bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
++ bffffff0  00 00 00 65 78 65 63 2d-6d 69 73 73 69 6e 67 00 |...exec-missing.|
++ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
++ c000000f	 	
++ c000000e	 	
++ c000000d	 	
++ c000000c	S	f000ff53	
++ --------------------------------------------------------------
++ c000000b	 	
++ c000000a	 	
++ c0000009	 	
++ c0000008	 	f000e2c3	
++ --------------------------------------------------------------
++ c0000007	 	
++ c0000006	 	
++ c0000005	 	
++ c0000004	S	f000ff53	
++ --------------------------------------------------------------
++ c0000003	 	
++ c0000002	 	
++ c0000001	 	
++ c0000000	S	f000ff53	
++ ------- the border between KERNEL SPACE and USER SPACE -------
++ bfffffff	 	
++ bffffffe	g	
++ bffffffd	n	
++ bffffffc	i	676e69	
++ --------------------------------------------------------------
++ bffffffb	s	
++ bffffffa	s	
++ bffffff9	i	
++ bffffff8	m	7373696d	
++ --------------------------------------------------------------
++ bffffff7	-	
++ bffffff6	c	
++ bffffff5	e	
++ bffffff4	x	2d636578	
++ --------------------------------------------------------------
++ bffffff3	e	
++ bffffff2	 	
++ bffffff1	 	
++ bffffff0	 	65000000	
++ --------------------------------------------------------------
++ bfffffef	 	
++ bfffffee	 	
++ bfffffed	 	
++ bfffffec	 	0	
++ --------------------------------------------------------------
++ bfffffeb	 	
++ bfffffea	 	
++ bfffffe9	 	
++ bfffffe8	 	bffffff3	
++ --------------------------------------------------------------
++ bfffffe7	 	
++ bfffffe6	 	
++ bfffffe5	 	
++ bfffffe4	 	bfffffe8	
++ --------------------------------------------------------------
++ bfffffe3	 	
++ bfffffe2	 	
++ bfffffe1	 	
++ bfffffe0	 	1	
++ --------------------------------------------------------------
++ bfffffdf	 	
++ bfffffde	 	
++ bfffffdd	 	
++ bfffffdc	 	0	
++ --------------------------------------------------------------
++ Before last line in start_process()
+  (exec-missing) begin
++ Syscall exec
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Awoke from load_sema
++ End of process execute
++ In process_wait()
++ Waiting for child to terminate...
++ Writing no-such-file to stack
++ Put argv at addr 0xbfffffe4
++ Put argc at addr 0xbfffffe0
++ End of setup_stack()
++ *esp is 0xbfffffdc
++ stack contents:
++ bfffffd0                                      00 00 00 00 |            ....|
++ bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
++ bffffff0  00 00 00 6e 6f 2d 73 75-63 68 2d 66 69 6c 65 00 |...no-such-file.|
++ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
++ c000000f	 	
++ c000000e	 	
++ c000000d	 	
++ c000000c	S	f000ff53	
++ --------------------------------------------------------------
++ c000000b	 	
++ c000000a	 	
++ c0000009	 	
++ c0000008	 	f000e2c3	
++ --------------------------------------------------------------
++ c0000007	 	
++ c0000006	 	
++ c0000005	 	
++ c0000004	S	f000ff53	
++ --------------------------------------------------------------
++ c0000003	 	
++ c0000002	 	
++ c0000001	 	
++ c0000000	S	f000ff53	
++ ------- the border between KERNEL SPACE and USER SPACE -------
++ bfffffff	 	
++ bffffffe	e	
++ bffffffd	l	
++ bffffffc	i	656c69	
++ --------------------------------------------------------------
++ bffffffb	f	
++ bffffffa	-	
++ bffffff9	h	
++ bffffff8	c	662d6863	
++ --------------------------------------------------------------
++ bffffff7	u	
++ bffffff6	s	
++ bffffff5	-	
++ bffffff4	o	75732d6f	
++ --------------------------------------------------------------
++ bffffff3	n	
++ bffffff2	 	
++ bffffff1	 	
++ bffffff0	 	6e000000	
++ --------------------------------------------------------------
++ bfffffef	 	
++ bfffffee	 	
++ bfffffed	 	
++ bfffffec	 	0	
++ --------------------------------------------------------------
++ bfffffeb	 	
++ bfffffea	 	
++ bfffffe9	 	
++ bfffffe8	 	bffffff3	
++ --------------------------------------------------------------
++ bfffffe7	 	
++ bfffffe6	 	
++ bfffffe5	 	
++ bfffffe4	 	bfffffe8	
++ --------------------------------------------------------------
++ bfffffe3	 	
++ bfffffe2	 	
++ bfffffe1	 	
++ bfffffe0	 	1	
++ --------------------------------------------------------------
++ bfffffdf	 	
++ bfffffde	 	
++ bfffffdd	 	
++ bfffffdc	 	0	
++ --------------------------------------------------------------
+  load: no-such-file: open failed
+- (exec-missing) exec("no-such-file"): -1
+- no-such-file: exit(-1)
++ Unsuccesfully loaded file_name
++ Start of process_exit()
++ After sema up in process_exit()
++ At end of process_exit()
++ Awoke from load_sema
++ End of process execute
++ (exec-missing) exec("no-such-file"): 0
+  (exec-missing) end
++ Syscall exit
+  exec-missing: exit(0)
++ Start of process_exit()
++ After sema up in process_exit()
+Acceptable output:
+  (exec-missing) begin
+  load: no-such-file: open failed
+  (exec-missing) exec("no-such-file"): -1
+  (exec-missing) end
+  exec-missing: exit(0)
+Differences in `diff -u' format:
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Writing exec-missing to stack
++ Put argv at addr 0xbfffffe4
++ Put argc at addr 0xbfffffe0
++ End of setup_stack()
++ *esp is 0xbfffffdc
++ stack contents:
++ bfffffd0                                      00 00 00 00 |            ....|
++ bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
++ bffffff0  00 00 00 65 78 65 63 2d-6d 69 73 73 69 6e 67 00 |...exec-missing.|
++ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
++ c000000f	 	
++ c000000e	 	
++ c000000d	 	
++ c000000c	S	f000ff53	
++ --------------------------------------------------------------
++ c000000b	 	
++ c000000a	 	
++ c0000009	 	
++ c0000008	 	f000e2c3	
++ --------------------------------------------------------------
++ c0000007	 	
++ c0000006	 	
++ c0000005	 	
++ c0000004	S	f000ff53	
++ --------------------------------------------------------------
++ c0000003	 	
++ c0000002	 	
++ c0000001	 	
++ c0000000	S	f000ff53	
++ ------- the border between KERNEL SPACE and USER SPACE -------
++ bfffffff	 	
++ bffffffe	g	
++ bffffffd	n	
++ bffffffc	i	676e69	
++ --------------------------------------------------------------
++ bffffffb	s	
++ bffffffa	s	
++ bffffff9	i	
++ bffffff8	m	7373696d	
++ --------------------------------------------------------------
++ bffffff7	-	
++ bffffff6	c	
++ bffffff5	e	
++ bffffff4	x	2d636578	
++ --------------------------------------------------------------
++ bffffff3	e	
++ bffffff2	 	
++ bffffff1	 	
++ bffffff0	 	65000000	
++ --------------------------------------------------------------
++ bfffffef	 	
++ bfffffee	 	
++ bfffffed	 	
++ bfffffec	 	0	
++ --------------------------------------------------------------
++ bfffffeb	 	
++ bfffffea	 	
++ bfffffe9	 	
++ bfffffe8	 	bffffff3	
++ --------------------------------------------------------------
++ bfffffe7	 	
++ bfffffe6	 	
++ bfffffe5	 	
++ bfffffe4	 	bfffffe8	
++ --------------------------------------------------------------
++ bfffffe3	 	
++ bfffffe2	 	
++ bfffffe1	 	
++ bfffffe0	 	1	
++ --------------------------------------------------------------
++ bfffffdf	 	
++ bfffffde	 	
++ bfffffdd	 	
++ bfffffdc	 	0	
++ --------------------------------------------------------------
++ Before last line in start_process()
+  (exec-missing) begin
++ Syscall exec
++ Before child push back
++ After child push back
++ Before waiting in load_sema
++ Awoke from load_sema
++ End of process execute
++ In process_wait()
++ Waiting for child to terminate...
++ Writing no-such-file to stack
++ Put argv at addr 0xbfffffe4
++ Put argc at addr 0xbfffffe0
++ End of setup_stack()
++ *esp is 0xbfffffdc
++ stack contents:
++ bfffffd0                                      00 00 00 00 |            ....|
++ bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
++ bffffff0  00 00 00 6e 6f 2d 73 75-63 68 2d 66 69 6c 65 00 |...no-such-file.|
++ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
++ c000000f	 	
++ c000000e	 	
++ c000000d	 	
++ c000000c	S	f000ff53	
++ --------------------------------------------------------------
++ c000000b	 	
++ c000000a	 	
++ c0000009	 	
++ c0000008	 	f000e2c3	
++ --------------------------------------------------------------
++ c0000007	 	
++ c0000006	 	
++ c0000005	 	
++ c0000004	S	f000ff53	
++ --------------------------------------------------------------
++ c0000003	 	
++ c0000002	 	
++ c0000001	 	
++ c0000000	S	f000ff53	
++ ------- the border between KERNEL SPACE and USER SPACE -------
++ bfffffff	 	
++ bffffffe	e	
++ bffffffd	l	
++ bffffffc	i	656c69	
++ --------------------------------------------------------------
++ bffffffb	f	
++ bffffffa	-	
++ bffffff9	h	
++ bffffff8	c	662d6863	
++ --------------------------------------------------------------
++ bffffff7	u	
++ bffffff6	s	
++ bffffff5	-	
++ bffffff4	o	75732d6f	
++ --------------------------------------------------------------
++ bffffff3	n	
++ bffffff2	 	
++ bffffff1	 	
++ bffffff0	 	6e000000	
++ --------------------------------------------------------------
++ bfffffef	 	
++ bfffffee	 	
++ bfffffed	 	
++ bfffffec	 	0	
++ --------------------------------------------------------------
++ bfffffeb	 	
++ bfffffea	 	
++ bfffffe9	 	
++ bfffffe8	 	bffffff3	
++ --------------------------------------------------------------
++ bfffffe7	 	
++ bfffffe6	 	
++ bfffffe5	 	
++ bfffffe4	 	bfffffe8	
++ --------------------------------------------------------------
++ bfffffe3	 	
++ bfffffe2	 	
++ bfffffe1	 	
++ bfffffe0	 	1	
++ --------------------------------------------------------------
++ bfffffdf	 	
++ bfffffde	 	
++ bfffffdd	 	
++ bfffffdc	 	0	
++ --------------------------------------------------------------
+  load: no-such-file: open failed
+- (exec-missing) exec("no-such-file"): -1
++ Unsuccesfully loaded file_name
++ Start of process_exit()
++ After sema up in process_exit()
++ At end of process_exit()
++ Awoke from load_sema
++ End of process execute
++ (exec-missing) exec("no-such-file"): 0
+  (exec-missing) end
++ Syscall exit
+  exec-missing: exit(0)
++ Start of process_exit()
++ After sema up in process_exit()

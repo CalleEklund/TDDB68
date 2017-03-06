@@ -1,6 +1,12 @@
 FAIL
 Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070eb 0xc01076cf
+Call stack: 0xc01070cb 0xc010a97a 0x80480aa
 Translation of call stack:
-0xc01070eb: debug_panic (.../../lib/kernel/debug.c:34)
-0xc01076cf: is_interior (..../../lib/kernel/list.c:49)
+In kernel.o:
+0xc01070cb: debug_panic (.../../lib/kernel/debug.c:34)
+0xc010a97a: syscall_handler (.../../userprog/syscall.c:55)
+In tests/userprog/wait-killed:
+0x080480aa: test_main (...userprog/wait-killed.c:10)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.

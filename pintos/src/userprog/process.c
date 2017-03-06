@@ -44,11 +44,12 @@ process_execute (const char *cmd_line)
   // Create new_proc_args to hold filename, arguments, argc,
   // load_sema and pointer to parent's parent_child struct.
   struct new_proc_args* pr_args = (struct new_proc_args*) malloc(sizeof(struct new_proc_args));
+  pr_args->cmd_line = cmd_copy;
   sema_init(&(pr_args->load_sema),0);
-  pr_args->argc = -1;
+  //pr_args->argc = -1;
 
   // Extract filename and all arguments from CMD_LINE
-  char *token, *save_ptr;
+  /*char *token, *save_ptr;
 
   printf("Cmd_line: %s \n", cmd_copy);
 
@@ -74,7 +75,7 @@ process_execute (const char *cmd_line)
 	   printf("Argument extracted: %s \n", token);
 	 }
      }
-  printf("Nr of args extracted: %d\n", pr_args->argc);
+     printf("Nr of args extracted: %d\n", pr_args->argc);*/
 
   struct parent_child* child = (struct parent_child*) malloc(sizeof(struct parent_child));
   printf("Before child push back\n");
@@ -92,7 +93,16 @@ process_execute (const char *cmd_line)
 
   pr_args->parent = child;
 
-  tid = thread_create (pr_args->file_name, PRI_DEFAULT, start_process, pr_args);
+  char* file_name = palloc_get_page (0);
+  if (file_name == NULL)
+    return TID_ERROR;
+  strlcpy (file_name, cmd_line, PGSIZE);
+
+  char* save_ptr;
+  char* file_name_extr = strtok_r (file_name, " ", &save_ptr);
+  pr_args->file_name = file_name_extr;
+
+  tid = thread_create (file_name_extr, PRI_DEFAULT, start_process, pr_args);
   // Wait for program to load
   printf("Before waiting in load_sema\n");
   sema_down(&(pr_args->load_sema));
@@ -120,9 +130,11 @@ start_process (void *aux)
 
   // Transfer info from aux to the new thread
   struct new_proc_args* pr_args = ((struct new_proc_args*) aux);
+  // Store parent pnt separetely since pr_args will be freed in process_execute()
   thread_current()->parent = pr_args->parent;
-  thread_current()->argv = pr_args->argv;
-  thread_current()->argc = pr_args->argc;
+  //thread_current()->argv = pr_args->argv;
+  //thread_current()->argc = pr_args->argc;
+  thread_current()->pr_args = pr_args;
 
   /* Initialize interrupt frame and load executable. */
   memset (&if_, 0, sizeof if_);
@@ -628,36 +640,57 @@ setup_stack (void **esp)
 
 	  // Setup the user's arguments to the stack
 	  // Actual strings
-	  struct thread* t = thread_current();
+	  struct new_proc_args* pr_args = thread_current()->pr_args;
 	  void* p = *esp;
-	  int i;
+	  /*int i;
 	  for(i=0; i<t->argc; i++) {
 	    p -= strlen(t->argv[i]) +1;
 	    printf("Writing %s to stack\n", t->argv[i]);
 	    memcpy(p, &(t->argv[i]), strlen(t->argv[i]) +1);
-	  }
+	    }*/
+
+	  char* argv[32];
+	  int argc;
+	  char *token, *save_ptr;
+	  ASSERT(pr_args->cmd_line != NULL);
+	  for (token = strtok_r (pr_args->cmd_line, " ", &save_ptr); token != NULL;
+	       token = strtok_r (NULL, " ", &save_ptr))
+	    {
+	      p -= strlen(token) +1;
+	      printf("Writing %s to stack\n", token);
+	      memcpy(p, token, strlen(token) +1);
+	      argv[argc] = p;
+	      argc++;
+	      if(argc == 31) break;
+	    }
+
+	  argv[argc] = NULL;
+
 	  // Word allign (to make stack pointer divisable by 4)
 	  while((int)p % 4 != 0) {
 	    p--;
 	  }
 	  // Add extra last element in array, set to NULL
-	  if(t->argc != 0) {
+	  /*if(t->argc != 0) {
 	    char* nl_sent = NULL;
 	    memcpy(p, &nl_sent, sizeof(char*));
 	    p -= sizeof(char*);
-	  }
+	    }*/
 
 	  // Argv (pointers to the strings)
-	  for(i=t->argc; i>0; i--) {
+	  char** argvpnt;
+	  int i;
+	  for(i=argc; i>=0; i--) {
 	    p -= sizeof(char*);
-	    memcpy(p, &(t->argv[i]), sizeof(char*));
+	    memcpy(p, &(argv[i]), sizeof(char*));
+	    argvpnt = p;
 	  }
 	  p -= sizeof(char**);
-	  memcpy(p, &(t->argv), sizeof(char**));
+	  memcpy(p, &argvpnt, sizeof(char**));
 	  printf("Put argv at addr %p\n", p);
 
 	  p -= sizeof(int);
-	  memcpy(p, &(t->argc), sizeof(int));
+	  memcpy(p, &argc, sizeof(int));
 	  printf("Put argc at addr %p\n", p);
 
 	  // Fake return addr

@@ -1,13 +1,13 @@
-Copying tests/userprog/wait-killed into /tmp/ZfZoGbooXE.dsk...
-Copying tests/userprog/child-bad into /tmp/ZfZoGbooXE.dsk...
-Writing command line to /tmp/I1rKqILIF6.dsk...
-qemu -hda /tmp/I1rKqILIF6.dsk -hdb /tmp/EDVCevglap.dsk -hdc /tmp/ZfZoGbooXE.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/wait-killed into /tmp/Bw0Q52dlu9.dsk...
+Copying tests/userprog/child-bad into /tmp/Bw0Q52dlu9.dsk...
+Writing command line to /tmp/J5d1ZFh9Sg.dsk...
+qemu -hda /tmp/J5d1ZFh9Sg.dsk -hdb /tmp/Mp8ekXiECA.dsk -hdc /tmp/Bw0Q52dlu9.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put wait-killed put child-bad run wait-killed
 Pintos booting with 4,088 kB RAM...
-372 pages available in kernel pool.
+371 pages available in kernel pool.
 371 pages available in user pool.
 Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 195 sector (97 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
@@ -15,33 +15,176 @@ Boot complete.
 Putting 'wait-killed' into the file system...
 Putting 'child-bad' into the file system...
 Executing 'wait-killed':
-Page fault at 0xc011e028: rights violation error reading page in user context.
-wait-killed: dying due to interrupt 0x0e (#PF Page-Fault Exception).
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x80480d7
- cr2=c011e028 error=00000005
- eax=c011e028 ebx=00000000 ecx=00000000 edx=00000000
- esi=00000000 edi=00000000 esp=bfffffb0 ebp=bfffffcc
- cs=001b ds=0023 es=0023 ss=0023
-Page fault at 0xcccccccc: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc01076cf
- cr2=cccccccc error=00000000
- eax=cccccccc ebx=cccccccc ecx=00000009 edx=00000000
- esi=c011f03c edi=00000001 esp=c011f03c ebp=c0120000
- cs=0008 ds=0010 es=0010 ss=3b1c
+Before child push back
+After child push back
+Before waiting in load_sema
+Writing wait-killed to stack
+Put argv at addr 0xbfffffe8
+Put argc at addr 0xbfffffe4
+End of setup_stack()
+*esp is 0xbfffffe0
+stack contents:
+bfffffe0  00 00 00 00 01 00 00 00-ec ff ff bf f4 ff ff bf |................|
+bffffff0  00 00 00 00 77 61 69 74-2d 6b 69 6c 6c 65 64 00 |....wait-killed.|
+c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
+c000000f	 	
+c000000e	 	
+c000000d	 	
+c000000c	S	f000ff53	
+--------------------------------------------------------------
+c000000b	 	
+c000000a	 	
+c0000009	 	
+c0000008	 	f000e2c3	
+--------------------------------------------------------------
+c0000007	 	
+c0000006	 	
+c0000005	 	
+c0000004	S	f000ff53	
+--------------------------------------------------------------
+c0000003	 	
+c0000002	 	
+c0000001	 	
+c0000000	S	f000ff53	
+------- the border between KERNEL SPACE and USER SPACE -------
+bfffffff	 	
+bffffffe	d	
+bffffffd	e	
+bffffffc	l	64656c	
+--------------------------------------------------------------
+bffffffb	l	
+bffffffa	i	
+bffffff9	k	
+bffffff8	-	6c696b2d	
+--------------------------------------------------------------
+bffffff7	t	
+bffffff6	i	
+bffffff5	a	
+bffffff4	w	74696177	
+--------------------------------------------------------------
+bffffff3	 	
+bffffff2	 	
+bffffff1	 	
+bffffff0	 	0	
+--------------------------------------------------------------
+bfffffef	 	
+bfffffee	 	
+bfffffed	 	
+bfffffec	 	bffffff4	
+--------------------------------------------------------------
+bfffffeb	 	
+bfffffea	 	
+bfffffe9	 	
+bfffffe8	 	bfffffec	
+--------------------------------------------------------------
+bfffffe7	 	
+bfffffe6	 	
+bfffffe5	 	
+bfffffe4	 	1	
+--------------------------------------------------------------
+bfffffe3	 	
+bfffffe2	 	
+bfffffe1	 	
+bfffffe0	 	0	
+--------------------------------------------------------------
+Before last line in start_process()
+(wait-killed) begin
+Syscall exec
+Before child push back
+After child push back
+Before waiting in load_sema
+Awoke from load_sema
+End of process execute
+In process_wait()
+Waiting for child to terminate...
+Writing child-bad to stack
+Put argv at addr 0xbfffffe8
+Put argc at addr 0xbfffffe4
+End of setup_stack()
+*esp is 0xbfffffe0
+stack contents:
+bfffffe0  00 00 00 00 01 00 00 00-ec ff ff bf f6 ff ff bf |................|
+bffffff0  00 00 00 00 00 00 63 68-69 6c 64 2d 62 61 64 00 |......child-bad.|
+c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
+c000000f	 	
+c000000e	 	
+c000000d	 	
+c000000c	S	f000ff53	
+--------------------------------------------------------------
+c000000b	 	
+c000000a	 	
+c0000009	 	
+c0000008	 	f000e2c3	
+--------------------------------------------------------------
+c0000007	 	
+c0000006	 	
+c0000005	 	
+c0000004	S	f000ff53	
+--------------------------------------------------------------
+c0000003	 	
+c0000002	 	
+c0000001	 	
+c0000000	S	f000ff53	
+------- the border between KERNEL SPACE and USER SPACE -------
+bfffffff	 	
+bffffffe	d	
+bffffffd	a	
+bffffffc	b	646162	
+--------------------------------------------------------------
+bffffffb	-	
+bffffffa	d	
+bffffff9	l	
+bffffff8	i	2d646c69	
+--------------------------------------------------------------
+bffffff7	h	
+bffffff6	c	
+bffffff5	 	
+bffffff4	 	68630000	
+--------------------------------------------------------------
+bffffff3	 	
+bffffff2	 	
+bffffff1	 	
+bffffff0	 	0	
+--------------------------------------------------------------
+bfffffef	 	
+bfffffee	 	
+bfffffed	 	
+bfffffec	 	bffffff6	
+--------------------------------------------------------------
+bfffffeb	 	
+bfffffea	 	
+bfffffe9	 	
+bfffffe8	 	bfffffec	
+--------------------------------------------------------------
+bfffffe7	 	
+bfffffe6	 	
+bfffffe5	 	
+bfffffe4	 	1	
+--------------------------------------------------------------
+bfffffe3	 	
+bfffffe2	 	
+bfffffe1	 	
+bfffffe0	 	0	
+--------------------------------------------------------------
+Before last line in start_process()
+(child-bad) begin
+Page fault at 0x20101234: not present error reading page in kernel context.
+Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc010a97a
+ cr2=20101234 error=00000000
+ eax=20101234 ebx=c0127fb0 ecx=0000000e edx=00000030
+ esi=00000000 edi=00000000 esp=00000001 ebp=c0127fe8
+ cs=0008 ds=0010 es=0010 ss=bb40
 Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070eb 0xc01076cf 0Page fault at 0x3: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0105327
- cr2=00000003 error=00000000
- eax=00000002 ebx=00000003 ecx=000007a3 edx=000003d4
- esi=00000064 edi=c010cd25 esp=c010dfcb ebp=c0120d58
- cs=0008 ds=0010 es=0010 ss=0000
-Kernel PANIC recursion at ../../userprog/exception.c:100 in kill().
-Timer: 65 ticks
-Thread: 33 idle ticks, 29 kernel ticks, 3 user ticks
+Call stack: 0xc01070cb 0xc010a97a 0x80480aa.
+The `backtrace' program can make call stacks useful.
+Read "Backtraces" in the "Debugging Tools" chapter
+of the Pintos documentation for more information.
+Timer: 77 ticks
+Thread: 36 idle ticks, 25 kernel ticks, 16 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 86 reads, 400 writes
+hd0:1: 116 reads, 400 writes
 hd1:0: 195 reads, 0 writes
-Console: 1957 characters output
+Console: 5324 characters output
 Keyboard: 0 keys pressed
-Exception: 3 page faults
+Exception: 1 page faults
 Powering off...

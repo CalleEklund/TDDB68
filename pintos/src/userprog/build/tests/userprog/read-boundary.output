@@ -1,13 +1,13 @@
-Copying tests/userprog/read-boundary into /tmp/_2kssTEZt6.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/_2kssTEZt6.dsk...
-Writing command line to /tmp/CSbKfbLAf7.dsk...
-qemu -hda /tmp/CSbKfbLAf7.dsk -hdb /tmp/zxsnCWGfMC.dsk -hdc /tmp/_2kssTEZt6.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/read-boundary into /tmp/lskkbOxCa5.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/lskkbOxCa5.dsk...
+Writing command line to /tmp/5gWidAn4Gj.dsk...
+qemu -hda /tmp/5gWidAn4Gj.dsk -hdb /tmp/AZUcvf43wO.dsk -hdc /tmp/lskkbOxCa5.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put read-boundary put sample.txt run read-boundary
 Pintos booting with 4,088 kB RAM...
-372 pages available in kernel pool.
+371 pages available in kernel pool.
 371 pages available in user pool.
-Calibrating timer...  405,913,600 loops/s.
-hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+Calibrating timer...  419,020,800 loops/s.
+hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 105 sector (52 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
@@ -15,33 +15,104 @@ Boot complete.
 Putting 'read-boundary' into the file system...
 Putting 'sample.txt' into the file system...
 Executing 'read-boundary':
-Page fault at 0xc011e028: rights violation error reading page in user context.
-read-boundary: dying due to interrupt 0x0e (#PF Page-Fault Exception).
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0x80481f7
- cr2=c011e028 error=00000005
- eax=c011e028 ebx=00000000 ecx=00000000 edx=00000000
- esi=00000000 edi=00000000 esp=bfffffb0 ebp=bfffffcc
- cs=001b ds=0023 es=0023 ss=0023
-Page fault at 0xcccccccc: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc01076cf
- cr2=cccccccc error=00000000
- eax=cccccccc ebx=cccccccc ecx=00000009 edx=00000000
- esi=c011f03c edi=00000001 esp=c011f03c ebp=c0120000
- cs=0008 ds=0010 es=0010 ss=3b1c
-Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070eb 0xc01076cf 0Page fault at 0x3: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0105327
- cr2=00000003 error=00000000
- eax=00000002 ebx=00000003 ecx=000007a3 edx=000003d4
- esi=00000064 edi=c010cd25 esp=c010dfcb ebp=c0120d58
- cs=0008 ds=0010 es=0010 ss=0000
-Kernel PANIC recursion at ../../userprog/exception.c:100 in kill().
-Timer: 62 ticks
-Thread: 32 idle ticks, 27 kernel ticks, 3 user ticks
+Before child push back
+After child push back
+Before waiting in load_sema
+Writing read-boundary to stack
+Put argv at addr 0xbfffffe4
+Put argc at addr 0xbfffffe0
+End of setup_stack()
+*esp is 0xbfffffdc
+stack contents:
+bfffffd0                                      00 00 00 00 |            ....|
+bfffffe0  01 00 00 00 e8 ff ff bf-f2 ff ff bf 00 00 00 00 |................|
+bffffff0  00 00 72 65 61 64 2d 62-6f 75 6e 64 61 72 79 00 |..read-boundary.|
+c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
+c000000f	 	
+c000000e	 	
+c000000d	 	
+c000000c	S	f000ff53	
+--------------------------------------------------------------
+c000000b	 	
+c000000a	 	
+c0000009	 	
+c0000008	 	f000e2c3	
+--------------------------------------------------------------
+c0000007	 	
+c0000006	 	
+c0000005	 	
+c0000004	S	f000ff53	
+--------------------------------------------------------------
+c0000003	 	
+c0000002	 	
+c0000001	 	
+c0000000	S	f000ff53	
+------- the border between KERNEL SPACE and USER SPACE -------
+bfffffff	 	
+bffffffe	y	
+bffffffd	r	
+bffffffc	a	797261	
+--------------------------------------------------------------
+bffffffb	d	
+bffffffa	n	
+bffffff9	u	
+bffffff8	o	646e756f	
+--------------------------------------------------------------
+bffffff7	b	
+bffffff6	-	
+bffffff5	d	
+bffffff4	a	622d6461	
+--------------------------------------------------------------
+bffffff3	e	
+bffffff2	r	
+bffffff1	 	
+bffffff0	 	65720000	
+--------------------------------------------------------------
+bfffffef	 	
+bfffffee	 	
+bfffffed	 	
+bfffffec	 	0	
+--------------------------------------------------------------
+bfffffeb	 	
+bfffffea	 	
+bfffffe9	 	
+bfffffe8	 	bffffff2	
+--------------------------------------------------------------
+bfffffe7	 	
+bfffffe6	 	
+bfffffe5	 	
+bfffffe4	 	bfffffe8	
+--------------------------------------------------------------
+bfffffe3	 	
+bfffffe2	 	
+bfffffe1	 	
+bfffffe0	 	1	
+--------------------------------------------------------------
+bfffffdf	 	
+bfffffde	 	
+bfffffdd	 	
+bfffffdc	 	0	
+--------------------------------------------------------------
+Before last line in start_process()
+(read-boundary) begin
+(read-boundary) open "sample.txt"
+Awoke from load_sema
+End of process execute
+In process_wait()
+Waiting for child to terminate...
+(read-boundary) end
+Syscall exit
+read-boundary: exit(0)
+Start of process_exit()
+After sema up in process_exit()
+At end of process_exit()
+Execution of 'read-boundary' complete.
+Timer: 72 ticks
+Thread: 31 idle ticks, 30 kernel ticks, 11 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 94 reads, 220 writes
+hd0:1: 99 reads, 220 writes
 hd1:0: 105 reads, 0 writes
-Console: 1969 characters output
+Console: 3212 characters output
 Keyboard: 0 keys pressed
-Exception: 3 page faults
+Exception: 0 page faults
 Powering off...

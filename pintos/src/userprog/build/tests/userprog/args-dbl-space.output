@@ -1,33 +1,147 @@
-Copying tests/userprog/args-dbl-space into /tmp/VTjxVXkiiw.dsk...
-Writing command line to /tmp/s0cdLdH2Lb.dsk...
-qemu -hda /tmp/s0cdLdH2Lb.dsk -hdb /tmp/uYFDXc8aMp.dsk -hdc /tmp/VTjxVXkiiw.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/args-dbl-space into /tmp/eKEEZZ8xHa.dsk...
+Writing command line to /tmp/BvLaL0G6PS.dsk...
+qemu -hda /tmp/BvLaL0G6PS.dsk -hdb /tmp/PcPhSqrZrr.dsk -hdc /tmp/eKEEZZ8xHa.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put args-dbl-space run 'args-dbl-space two  spaces!'
 Pintos booting with 4,088 kB RAM...
-372 pages available in kernel pool.
+371 pages available in kernel pool.
 371 pages available in user pool.
 Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 97 sector (48 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
 Boot complete.
 Putting 'args-dbl-space' into the file system...
 Executing 'args-dbl-space two  spaces!':
-load: spaces!: open failed
-Kernel PANIC at ../../threads/palloc.c:130 in palloc_free_multiple(): assertion `pg_ofs (pages) == 0' failed.
-Call stack: 0xc01070eb 0Page fault at 0x3: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0105327
- cr2=00000003 error=00000000
- eax=00000002 ebx=00000003 ecx=00000608 edx=000003d4
- esi=00000082 edi=c010c5d0 esp=c010dfcb ebp=c0120e40
- cs=0008 ds=0010 es=0010 ss=0000
-Kernel PANIC recursion at ../../userprog/exception.c:100 in kill().
-Timer: 58 ticks
-Thread: 32 idle ticks, 24 kernel ticks, 2 user ticks
+Before child push back
+After child push back
+Before waiting in load_sema
+Writing args-dbl-space to stack
+Writing two to stack
+Writing spaces! to stack
+Put argv at addr 0xbfffffd0
+Put argc at addr 0xbfffffcc
+End of setup_stack()
+*esp is 0xbfffffc8
+stack contents:
+bfffffc0                          00 00 00 00 03 00 00 00 |        ........|
+bfffffd0  d4 ff ff bf f1 ff ff bf-ed ff ff bf e5 ff ff bf |................|
+bfffffe0  00 00 00 00 00 73 70 61-63 65 73 21 00 74 77 6f |.....spaces!.two|
+bffffff0  00 61 72 67 73 2d 64 62-6c 2d 73 70 61 63 65 00 |.args-dbl-space.|
+c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
+c000000f	 	
+c000000e	 	
+c000000d	 	
+c000000c	S	f000ff53	
+--------------------------------------------------------------
+c000000b	 	
+c000000a	 	
+c0000009	 	
+c0000008	 	f000e2c3	
+--------------------------------------------------------------
+c0000007	 	
+c0000006	 	
+c0000005	 	
+c0000004	S	f000ff53	
+--------------------------------------------------------------
+c0000003	 	
+c0000002	 	
+c0000001	 	
+c0000000	S	f000ff53	
+------- the border between KERNEL SPACE and USER SPACE -------
+bfffffff	 	
+bffffffe	e	
+bffffffd	c	
+bffffffc	a	656361	
+--------------------------------------------------------------
+bffffffb	p	
+bffffffa	s	
+bffffff9	-	
+bffffff8	l	70732d6c	
+--------------------------------------------------------------
+bffffff7	b	
+bffffff6	d	
+bffffff5	-	
+bffffff4	s	62642d73	
+--------------------------------------------------------------
+bffffff3	g	
+bffffff2	r	
+bffffff1	a	
+bffffff0	 	67726100	
+--------------------------------------------------------------
+bfffffef	o	
+bfffffee	w	
+bfffffed	t	
+bfffffec	 	6f777400	
+--------------------------------------------------------------
+bfffffeb	!	
+bfffffea	s	
+bfffffe9	e	
+bfffffe8	c	21736563	
+--------------------------------------------------------------
+bfffffe7	a	
+bfffffe6	p	
+bfffffe5	s	
+bfffffe4	 	61707300	
+--------------------------------------------------------------
+bfffffe3	 	
+bfffffe2	 	
+bfffffe1	 	
+bfffffe0	 	0	
+--------------------------------------------------------------
+bfffffdf	 	
+bfffffde	 	
+bfffffdd	 	
+bfffffdc	 	bfffffe5	
+--------------------------------------------------------------
+bfffffdb	 	
+bfffffda	 	
+bfffffd9	 	
+bfffffd8	 	bfffffed	
+--------------------------------------------------------------
+bfffffd7	 	
+bfffffd6	 	
+bfffffd5	 	
+bfffffd4	 	bffffff1	
+--------------------------------------------------------------
+bfffffd3	 	
+bfffffd2	 	
+bfffffd1	 	
+bfffffd0	 	bfffffd4	
+--------------------------------------------------------------
+bfffffcf	 	
+bfffffce	 	
+bfffffcd	 	
+bfffffcc	 	3	
+--------------------------------------------------------------
+bfffffcb	 	
+bfffffca	 	
+bfffffc9	 	
+bfffffc8	 	0	
+--------------------------------------------------------------
+Before last line in start_process()
+(args) begin
+(args) argc = 3
+(args) argv[0] = 'args-dbl-space'
+(args) argv[1] = 'two'
+(args) argv[2] = 'spaces!'
+(args) argv[3] = null
+(args) end
+Syscall exit
+args-dbl-space: exit(0)
+Start of process_exit()
+After sema up in process_exit()
+At end of process_exit()
+Awoke from load_sema
+End of process execute
+In process_wait()
+Execution of 'args-dbl-space two  spaces!' complete.
+Timer: 71 ticks
+Thread: 34 idle ticks, 25 kernel ticks, 12 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 47 reads, 202 writes
+hd0:1: 59 reads, 202 writes
 hd1:0: 97 reads, 0 writes
-Console: 1282 characters output
+Console: 3957 characters output
 Keyboard: 0 keys pressed
-Exception: 1 page faults
+Exception: 0 page faults
 Powering off...

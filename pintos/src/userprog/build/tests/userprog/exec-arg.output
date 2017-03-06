@@ -1,12 +1,12 @@
-Copying tests/userprog/exec-arg into /tmp/wMQw9XNuhq.dsk...
-Copying tests/userprog/child-args into /tmp/wMQw9XNuhq.dsk...
-Writing command line to /tmp/nB7SWoHC0R.dsk...
-qemu -hda /tmp/nB7SWoHC0R.dsk -hdb /tmp/qH9VFQe5rl.dsk -hdc /tmp/wMQw9XNuhq.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/exec-arg into /tmp/8SiEXy2QDV.dsk...
+Copying tests/userprog/child-args into /tmp/8SiEXy2QDV.dsk...
+Writing command line to /tmp/ZmWRm9GRCL.dsk...
+qemu -hda /tmp/ZmWRm9GRCL.dsk -hdb /tmp/dOGQkrz4UY.dsk -hdc /tmp/8SiEXy2QDV.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put exec-arg put child-args run exec-arg
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
 371 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
+Calibrating timer...  419,020,800 loops/s.
 hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 194 sector (97 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -15,19 +15,18 @@ Boot complete.
 Putting 'exec-arg' into the file system...
 Putting 'child-args' into the file system...
 Executing 'exec-arg':
-Cmd_line: exec-arg 
-Filename extracted: exec-arg 
-Nr of args extracted: 0
 Before child push back
 After child push back
 Before waiting in load_sema
-Put argv at addr 0xbffffffc
-Put argc at addr 0xbffffff8
+Writing exec-arg to stack
+Put argv at addr 0xbfffffe8
+Put argc at addr 0xbfffffe4
 End of setup_stack()
-*esp is 0xbffffff4
+*esp is 0xbfffffe0
 stack contents:
-bffffff0              00 00 00 00-00 00 00 00 28 f0 11 c0 |    ........(...|
-c0000000  00 00 00 00 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |....S.......S...|
+bfffffe0  00 00 00 00 01 00 00 00-ec ff ff bf f7 ff ff bf |................|
+bffffff0  00 00 00 00 00 00 00 65-78 65 63 2d 61 72 67 00 |.......exec-arg.|
+c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
 c000000f	 	
 c000000e	 	
 c000000d	 	
@@ -46,37 +45,172 @@ c0000004	S	f000ff53
 c0000003	 	
 c0000002	 	
 c0000001	 	
-c0000000	 	0	
+c0000000	S	f000ff53	
 ------- the border between KERNEL SPACE and USER SPACE -------
 bfffffff	 	
-bffffffe	 	
-bffffffd	 	
-bffffffc	(	c011f028	
+bffffffe	g	
+bffffffd	r	
+bffffffc	a	677261	
 --------------------------------------------------------------
-bffffffb	 	
-bffffffa	 	
-bffffff9	 	
-bffffff8	 	0	
+bffffffb	-	
+bffffffa	c	
+bffffff9	e	
+bffffff8	x	2d636578	
 --------------------------------------------------------------
-bffffff7	 	
+bffffff7	e	
 bffffff6	 	
 bffffff5	 	
-bffffff4	 	0	
+bffffff4	 	65000000	
 --------------------------------------------------------------
-Start of process_exit()
-After sema up in process_exit()
-Before the page dir destruction in process_exit()
-At end of process_exit()
+bffffff3	 	
+bffffff2	 	
+bffffff1	 	
+bffffff0	 	0	
+--------------------------------------------------------------
+bfffffef	 	
+bfffffee	 	
+bfffffed	 	
+bfffffec	 	bffffff7	
+--------------------------------------------------------------
+bfffffeb	 	
+bfffffea	 	
+bfffffe9	 	
+bfffffe8	 	bfffffec	
+--------------------------------------------------------------
+bfffffe7	 	
+bfffffe6	 	
+bfffffe5	 	
+bfffffe4	 	1	
+--------------------------------------------------------------
+bfffffe3	 	
+bfffffe2	 	
+bfffffe1	 	
+bfffffe0	 	0	
+--------------------------------------------------------------
+Before last line in start_process()
+(exec-arg) begin
+Syscall exec
+Before child push back
+After child push back
+Before waiting in load_sema
 Awoke from load_sema
 End of process execute
 In process_wait()
+Waiting for child to terminate...
+Writing child-args to stack
+Writing childarg to stack
+Put argv at addr 0xbfffffdc
+Put argc at addr 0xbfffffd8
+End of setup_stack()
+*esp is 0xbfffffd4
+stack contents:
+bfffffd0              00 00 00 00-02 00 00 00 e0 ff ff bf |    ............|
+bfffffe0  f5 ff ff bf ec ff ff bf-00 00 00 00 63 68 69 6c |............chil|
+bffffff0  64 61 72 67 00 63 68 69-6c 64 2d 61 72 67 73 00 |darg.child-args.|
+c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
+c000000f	 	
+c000000e	 	
+c000000d	 	
+c000000c	S	f000ff53	
+--------------------------------------------------------------
+c000000b	 	
+c000000a	 	
+c0000009	 	
+c0000008	 	f000e2c3	
+--------------------------------------------------------------
+c0000007	 	
+c0000006	 	
+c0000005	 	
+c0000004	S	f000ff53	
+--------------------------------------------------------------
+c0000003	 	
+c0000002	 	
+c0000001	 	
+c0000000	S	f000ff53	
+------- the border between KERNEL SPACE and USER SPACE -------
+bfffffff	 	
+bffffffe	s	
+bffffffd	g	
+bffffffc	r	736772	
+--------------------------------------------------------------
+bffffffb	a	
+bffffffa	-	
+bffffff9	d	
+bffffff8	l	612d646c	
+--------------------------------------------------------------
+bffffff7	i	
+bffffff6	h	
+bffffff5	c	
+bffffff4	 	69686300	
+--------------------------------------------------------------
+bffffff3	g	
+bffffff2	r	
+bffffff1	a	
+bffffff0	d	67726164	
+--------------------------------------------------------------
+bfffffef	l	
+bfffffee	i	
+bfffffed	h	
+bfffffec	c	6c696863	
+--------------------------------------------------------------
+bfffffeb	 	
+bfffffea	 	
+bfffffe9	 	
+bfffffe8	 	0	
+--------------------------------------------------------------
+bfffffe7	 	
+bfffffe6	 	
+bfffffe5	 	
+bfffffe4	 	bfffffec	
+--------------------------------------------------------------
+bfffffe3	 	
+bfffffe2	 	
+bfffffe1	 	
+bfffffe0	 	bffffff5	
+--------------------------------------------------------------
+bfffffdf	 	
+bfffffde	 	
+bfffffdd	 	
+bfffffdc	 	bfffffe0	
+--------------------------------------------------------------
+bfffffdb	 	
+bfffffda	 	
+bfffffd9	 	
+bfffffd8	 	2	
+--------------------------------------------------------------
+bfffffd7	 	
+bfffffd6	 	
+bfffffd5	 	
+bfffffd4	 	0	
+--------------------------------------------------------------
+Before last line in start_process()
+(args) begin
+(args) argc = 2
+(args) argv[0] = 'child-args'
+(args) argv[1] = 'childarg'
+(args) argv[2] = null
+(args) end
+Syscall exit
+child-args: exit(0)
+Start of process_exit()
+After sema up in process_exit()
+At end of process_exit()
+Awoke from load_sema
+End of process execute
+Syscall wait
+In process_wait()
+(exec-arg) end
+Syscall exit
+exec-arg: exit(0)
+Start of process_exit()
+After sema up in process_exit()
 Execution of 'exec-arg' complete.
-Timer: 68 ticks
-Thread: 33 idle ticks, 30 kernel ticks, 5 user ticks
+Timer: 83 ticks
+Thread: 32 idle ticks, 30 kernel ticks, 21 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 86 reads, 398 writes
+hd0:1: 116 reads, 398 writes
 hd1:0: 194 reads, 0 writes
-Console: 2225 characters output
+Console: 5594 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

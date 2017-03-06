@@ -58,10 +58,20 @@ syscall_handler (struct intr_frame *f)
     halt();
     break;
     
+  case SYS_EXEC :
+    get_args(1, args, f->esp);
+    exec((const char*) args[0]);
+    break;
+
   case SYS_EXIT :                   /* Terminate this process. */
     get_args(1, args, f->esp);
     exit((int) args[0]);
     break; 
+
+  case SYS_WAIT :
+    get_args(1, args, f->esp);
+    wait((pid_t) args[0]);
+    break;
 
   case SYS_CREATE :                 /* Create a file. */
     get_args(2, args, f->esp);
@@ -118,6 +128,7 @@ void exit(int status)
 
 int wait (pid_t pid) 
 {
+  printf("Syscall wait\n");
   return process_wait ((tid_t) pid);
 }
 

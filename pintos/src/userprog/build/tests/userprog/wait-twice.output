@@ -1,13 +1,13 @@
-Copying tests/userprog/wait-twice into /tmp/_HlVtKwnik.dsk...
-Copying tests/userprog/child-simple into /tmp/_HlVtKwnik.dsk...
-Writing command line to /tmp/fhZRsvnofi.dsk...
-qemu -hda /tmp/fhZRsvnofi.dsk -hdb /tmp/yZZc8bvFIT.dsk -hdc /tmp/_HlVtKwnik.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/wait-twice into /tmp/9eSbq8gaYo.dsk...
+Copying tests/userprog/child-simple into /tmp/9eSbq8gaYo.dsk...
+Writing command line to /tmp/iiQwnDv262.dsk...
+qemu -hda /tmp/iiQwnDv262.dsk -hdb /tmp/gM7HZzKY6I.dsk -hdc /tmp/9eSbq8gaYo.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put wait-twice put child-simple run wait-twice
 Pintos booting with 4,088 kB RAM...
-372 pages available in kernel pool.
+371 pages available in kernel pool.
 371 pages available in user pool.
 Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 194 sector (97 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
@@ -15,27 +15,190 @@ Boot complete.
 Putting 'wait-twice' into the file system...
 Putting 'child-simple' into the file system...
 Executing 'wait-twice':
-Filename extracted: wait-twice 
 Before child push back
 After child push back
 Before waiting in load_sema
-Put argv at addr 0xbffffffc
-Put argc at addr 0xbffffff8
+Writing wait-twice to stack
+Put argv at addr 0xbfffffe8
+Put argc at addr 0xbfffffe4
 End of setup_stack()
-Start of process_exit()
-After sema up in process_exit()
-Before the page dir destruction in process_exit()
-At end of process_exit()
+*esp is 0xbfffffe0
+stack contents:
+bfffffe0  00 00 00 00 01 00 00 00-ec ff ff bf f5 ff ff bf |................|
+bffffff0  00 00 00 00 00 77 61 69-74 2d 74 77 69 63 65 00 |.....wait-twice.|
+c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
+c000000f	 	
+c000000e	 	
+c000000d	 	
+c000000c	S	f000ff53	
+--------------------------------------------------------------
+c000000b	 	
+c000000a	 	
+c0000009	 	
+c0000008	 	f000e2c3	
+--------------------------------------------------------------
+c0000007	 	
+c0000006	 	
+c0000005	 	
+c0000004	S	f000ff53	
+--------------------------------------------------------------
+c0000003	 	
+c0000002	 	
+c0000001	 	
+c0000000	S	f000ff53	
+------- the border between KERNEL SPACE and USER SPACE -------
+bfffffff	 	
+bffffffe	e	
+bffffffd	c	
+bffffffc	i	656369	
+--------------------------------------------------------------
+bffffffb	w	
+bffffffa	t	
+bffffff9	-	
+bffffff8	t	77742d74	
+--------------------------------------------------------------
+bffffff7	i	
+bffffff6	a	
+bffffff5	w	
+bffffff4	 	69617700	
+--------------------------------------------------------------
+bffffff3	 	
+bffffff2	 	
+bffffff1	 	
+bffffff0	 	0	
+--------------------------------------------------------------
+bfffffef	 	
+bfffffee	 	
+bfffffed	 	
+bfffffec	 	bffffff5	
+--------------------------------------------------------------
+bfffffeb	 	
+bfffffea	 	
+bfffffe9	 	
+bfffffe8	 	bfffffec	
+--------------------------------------------------------------
+bfffffe7	 	
+bfffffe6	 	
+bfffffe5	 	
+bfffffe4	 	1	
+--------------------------------------------------------------
+bfffffe3	 	
+bfffffe2	 	
+bfffffe1	 	
+bfffffe0	 	0	
+--------------------------------------------------------------
+Before last line in start_process()
+(wait-twice) begin
+Syscall exec
+Before child push back
+After child push back
+Before waiting in load_sema
 Awoke from load_sema
 End of process execute
 In process_wait()
+Waiting for child to terminate...
+Writing child-simple to stack
+Put argv at addr 0xbfffffe4
+Put argc at addr 0xbfffffe0
+End of setup_stack()
+*esp is 0xbfffffdc
+stack contents:
+bfffffd0                                      00 00 00 00 |            ....|
+bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
+bffffff0  00 00 00 63 68 69 6c 64-2d 73 69 6d 70 6c 65 00 |...child-simple.|
+c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
+c000000f	 	
+c000000e	 	
+c000000d	 	
+c000000c	S	f000ff53	
+--------------------------------------------------------------
+c000000b	 	
+c000000a	 	
+c0000009	 	
+c0000008	 	f000e2c3	
+--------------------------------------------------------------
+c0000007	 	
+c0000006	 	
+c0000005	 	
+c0000004	S	f000ff53	
+--------------------------------------------------------------
+c0000003	 	
+c0000002	 	
+c0000001	 	
+c0000000	S	f000ff53	
+------- the border between KERNEL SPACE and USER SPACE -------
+bfffffff	 	
+bffffffe	e	
+bffffffd	l	
+bffffffc	p	656c70	
+--------------------------------------------------------------
+bffffffb	m	
+bffffffa	i	
+bffffff9	s	
+bffffff8	-	6d69732d	
+--------------------------------------------------------------
+bffffff7	d	
+bffffff6	l	
+bffffff5	i	
+bffffff4	h	646c6968	
+--------------------------------------------------------------
+bffffff3	c	
+bffffff2	 	
+bffffff1	 	
+bffffff0	 	63000000	
+--------------------------------------------------------------
+bfffffef	 	
+bfffffee	 	
+bfffffed	 	
+bfffffec	 	0	
+--------------------------------------------------------------
+bfffffeb	 	
+bfffffea	 	
+bfffffe9	 	
+bfffffe8	 	bffffff3	
+--------------------------------------------------------------
+bfffffe7	 	
+bfffffe6	 	
+bfffffe5	 	
+bfffffe4	 	bfffffe8	
+--------------------------------------------------------------
+bfffffe3	 	
+bfffffe2	 	
+bfffffe1	 	
+bfffffe0	 	1	
+--------------------------------------------------------------
+bfffffdf	 	
+bfffffde	 	
+bfffffdd	 	
+bfffffdc	 	0	
+--------------------------------------------------------------
+Before last line in start_process()
+(child-simple) run
+Syscall exit
+child-simple: exit(81)
+Start of process_exit()
+After sema up in process_exit()
+At end of process_exit()
+Awoke from load_sema
+End of process execute
+Syscall wait
+In process_wait()
+(wait-twice) wait(exec()) = 0
+Syscall wait
+In process_wait()
+(wait-twice) wait(exec()) = 0
+(wait-twice) end
+Syscall exit
+wait-twice: exit(0)
+Start of process_exit()
+After sema up in process_exit()
 Execution of 'wait-twice' complete.
-Timer: 64 ticks
-Thread: 32 idle ticks, 31 kernel ticks, 1 user ticks
+Timer: 80 ticks
+Thread: 35 idle ticks, 28 kernel ticks, 17 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 86 reads, 398 writes
+hd0:1: 122 reads, 398 writes
 hd1:0: 194 reads, 0 writes
-Console: 1189 characters output
+Console: 5345 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

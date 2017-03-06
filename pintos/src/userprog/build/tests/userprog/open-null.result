@@ -1,6 +1,12 @@
 FAIL
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070eb 0xc01076cf
+Kernel panic in run: PANIC at ../../filesys/directory.c:125 in dir_lookup(): assertion `name != NULL' failed.
+Call stack: 0xc01070cb 0x804a15f 0x80480af
 Translation of call stack:
-0xc01070eb: debug_panic (.../../lib/kernel/debug.c:34)
-0xc01076cf: is_interior (..../../lib/kernel/list.c:49)
+In kernel.o:
+0xc01070cb: debug_panic (.../../lib/kernel/debug.c:34)
+In tests/userprog/open-null:
+0x0804a15f: open (...../lib/user/syscall.c:105)
+0x080480af: test_main (...s/userprog/open-null.c:12)
+Translations of user virtual addresses above are based on a guess at
+the binary to use.  If this guess is incorrect, then those
+translations will be misleading.

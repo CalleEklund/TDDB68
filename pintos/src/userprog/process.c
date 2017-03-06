@@ -48,9 +48,6 @@ process_execute (const char *cmd_line)
   sema_init(&(pr_args->load_sema),0);
 
   struct parent_child* child = (struct parent_child*) malloc(sizeof(struct parent_child));
-  //printf("Before child push back\n");
-  list_push_back(&thread_current()->children, &(child->elem));
-  //printf("After child push back\n");
   
   // initialise alive_count protected by its lock
   lock_init(&(child->alive_lock));
@@ -78,8 +75,17 @@ process_execute (const char *cmd_line)
   printf("Before waiting in load_sema\n");
   //printf("Value of load_sema in pr_execute: %d\n", (int) pr_args->load_sema.value);
   sema_down(&(pr_args->load_sema));
-  if(!pr_args->load_success) tid = TID_ERROR;
   printf("Awoke from load_sema\n");
+  if(!pr_args->load_success) 
+    {
+      tid = TID_ERROR;
+    }
+  else
+    {
+      //printf("Before child push back\n");
+      list_push_back(&thread_current()->children, &(child->elem));
+      //printf("After child push back\n");
+    }
 
   child->child = tid;
   printf("Set new child id to %d\n", (int) child->child);
@@ -189,11 +195,14 @@ process_exit (void)
   struct thread *cur = thread_current ();
   uint32_t *pd;
   struct parent_child* par = cur->parent;
-  int debug_status = par->exit_status;
   
 
+  if(par != NULL && par->child == -1) {
+    // This process was not loaded correctly
+    free(par);
+  }
   // Do if the current thread is not the initial thread
-  if(par != NULL) { 
+  else if(par != NULL) { 
 
     // alive count is decremented
     lock_acquire(&(par->alive_lock));
@@ -212,6 +221,7 @@ process_exit (void)
     // do sema up on wait_sema
     else
       {
+	int debug_status = par->exit_status;
 	// release the sema holding process_wait()
 	printf("%s: exit(%d)\n", cur->name, debug_status);
 	sema_up(&(cur->parent->wait_sema));

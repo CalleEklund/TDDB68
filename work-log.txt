@@ -202,7 +202,7 @@ So the parameter of syscall wait() is strange. When running wait-twice and wait-
 FIXED IT!!!!! .......... didn't set return value in syscall_handler..... shoot me.... 
 
 Test wait-killed failed. Cause we put new thread into children list even though it failed to load!! Then we wait for it and match -1 to -1. Badillibad. 
-TODO: Fix this!
+TODO: Fix this!     !DONE! The test won't be passed until lab3 part C though.
 
 
 

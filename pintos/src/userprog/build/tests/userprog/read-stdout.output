@@ -1,43 +1,27 @@
-Copying tests/userprog/read-stdout into /tmp/eeS43dlK_y.dsk...
-Writing command line to /tmp/pSfIifan45.dsk...
-qemu -hda /tmp/pSfIifan45.dsk -hdb /tmp/yXqWfJHihs.dsk -hdc /tmp/eeS43dlK_y.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/read-stdout into /tmp/_VdVuhcGvl.dsk...
+Writing command line to /tmp/XMmdi0YIrb.dsk...
+qemu -hda /tmp/XMmdi0YIrb.dsk -hdb /tmp/qH_QDhZXMm.dsk -hdc /tmp/_VdVuhcGvl.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put read-stdout run read-stdout
 Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
+372 pages available in kernel pool.
 371 pages available in user pool.
 Calibrating timer...  314,163,200 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 97 sector (48 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
 Boot complete.
 Putting 'read-stdout' into the file system...
 Executing 'read-stdout':
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (read-stdout) begin
-(read-stdout) end
-Syscall exit
-Start of process_exit()
-read-stdout: exit(0)
-After sema up in process_exit() Exiting with status 0
-At end of process_exit()
-Awoke from load_sema
-Set new child id to 3
-End of process execute
-In process_wait()
-Cmp children ids: 3 and given 3
-Child found in wait
-Child with exit status 0 has already exited
+read-stdout: exit(-1)
 Execution of 'read-stdout' complete.
-Timer: 60 ticks
-Thread: 33 idle ticks, 27 kernel ticks, 0 user ticks
+Timer: 61 ticks
+Thread: 30 idle ticks, 30 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 59 reads, 202 writes
 hd1:0: 97 reads, 0 writes
-Console: 1213 characters output
+Console: 795 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

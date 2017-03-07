@@ -1,13 +1,13 @@
-Copying tests/userprog/write-bad-ptr into /tmp/PVtbyiucBw.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/PVtbyiucBw.dsk...
-Writing command line to /tmp/52bZnw3TLz.dsk...
-qemu -hda /tmp/52bZnw3TLz.dsk -hdb /tmp/tERHJtbCZp.dsk -hdc /tmp/PVtbyiucBw.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/write-bad-ptr into /tmp/KPN72pBWnW.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/KPN72pBWnW.dsk...
+Writing command line to /tmp/OT1Xp7HZyV.dsk...
+qemu -hda /tmp/OT1Xp7HZyV.dsk -hdb /tmp/cSVhuTk0Li.dsk -hdc /tmp/KPN72pBWnW.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put write-bad-ptr put sample.txt run write-bad-ptr
 Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
+372 pages available in kernel pool.
 371 pages available in user pool.
-Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+Calibrating timer...  209,510,400 loops/s.
+hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 100 sector (50 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
@@ -15,32 +15,16 @@ Boot complete.
 Putting 'write-bad-ptr' into the file system...
 Putting 'sample.txt' into the file system...
 Executing 'write-bad-ptr':
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (write-bad-ptr) begin
 (write-bad-ptr) open "sample.txt"
-Awoke from load_sema
-Set new child id to 3
-End of process execute
-In process_wait()
-Cmp children ids: 3 and given 3
-Child found in wait
-Waiting for child to terminate...
-Syscall exit
-Start of process_exit()
 write-bad-ptr: exit(-1)
-After sema up in process_exit() Exiting with status -1
-At end of process_exit()
-Child with exit status -1 has now exited
 Execution of 'write-bad-ptr' complete.
-Timer: 61 ticks
-Thread: 31 idle ticks, 29 kernel ticks, 1 user ticks
+Timer: 58 ticks
+Thread: 34 idle ticks, 24 kernel ticks, 0 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 90 reads, 210 writes
 hd1:0: 100 reads, 0 writes
-Console: 1338 characters output
+Console: 905 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

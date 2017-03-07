@@ -1,22 +1,18 @@
-Copying tests/userprog/args-multiple into /tmp/Vmp7JIXXvT.dsk...
-Writing command line to /tmp/PIb3ughGbW.dsk...
-qemu -hda /tmp/PIb3ughGbW.dsk -hdb /tmp/nfGxG2nivB.dsk -hdc /tmp/Vmp7JIXXvT.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/args-multiple into /tmp/lwLNHMPM9X.dsk...
+Writing command line to /tmp/wm44OEfryu.dsk...
+qemu -hda /tmp/wm44OEfryu.dsk -hdb /tmp/RC3m3ogH6J.dsk -hdc /tmp/lwLNHMPM9X.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put args-multiple run 'args-multiple some arguments for you!'
 Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
+372 pages available in kernel pool.
 371 pages available in user pool.
 Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 97 sector (48 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
 Boot complete.
 Putting 'args-multiple' into the file system...
 Executing 'args-multiple some arguments for you!':
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (args) begin
 (args) argc = 5
 (args) argv[0] = 'args-multiple'
@@ -26,25 +22,14 @@ Before last line in start_process()
 (args) argv[4] = 'you!'
 (args) argv[5] = null
 (args) end
-Syscall exit
-Start of process_exit()
 args-multiple: exit(0)
-After sema up in process_exit() Exiting with status 0
-At end of process_exit()
-Awoke from load_sema
-Set new child id to 3
-End of process execute
-In process_wait()
-Cmp children ids: 3 and given 3
-Child found in wait
-Child with exit status 0 has already exited
 Execution of 'args-multiple some arguments for you!' complete.
-Timer: 59 ticks
-Thread: 34 idle ticks, 23 kernel ticks, 2 user ticks
+Timer: 57 ticks
+Thread: 30 idle ticks, 26 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 59 reads, 202 writes
 hd1:0: 97 reads, 0 writes
-Console: 1456 characters output
+Console: 1055 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

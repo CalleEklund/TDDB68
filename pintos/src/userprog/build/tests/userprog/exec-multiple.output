@@ -1,13 +1,13 @@
-Copying tests/userprog/exec-multiple into /tmp/97B73UoxDc.dsk...
-Copying tests/userprog/child-simple into /tmp/97B73UoxDc.dsk...
-Writing command line to /tmp/mk2mG85VOO.dsk...
-qemu -hda /tmp/mk2mG85VOO.dsk -hdb /tmp/x955fHfUAH.dsk -hdc /tmp/97B73UoxDc.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/exec-multiple into /tmp/ttheaHreGT.dsk...
+Copying tests/userprog/child-simple into /tmp/ttheaHreGT.dsk...
+Writing command line to /tmp/W9qsoxqtfc.dsk...
+qemu -hda /tmp/W9qsoxqtfc.dsk -hdb /tmp/tLCEUsoHh0.dsk -hdc /tmp/ttheaHreGT.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put exec-multiple put child-simple run exec-multiple
 Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
+372 pages available in kernel pool.
 371 pages available in user pool.
 Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 194 sector (97 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
@@ -15,117 +15,24 @@ Boot complete.
 Putting 'exec-multiple' into the file system...
 Putting 'child-simple' into the file system...
 Executing 'exec-multiple':
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (exec-multiple) begin
-Syscall exec
-Before waiting in load_sema
-Awoke from load_sema
-Set new child id to 3
-End of process execute
-In process_wait()
-Cmp children ids: 3 and given 3
-Child found in wait
-Waiting for child to terminate...
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (child-simple) run
-Syscall exit
-Start of process_exit()
 child-simple: exit(81)
-After sema up in process_exit() Exiting with status 81
-At end of process_exit()
-Awoke from load_sema
-Set new child id to 4
-End of process execute
-Created process with pid 4
-Syscall wait, wait for child with pid 4
-In process_wait()
-Cmp children ids: 4 and given 4
-Child found in wait
-Child with exit status 81 has already exited
-Syscall exec
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (child-simple) run
-Syscall exit
-Start of process_exit()
 child-simple: exit(81)
-After sema up in process_exit() Exiting with status 81
-At end of process_exit()
-Awoke from load_sema
-Set new child id to 5
-End of process execute
-Created process with pid 5
-Syscall wait, wait for child with pid 5
-In process_wait()
-Cmp children ids: 4 and given 5
-Cmp children ids: 5 and given 5
-Child found in wait
-Child with exit status 81 has already exited
-Syscall exec
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (child-simple) run
-Syscall exit
-Start of process_exit()
 child-simple: exit(81)
-After sema up in process_exit() Exiting with status 81
-At end of process_exit()
-Awoke from load_sema
-Set new child id to 6
-End of process execute
-Created process with pid 6
-Syscall wait, wait for child with pid 6
-In process_wait()
-Cmp children ids: 4 and given 6
-Cmp children ids: 5 and given 6
-Cmp children ids: 6 and given 6
-Child found in wait
-Child with exit status 81 has already exited
-Syscall exec
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (child-simple) run
-Syscall exit
-Start of process_exit()
 child-simple: exit(81)
-After sema up in process_exit() Exiting with status 81
-At end of process_exit()
-Awoke from load_sema
-Set new child id to 7
-End of process execute
-Created process with pid 7
-Syscall wait, wait for child with pid 7
-In process_wait()
-Cmp children ids: 4 and given 7
-Cmp children ids: 5 and given 7
-Cmp children ids: 6 and given 7
-Cmp children ids: 7 and given 7
-Child found in wait
-Child with exit status 81 has already exited
 (exec-multiple) end
-Syscall exit
-Start of process_exit()
 exec-multiple: exit(0)
-After sema up in process_exit() Exiting with status 0
-Child with exit status 0 has now exited
 Execution of 'exec-multiple' complete.
-Timer: 72 ticks
-Thread: 34 idle ticks, 27 kernel ticks, 11 user ticks
+Timer: 67 ticks
+Thread: 33 idle ticks, 32 kernel ticks, 2 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 230 reads, 398 writes
 hd1:0: 194 reads, 0 writes
-Console: 3594 characters output
+Console: 1063 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

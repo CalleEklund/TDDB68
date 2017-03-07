@@ -1,13 +1,13 @@
-Copying tests/userprog/open-twice into /tmp/5A2ue9wbmC.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/5A2ue9wbmC.dsk...
-Writing command line to /tmp/83Xot4ufaX.dsk...
-qemu -hda /tmp/83Xot4ufaX.dsk -hdb /tmp/8mo1Yx86p9.dsk -hdc /tmp/5A2ue9wbmC.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/open-twice into /tmp/_HN0N5jMrU.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/_HN0N5jMrU.dsk...
+Writing command line to /tmp/9zNs6gpGkm.dsk...
+qemu -hda /tmp/9zNs6gpGkm.dsk -hdb /tmp/LuadG4dIo3.dsk -hdc /tmp/_HN0N5jMrU.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put open-twice put sample.txt run open-twice
 Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
+372 pages available in kernel pool.
 371 pages available in user pool.
 Calibrating timer...  314,163,200 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 101 sector (50 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
@@ -15,34 +15,18 @@ Boot complete.
 Putting 'open-twice' into the file system...
 Putting 'sample.txt' into the file system...
 Executing 'open-twice':
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (open-twice) begin
-Awoke from load_sema
-Set new child id to 3
-End of process execute
-In process_wait()
-Cmp children ids: 3 and given 3
-Child found in wait
-Waiting for child to terminate...
 (open-twice) open "sample.txt" once
 (open-twice) open "sample.txt" again
 (open-twice) end
-Syscall exit
-Start of process_exit()
 open-twice: exit(0)
-After sema up in process_exit() Exiting with status 0
-At end of process_exit()
-Child with exit status 0 has now exited
 Execution of 'open-twice' complete.
 Timer: 60 ticks
-Thread: 31 idle ticks, 27 kernel ticks, 2 user ticks
+Thread: 32 idle ticks, 27 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 99 reads, 212 writes
 hd1:0: 101 reads, 0 writes
-Console: 1370 characters output
+Console: 939 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

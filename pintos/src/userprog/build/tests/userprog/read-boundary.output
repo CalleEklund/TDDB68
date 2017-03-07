@@ -1,13 +1,13 @@
-Copying tests/userprog/read-boundary into /tmp/NY423TEQn2.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/NY423TEQn2.dsk...
-Writing command line to /tmp/M2_QolB3I2.dsk...
-qemu -hda /tmp/M2_QolB3I2.dsk -hdb /tmp/qTghSujsbn.dsk -hdc /tmp/NY423TEQn2.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/read-boundary into /tmp/XRkvQds1_n.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/XRkvQds1_n.dsk...
+Writing command line to /tmp/MtLreGvTd7.dsk...
+qemu -hda /tmp/MtLreGvTd7.dsk -hdb /tmp/cofOyJ8TI0.dsk -hdc /tmp/XRkvQds1_n.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put read-boundary put sample.txt run read-boundary
 Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
+372 pages available in kernel pool.
 371 pages available in user pool.
 Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 105 sector (52 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
@@ -15,33 +15,17 @@ Boot complete.
 Putting 'read-boundary' into the file system...
 Putting 'sample.txt' into the file system...
 Executing 'read-boundary':
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (read-boundary) begin
 (read-boundary) open "sample.txt"
-Awoke from load_sema
-Set new child id to 3
-End of process execute
-In process_wait()
-Cmp children ids: 3 and given 3
-Child found in wait
-Waiting for child to terminate...
 (read-boundary) end
-Syscall exit
-Start of process_exit()
 read-boundary: exit(0)
-After sema up in process_exit() Exiting with status 0
-At end of process_exit()
-Child with exit status 0 has now exited
 Execution of 'read-boundary' complete.
-Timer: 58 ticks
-Thread: 33 idle ticks, 24 kernel ticks, 1 user ticks
+Timer: 60 ticks
+Thread: 32 idle ticks, 27 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 99 reads, 220 writes
 hd1:0: 105 reads, 0 writes
-Console: 1355 characters output
+Console: 924 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

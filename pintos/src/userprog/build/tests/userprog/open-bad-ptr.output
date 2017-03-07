@@ -1,42 +1,27 @@
-Copying tests/userprog/open-bad-ptr into /tmp/4PdZ0EzHgN.dsk...
-Writing command line to /tmp/eIbJtfsbhG.dsk...
-qemu -hda /tmp/eIbJtfsbhG.dsk -hdb /tmp/n8AdCtdFmP.dsk -hdc /tmp/4PdZ0EzHgN.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/open-bad-ptr into /tmp/4r_6UFTPT0.dsk...
+Writing command line to /tmp/fq1NwT1dBi.dsk...
+qemu -hda /tmp/fq1NwT1dBi.dsk -hdb /tmp/IdT1mQjIOZ.dsk -hdc /tmp/4r_6UFTPT0.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put open-bad-ptr run open-bad-ptr
 Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
+372 pages available in kernel pool.
 371 pages available in user pool.
-Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+Calibrating timer...  314,163,200 loops/s.
+hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 98 sector (49 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
 Boot complete.
 Putting 'open-bad-ptr' into the file system...
 Executing 'open-bad-ptr':
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (open-bad-ptr) begin
-Syscall exit
-Start of process_exit()
 open-bad-ptr: exit(-1)
-After sema up in process_exit() Exiting with status -1
-At end of process_exit()
-Awoke from load_sema
-Set new child id to 3
-End of process execute
-In process_wait()
-Cmp children ids: 3 and given 3
-Child found in wait
-Child with exit status -1 has already exited
 Execution of 'open-bad-ptr' complete.
-Timer: 58 ticks
-Thread: 32 idle ticks, 25 kernel ticks, 1 user ticks
+Timer: 60 ticks
+Thread: 34 idle ticks, 26 kernel ticks, 0 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 59 reads, 204 writes
 hd1:0: 98 reads, 0 writes
-Console: 1205 characters output
+Console: 802 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

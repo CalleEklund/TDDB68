@@ -1,42 +1,27 @@
-Copying tests/userprog/open-null into /tmp/QqU_G8lz66.dsk...
-Writing command line to /tmp/cbk2oAqJ4A.dsk...
-qemu -hda /tmp/cbk2oAqJ4A.dsk -hdb /tmp/w0VkWNgeqp.dsk -hdc /tmp/QqU_G8lz66.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/open-null into /tmp/a3HTPEUeI_.dsk...
+Writing command line to /tmp/Y_U_38ZHGM.dsk...
+qemu -hda /tmp/Y_U_38ZHGM.dsk -hdb /tmp/t7EFDlnT3w.dsk -hdc /tmp/a3HTPEUeI_.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put open-null run open-null
 Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
+372 pages available in kernel pool.
 371 pages available in user pool.
-Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+Calibrating timer...  314,163,200 loops/s.
+hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 97 sector (48 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
 Boot complete.
 Putting 'open-null' into the file system...
 Executing 'open-null':
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (open-null) begin
-Syscall exit
-Start of process_exit()
 open-null: exit(-1)
-After sema up in process_exit() Exiting with status -1
-At end of process_exit()
-Awoke from load_sema
-Set new child id to 3
-End of process execute
-In process_wait()
-Cmp children ids: 3 and given 3
-Child found in wait
-Child with exit status -1 has already exited
 Execution of 'open-null' complete.
-Timer: 58 ticks
-Thread: 32 idle ticks, 25 kernel ticks, 1 user ticks
+Timer: 60 ticks
+Thread: 32 idle ticks, 27 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 59 reads, 202 writes
 hd1:0: 97 reads, 0 writes
-Console: 1184 characters output
+Console: 781 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

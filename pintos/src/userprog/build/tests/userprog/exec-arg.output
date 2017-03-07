@@ -1,13 +1,13 @@
-Copying tests/userprog/exec-arg into /tmp/RLUaHjwsyG.dsk...
-Copying tests/userprog/child-args into /tmp/RLUaHjwsyG.dsk...
-Writing command line to /tmp/2GLYMCO15X.dsk...
-qemu -hda /tmp/2GLYMCO15X.dsk -hdb /tmp/oUetF3pi91.dsk -hdc /tmp/RLUaHjwsyG.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/exec-arg into /tmp/iDszRoR9Qf.dsk...
+Copying tests/userprog/child-args into /tmp/iDszRoR9Qf.dsk...
+Writing command line to /tmp/R5wSq4OQMq.dsk...
+qemu -hda /tmp/R5wSq4OQMq.dsk -hdb /tmp/9tsayLwT2P.dsk -hdc /tmp/iDszRoR9Qf.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put exec-arg put child-args run exec-arg
 Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
+372 pages available in kernel pool.
 371 pages available in user pool.
 Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 194 sector (97 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
@@ -15,56 +15,23 @@ Boot complete.
 Putting 'exec-arg' into the file system...
 Putting 'child-args' into the file system...
 Executing 'exec-arg':
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (exec-arg) begin
-Syscall exec
-Before waiting in load_sema
-Awoke from load_sema
-Set new child id to 3
-End of process execute
-In process_wait()
-Cmp children ids: 3 and given 3
-Child found in wait
-Waiting for child to terminate...
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (args) begin
 (args) argc = 2
 (args) argv[0] = 'child-args'
 (args) argv[1] = 'childarg'
 (args) argv[2] = null
 (args) end
-Syscall exit
-Start of process_exit()
 child-args: exit(0)
-After sema up in process_exit() Exiting with status 0
-At end of process_exit()
-Awoke from load_sema
-Set new child id to 4
-End of process execute
-Created process with pid 4
-Syscall wait, wait for child with pid 4
-In process_wait()
-Cmp children ids: 4 and given 4
-Child found in wait
-Child with exit status 0 has already exited
 (exec-arg) end
-Syscall exit
-Start of process_exit()
 exec-arg: exit(0)
-After sema up in process_exit() Exiting with status 0
-Child with exit status 0 has now exited
 Execution of 'exec-arg' complete.
-Timer: 62 ticks
-Thread: 34 idle ticks, 26 kernel ticks, 3 user ticks
+Timer: 60 ticks
+Thread: 33 idle ticks, 27 kernel ticks, 0 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 116 reads, 398 writes
 hd1:0: 194 reads, 0 writes
-Console: 1878 characters output
+Console: 991 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

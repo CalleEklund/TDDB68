@@ -211,6 +211,10 @@ Do we need to consider non-null-terminated strings?
 
 Should we call exit immediately when finding a bad pointer, without returning from the initial syscall? What is right to do here? 
 
+Write-zero tests wants 0 instead of -1. 
+
+YEEEEEEEZZZZZZZZZZZZZZZ 50/50 tests passed! Kampai. 
+
 
 
 

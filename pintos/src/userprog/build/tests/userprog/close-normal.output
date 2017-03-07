@@ -1,13 +1,13 @@
-Copying tests/userprog/close-normal into /tmp/umKO4Va1zV.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/umKO4Va1zV.dsk...
-Writing command line to /tmp/JChOzCPo9O.dsk...
-qemu -hda /tmp/JChOzCPo9O.dsk -hdb /tmp/sVA5ioA8Jb.dsk -hdc /tmp/umKO4Va1zV.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/close-normal into /tmp/sNW3twKzY1.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/sNW3twKzY1.dsk...
+Writing command line to /tmp/2B0IhEvR5t.dsk...
+qemu -hda /tmp/2B0IhEvR5t.dsk -hdb /tmp/XWJ8pvE_x_.dsk -hdc /tmp/sNW3twKzY1.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put close-normal put sample.txt run close-normal
 Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
+372 pages available in kernel pool.
 371 pages available in user pool.
-Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+Calibrating timer...  314,163,200 loops/s.
+hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 100 sector (50 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
@@ -15,34 +15,18 @@ Boot complete.
 Putting 'close-normal' into the file system...
 Putting 'sample.txt' into the file system...
 Executing 'close-normal':
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (close-normal) begin
 (close-normal) open "sample.txt"
-Awoke from load_sema
-Set new child id to 3
-End of process execute
-In process_wait()
-Cmp children ids: 3 and given 3
-Child found in wait
-Waiting for child to terminate...
 (close-normal) close "sample.txt"
 (close-normal) end
-Syscall exit
-Start of process_exit()
 close-normal: exit(0)
-After sema up in process_exit() Exiting with status 0
-At end of process_exit()
-Child with exit status 0 has now exited
 Execution of 'close-normal' complete.
 Timer: 61 ticks
-Thread: 34 idle ticks, 25 kernel ticks, 2 user ticks
+Thread: 31 idle ticks, 29 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 90 reads, 210 writes
 hd1:0: 100 reads, 0 writes
-Console: 1380 characters output
+Console: 949 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

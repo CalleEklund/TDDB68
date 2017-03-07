@@ -22,6 +22,8 @@
 static thread_func start_process NO_RETURN;
 static bool load (const char *cmdline, void (**eip) (void), void **esp);
 
+static bool debug = false;
+
 /* Starts a new thread running a user program with given arguments loaded from
    CMD_LINE.  The new thread may be scheduled (and may even exit)
    before process_execute() returns.  Returns the new process's
@@ -72,10 +74,10 @@ process_execute (const char *cmd_line)
 
   tid = thread_create (file_name_extr, PRI_DEFAULT, start_process, pr_args);
   // Wait for program to load
-  printf("Before waiting in load_sema\n");
+  if(debug) printf("Before waiting in load_sema\n");
   //printf("Value of load_sema in pr_execute: %d\n", (int) pr_args->load_sema.value);
   sema_down(&(pr_args->load_sema));
-  printf("Awoke from load_sema\n");
+  if(debug) printf("Awoke from load_sema\n");
   if(!pr_args->load_success) 
     {
       tid = TID_ERROR;
@@ -88,13 +90,13 @@ process_execute (const char *cmd_line)
     }
 
   child->child = tid;
-  printf("Set new child id to %d\n", (int) child->child);
+  if(debug) printf("Set new child id to %d\n", (int) child->child);
   free(pr_args);
 
   if (tid == TID_ERROR)
     palloc_free_page (cmd_copy); 
 
-  printf("End of process execute\n");
+  if(debug) printf("End of process execute\n");
 
   return tid;
 }
@@ -122,17 +124,17 @@ start_process (void *aux)
   success = load (file_name, &if_.eip, &if_.esp);
   // Release load_lock so parent process can continue executing
   pr_args->load_success = success;
-  printf("Before load sema up\n");
+  if(debug) printf("Before load sema up\n");
   sema_up(&(pr_args->load_sema));
 
   /* If load failed, quit. */
   palloc_free_page (file_name);
   if (!success) {
-    printf("Unsuccesfully loaded file_name\n");
+    if(debug) printf("Unsuccesfully loaded file_name\n");
     thread_exit ();
   }
 
-  printf("Before last line in start_process()\n");
+  if(debug) printf("Before last line in start_process()\n");
   /* Start the user process by simulating a return from an
      interrupt, implemented by intr_exit (in
      threads/intr-stubs.S).  Because intr_exit takes all of its
@@ -155,30 +157,30 @@ start_process (void *aux)
 int
 process_wait (tid_t child_tid) 
 {
-  printf("In process_wait()\n");
+  if(debug) printf("In process_wait()\n");
   struct thread* t = thread_current();
   struct list_elem* e; 
   int exit_status = -1;
   for (e = list_begin (&(t->children)); e != list_end (&(t->children)); e = list_next (e))
       {
           struct parent_child *child = list_entry (e, struct parent_child, elem);
-	  printf("Cmp children ids: %d and given %d\n", child->child, child_tid);
+	  if(debug) printf("Cmp children ids: %d and given %d\n", child->child, child_tid);
           if (child->child == child_tid) 
 	    {
-	      printf("Child found in wait\n");
+	      if(debug) printf("Child found in wait\n");
 	      // Child has terminated
 	      if (child->alive_count == 1) 
 		{
 		  exit_status = child->exit_status;
-		  printf("Child with exit status %d has already exited\n", exit_status);
+		  if(debug) printf("Child with exit status %d has already exited\n", exit_status);
 		}
 	      // Wait for child to terminate
 	      else 
 		{
-		  printf("Waiting for child to terminate...\n");
+		  if(debug) printf("Waiting for child to terminate...\n");
 		  sema_down(&(child->wait_sema));
 		  exit_status = child->exit_status;
-		  printf("Child with exit status %d has now exited\n", exit_status);
+		  if(debug) printf("Child with exit status %d has now exited\n", exit_status);
 		}
 	      child->exit_status = -1;
 	      break;
@@ -191,7 +193,7 @@ process_wait (tid_t child_tid)
 void
 process_exit (void)
 {
-  printf("Start of process_exit()\n");
+  if(debug) printf("Start of process_exit()\n");
   struct thread *cur = thread_current ();
   uint32_t *pd;
   struct parent_child* par = cur->parent;
@@ -206,7 +208,6 @@ process_exit (void)
 
     // alive count is decremented
     lock_acquire(&(par->alive_lock));
-    //printf("Reached in process_exit()\n");
     par->alive_count--;
             
     //   Alive count goes from 1 to 0 (terminate after parent)  (decr parent struct)
@@ -225,7 +226,8 @@ process_exit (void)
 	// release the sema holding process_wait()
 	printf("%s: exit(%d)\n", cur->name, debug_status);
 	sema_up(&(cur->parent->wait_sema));
-	printf("After sema up in process_exit() Exiting with status %d\n", par->exit_status);
+	if(debug) printf("After sema up in process_exit() Exiting with status %d\n",
+			 par->exit_status);
       }
   }
   
@@ -243,7 +245,7 @@ process_exit (void)
 	    {
 	      lock_release(&(child->alive_lock));
 	      list_remove(e);
-	      printf("Removed child from children list\n");
+	      if(debug) printf("Removed child from children list\n");
 	      free(child);
 	    }
       }
@@ -265,7 +267,7 @@ process_exit (void)
       pagedir_activate (NULL);
       pagedir_destroy (pd);
     }
-  printf("At end of process_exit()\n");
+  if(debug) printf("At end of process_exit()\n");
 }
 
 /* Sets up the CPU for running user code in the current
@@ -635,17 +637,10 @@ setup_stack (void **esp)
 	  // Actual strings
 	  struct new_proc_args* pr_args = thread_current()->pr_args;
 	  void* p = *esp;
-	  /*int i;
-	  for(i=0; i<t->argc; i++) {
-	    p -= strlen(t->argv[i]) +1;
-	    printf("Writing %s to stack\n", t->argv[i]);
-	    memcpy(p, &(t->argv[i]), strlen(t->argv[i]) +1);
-	    }*/
-
 	  char* argv[32];
 	  int argc;
 	  char *token, *save_ptr;
-	  ASSERT(pr_args->cmd_line != NULL);
+
 	  for (token = strtok_r (pr_args->cmd_line, " ", &save_ptr); token != NULL;
 	       token = strtok_r (NULL, " ", &save_ptr))
 	    {
@@ -657,18 +652,13 @@ setup_stack (void **esp)
 	      if(argc == 31) break;
 	    }
 
+	  // Add extra last element in array, set to NULL
 	  argv[argc] = NULL;
 
 	  // Word allign (to make stack pointer divisable by 4)
 	  while((int)p % 4 != 0) {
 	    p--;
 	  }
-	  // Add extra last element in array, set to NULL
-	  /*if(t->argc != 0) {
-	    char* nl_sent = NULL;
-	    memcpy(p, &nl_sent, sizeof(char*));
-	    p -= sizeof(char*);
-	    }*/
 
 	  // Argv (pointers to the strings)
 	  char** argvpnt;
@@ -696,7 +686,7 @@ setup_stack (void **esp)
       else
         palloc_free_page (kpage);
     }
-  printf("End of setup_stack()\n");
+  if(debug) printf("End of setup_stack()\n");
   return success;
 }
 

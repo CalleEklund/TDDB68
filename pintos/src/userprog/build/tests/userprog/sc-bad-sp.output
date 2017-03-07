@@ -1,42 +1,27 @@
-Copying tests/userprog/sc-bad-sp into /tmp/L6__f5fAEg.dsk...
-Writing command line to /tmp/NURfbcIml3.dsk...
-qemu -hda /tmp/NURfbcIml3.dsk -hdb /tmp/pCut6_Ezqm.dsk -hdc /tmp/L6__f5fAEg.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/sc-bad-sp into /tmp/NoC_5T2ASz.dsk...
+Writing command line to /tmp/1XVfe77J_U.dsk...
+qemu -hda /tmp/1XVfe77J_U.dsk -hdb /tmp/rbtpFil4AC.dsk -hdc /tmp/NoC_5T2ASz.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put sc-bad-sp run sc-bad-sp
 Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
+372 pages available in kernel pool.
 371 pages available in user pool.
-Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+Calibrating timer...  314,163,200 loops/s.
+hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 97 sector (48 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
 Boot complete.
 Putting 'sc-bad-sp' into the file system...
 Executing 'sc-bad-sp':
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (sc-bad-sp) begin
-Syscall exit
-Start of process_exit()
 sc-bad-sp: exit(-1)
-After sema up in process_exit() Exiting with status -1
-At end of process_exit()
-Awoke from load_sema
-Set new child id to 3
-End of process execute
-In process_wait()
-Cmp children ids: 3 and given 3
-Child found in wait
-Child with exit status -1 has already exited
 Execution of 'sc-bad-sp' complete.
-Timer: 57 ticks
-Thread: 32 idle ticks, 24 kernel ticks, 1 user ticks
+Timer: 60 ticks
+Thread: 35 idle ticks, 25 kernel ticks, 0 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 59 reads, 202 writes
 hd1:0: 97 reads, 0 writes
-Console: 1184 characters output
+Console: 781 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

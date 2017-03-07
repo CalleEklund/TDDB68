@@ -46,6 +46,8 @@ bool is_valid_string(const char* str);
 
 static void syscall_handler (struct intr_frame *);
 
+static bool debug = false;
+
 void
 syscall_init (void) 
 {
@@ -119,19 +121,19 @@ void halt(void)
 
 pid_t exec (const char* cmd_line)
 {
-  printf("Syscall exec\n");
+  if(debug) printf("Syscall exec\n");
 
   if(!is_valid_string(cmd_line))
     exit(ARG_ERROR);
 
   pid_t pid = process_execute(cmd_line);
-  printf("Created process with pid %d\n", pid);
+  if(debug) printf("Created process with pid %d\n", pid);
   return pid;
 }
 
 void exit(int status)
 {
-  printf("Syscall exit\n");
+  if(debug) printf("Syscall exit\n");
   thread_current()->parent->exit_status = status;
   
   thread_exit();
@@ -139,7 +141,7 @@ void exit(int status)
 
 int wait (pid_t pid) 
 {
-  printf("Syscall wait, wait for child with pid %d\n", (int) pid);
+  if(debug) printf("Syscall wait, wait for child with pid %d\n", (int) pid);
   return process_wait ((tid_t) pid);
 }
 
@@ -171,7 +173,6 @@ int open (const char *file)
 void close(int fd)
 { 
   struct thread* current_thread = thread_current();
-  //if (!validate_fd(fd)) return;
   if (!validate_fd(fd))
     exit(ARG_ERROR);
 
@@ -212,7 +213,6 @@ int write(int fd, const void *buffer, unsigned size)
   // file descriptor table.
   
   struct thread* current_thread = thread_current();
-  //if ( !(validate_fd(fd))) return nr_bytes_written;
   if ( !(validate_fd(fd))) exit(ARG_ERROR);
 
   int i = fd - FD_TABLE_OFFSET;
@@ -224,9 +224,6 @@ int write(int fd, const void *buffer, unsigned size)
   }
   else{ 
     nr_bytes_written = (int)file_write(file, buffer, size_var);
-    if (nr_bytes_written == 0){    
-      nr_bytes_written = -1;
-    }
   }
   return nr_bytes_written;
 }
@@ -255,7 +252,6 @@ int read (int fd, void *buffer, unsigned size)
   }
 
   struct thread* current_thread = thread_current();
-  //if ( !(validate_fd(fd))) return nr_bytes_read;
   if ( !(validate_fd(fd))) 
     exit(ARG_ERROR);
 

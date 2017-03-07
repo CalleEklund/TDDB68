@@ -1,13 +1,13 @@
-Copying tests/userprog/exec-once into /tmp/iPf9IBBgng.dsk...
-Copying tests/userprog/child-simple into /tmp/iPf9IBBgng.dsk...
-Writing command line to /tmp/IhyQBW3wFx.dsk...
-qemu -hda /tmp/IhyQBW3wFx.dsk -hdb /tmp/uqi2Wrox7n.dsk -hdc /tmp/iPf9IBBgng.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/exec-once into /tmp/_1buEMPU46.dsk...
+Copying tests/userprog/child-simple into /tmp/_1buEMPU46.dsk...
+Writing command line to /tmp/vl17sv9nzD.dsk...
+qemu -hda /tmp/vl17sv9nzD.dsk -hdb /tmp/crIkXGx1YV.dsk -hdc /tmp/_1buEMPU46.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put exec-once put child-simple run exec-once
 Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
+372 pages available in kernel pool.
 371 pages available in user pool.
 Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 193 sector (96 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
@@ -15,51 +15,18 @@ Boot complete.
 Putting 'exec-once' into the file system...
 Putting 'child-simple' into the file system...
 Executing 'exec-once':
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (exec-once) begin
-Syscall exec
-Before waiting in load_sema
-Awoke from load_sema
-Set new child id to 3
-End of process execute
-In process_wait()
-Cmp children ids: 3 and given 3
-Child found in wait
-Waiting for child to terminate...
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (child-simple) run
-Syscall exit
-Start of process_exit()
 child-simple: exit(81)
-After sema up in process_exit() Exiting with status 81
-At end of process_exit()
-Awoke from load_sema
-Set new child id to 4
-End of process execute
-Created process with pid 4
-Syscall wait, wait for child with pid 4
-In process_wait()
-Cmp children ids: 4 and given 4
-Child found in wait
-Child with exit status 81 has already exited
 (exec-once) end
-Syscall exit
-Start of process_exit()
 exec-once: exit(0)
-After sema up in process_exit() Exiting with status 0
-Child with exit status 0 has now exited
 Execution of 'exec-once' complete.
 Timer: 63 ticks
-Thread: 35 idle ticks, 25 kernel ticks, 3 user ticks
+Thread: 31 idle ticks, 32 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 122 reads, 396 writes
 hd1:0: 193 reads, 0 writes
-Console: 1794 characters output
+Console: 905 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

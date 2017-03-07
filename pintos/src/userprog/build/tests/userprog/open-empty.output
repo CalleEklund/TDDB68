@@ -1,44 +1,28 @@
-Copying tests/userprog/open-empty into /tmp/CNej5aGaEx.dsk...
-Writing command line to /tmp/GotqavXVDI.dsk...
-qemu -hda /tmp/GotqavXVDI.dsk -hdb /tmp/ol1zBfSaMo.dsk -hdc /tmp/CNej5aGaEx.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/open-empty into /tmp/eUKqnLyW82.dsk...
+Writing command line to /tmp/h3k0sqBjM4.dsk...
+qemu -hda /tmp/h3k0sqBjM4.dsk -hdb /tmp/4LlDCjiYqv.dsk -hdc /tmp/eUKqnLyW82.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put open-empty run open-empty
 Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
+372 pages available in kernel pool.
 371 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+Calibrating timer...  261,734,400 loops/s.
+hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 98 sector (49 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
 Boot complete.
 Putting 'open-empty' into the file system...
 Executing 'open-empty':
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (open-empty) begin
-Awoke from load_sema
-Set new child id to 3
-End of process execute
-In process_wait()
-Cmp children ids: 3 and given 3
-Child found in wait
-Waiting for child to terminate...
 (open-empty) end
-Syscall exit
-Start of process_exit()
 open-empty: exit(0)
-After sema up in process_exit() Exiting with status 0
-At end of process_exit()
-Child with exit status 0 has now exited
 Execution of 'open-empty' complete.
-Timer: 59 ticks
-Thread: 31 idle ticks, 28 kernel ticks, 0 user ticks
+Timer: 61 ticks
+Thread: 32 idle ticks, 29 kernel ticks, 0 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 76 reads, 204 writes
 hd1:0: 98 reads, 0 writes
-Console: 1235 characters output
+Console: 804 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

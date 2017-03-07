@@ -1,45 +1,29 @@
-Copying tests/userprog/create-long into /tmp/HGZ88vqsDU.dsk...
-Writing command line to /tmp/Ekq9t6kqIR.dsk...
-qemu -hda /tmp/Ekq9t6kqIR.dsk -hdb /tmp/IIPPNIOJl_.dsk -hdc /tmp/HGZ88vqsDU.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/create-long into /tmp/3WErneEUqi.dsk...
+Writing command line to /tmp/38Y3e4OdY3.dsk...
+qemu -hda /tmp/38Y3e4OdY3.dsk -hdb /tmp/h_SM8TwkZv.dsk -hdc /tmp/3WErneEUqi.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put create-long run create-long
 Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
+372 pages available in kernel pool.
 371 pages available in user pool.
 Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 98 sector (49 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
 Boot complete.
 Putting 'create-long' into the file system...
 Executing 'create-long':
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (create-long) begin
-Awoke from load_sema
-Set new child id to 3
-End of process execute
-In process_wait()
-Cmp children ids: 3 and given 3
-Child found in wait
-Waiting for child to terminate...
 (create-long) create("x..."): 0
 (create-long) end
-Syscall exit
-Start of process_exit()
 create-long: exit(0)
-After sema up in process_exit() Exiting with status 0
-At end of process_exit()
-Child with exit status 0 has now exited
 Execution of 'create-long' complete.
-Timer: 59 ticks
-Thread: 31 idle ticks, 27 kernel ticks, 1 user ticks
+Timer: 58 ticks
+Thread: 32 idle ticks, 26 kernel ticks, 0 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 63 reads, 208 writes
 hd1:0: 98 reads, 0 writes
-Console: 1275 characters output
+Console: 844 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

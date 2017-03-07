@@ -1,22 +1,18 @@
-Copying tests/userprog/args-dbl-space into /tmp/o73ZuKoq1f.dsk...
-Writing command line to /tmp/6G_c63MS9I.dsk...
-qemu -hda /tmp/6G_c63MS9I.dsk -hdb /tmp/8MCVH3Tsw9.dsk -hdc /tmp/o73ZuKoq1f.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/args-dbl-space into /tmp/cMEIyGxA_Z.dsk...
+Writing command line to /tmp/piMfaLfnH4.dsk...
+qemu -hda /tmp/piMfaLfnH4.dsk -hdb /tmp/p2V0zbSWo3.dsk -hdc /tmp/cMEIyGxA_Z.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put args-dbl-space run 'args-dbl-space two  spaces!'
 Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
+372 pages available in kernel pool.
 371 pages available in user pool.
 Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 97 sector (48 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
 Boot complete.
 Putting 'args-dbl-space' into the file system...
 Executing 'args-dbl-space two  spaces!':
-Before waiting in load_sema
-End of setup_stack()
-Before load sema up
-Before last line in start_process()
 (args) begin
 (args) argc = 3
 (args) argv[0] = 'args-dbl-space'
@@ -24,25 +20,14 @@ Before last line in start_process()
 (args) argv[2] = 'spaces!'
 (args) argv[3] = null
 (args) end
-Syscall exit
-Start of process_exit()
 args-dbl-space: exit(0)
-After sema up in process_exit() Exiting with status 0
-At end of process_exit()
-Awoke from load_sema
-Set new child id to 3
-End of process execute
-In process_wait()
-Cmp children ids: 3 and given 3
-Child found in wait
-Child with exit status 0 has already exited
 Execution of 'args-dbl-space two  spaces!' complete.
-Timer: 57 ticks
-Thread: 33 idle ticks, 23 kernel ticks, 1 user ticks
+Timer: 59 ticks
+Thread: 33 idle ticks, 27 kernel ticks, 0 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 59 reads, 202 writes
 hd1:0: 97 reads, 0 writes
-Console: 1380 characters output
+Console: 979 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

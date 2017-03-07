@@ -92,6 +92,8 @@ process_execute (const char *cmd_line)
   child->child = tid;
   if(debug) printf("Set new child id to %d\n", (int) child->child);
   free(pr_args);
+  palloc_free_page(file_name);         // Here or in start_process? Does it matter? 
+  // start process. 
 
   if (tid == TID_ERROR)
     palloc_free_page (cmd_copy); 
@@ -128,7 +130,7 @@ start_process (void *aux)
   sema_up(&(pr_args->load_sema));
 
   /* If load failed, quit. */
-  palloc_free_page (file_name);
+  //palloc_free_page (file_name);
   if (!success) {
     if(debug) printf("Unsuccesfully loaded file_name\n");
     thread_exit ();

@@ -215,6 +215,10 @@ Write-zero tests wants 0 instead of -1.
 
 YEEEEEEEZZZZZZZZZZZZZZZ 50/50 tests passed! Kampai. 
 
+M: 
+
+TODO: Change declaration of load on top of process.c. (different names on const char* parameter (cmdline vs file_name) 
+TODO: We might have to do palloc_free_page() on file_name_extr send to thread_create. When is it safe to do so? Init-thread() copies the name. 
 
 
 

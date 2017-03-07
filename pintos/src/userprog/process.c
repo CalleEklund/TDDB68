@@ -32,7 +32,7 @@ tid_t
 process_execute (const char *cmd_line) 
 {
   char *cmd_copy;
-  tid_t tid;
+  tid_t tid;  
 
   /* Make a copy of CMD_LINE.
      Otherwise there's a race between the caller and load(). */
@@ -84,16 +84,14 @@ process_execute (const char *cmd_line)
     }
   else
     {
-      //printf("Before child push back\n");
+      if(debug) printf("Before child push back\n");
       list_push_back(&thread_current()->children, &(child->elem));
-      //printf("After child push back\n");
     }
 
   child->child = tid;
   if(debug) printf("Set new child id to %d\n", (int) child->child);
   free(pr_args);
-  palloc_free_page(file_name);         // Here or in start_process? Does it matter? 
-  // start process. 
+  palloc_free_page(file_name);        
 
   if (tid == TID_ERROR)
     palloc_free_page (cmd_copy); 
@@ -130,7 +128,6 @@ start_process (void *aux)
   sema_up(&(pr_args->load_sema));
 
   /* If load failed, quit. */
-  //palloc_free_page (file_name);
   if (!success) {
     if(debug) printf("Unsuccesfully loaded file_name\n");
     thread_exit ();
@@ -169,16 +166,19 @@ process_wait (tid_t child_tid)
 	  if(debug) printf("Cmp children ids: %d and given %d\n", child->child, child_tid);
           if (child->child == child_tid) 
 	    {
-	      if(debug) printf("Child found in wait\n");
-	      // Child has terminated
-	      if (child->alive_count == 1) 
+	      if(debug) printf("Child found in wait\n"); 
+	      lock_acquire(&(child->alive_lock));
+	      if (child->alive_count == 1)  
 		{
+		  // Child has terminated
+		  lock_release(&(child->alive_lock));
 		  exit_status = child->exit_status;
 		  if(debug) printf("Child with exit status %d has already exited\n", exit_status);
 		}
-	      // Wait for child to terminate
 	      else 
 		{
+		  // Wait for child to terminate
+		  lock_release(&(child->alive_lock));
 		  if(debug) printf("Waiting for child to terminate...\n");
 		  sema_down(&(child->wait_sema));
 		  exit_status = child->exit_status;
@@ -224,6 +224,7 @@ process_exit (void)
     // do sema up on wait_sema
     else
       {
+	lock_release(&(par->alive_lock));
 	int debug_status = par->exit_status;
 	// release the sema holding process_wait()
 	printf("%s: exit(%d)\n", cur->name, debug_status);
@@ -237,20 +238,21 @@ process_exit (void)
   // Alive count goes from 2 to 1 (terminate before its child) (decr child struct)
   // Alive count goes from 1 to 0 (terminate after its child) (decr child struct)
   //   free the child's struct and remove it from the list
-  struct list_elem* e; 
-  for (e = list_begin (&(cur->children)); e != list_end (&(cur->children)); e = list_next (e))
-      {
-          struct parent_child *child = list_entry (e, struct parent_child, elem);
-	  lock_acquire(&child->alive_lock);
-	  child->alive_count--;
+
+   while (!list_empty (&cur->children))
+     {
+       struct list_elem *e = list_pop_front (&cur->children);
+       struct parent_child *child = list_entry (e, struct parent_child, elem);
+       lock_acquire(&child->alive_lock);
+       child->alive_count--;
           if (child->alive_count == 0) 
 	    {
-	      lock_release(&(child->alive_lock));
-	      list_remove(e);
-	      if(debug) printf("Removed child from children list\n");
+	      lock_release(&child->alive_lock);
 	      free(child);
 	    }
-      }
+	  else lock_release(&child->alive_lock);
+       
+     }
 
   //printf("Before the page dir destruction in process_exit()\n");
   /* Destroy the current process's page directory and switch back

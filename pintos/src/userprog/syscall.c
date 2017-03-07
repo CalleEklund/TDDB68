@@ -325,7 +325,7 @@ Validates all possible pointers in BUFF for SIZE.
 */
 bool is_valid_buff(const void* buff, unsigned size)
 {
-  if(buff == NULL) return false;
+  if(!is_valid_ptr(buff)) return false;
   unsigned b = (unsigned) buff;
   unsigned i;
   for(i=b; i < b +size; i++) {

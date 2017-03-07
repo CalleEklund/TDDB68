@@ -457,7 +457,7 @@ init_thread (struct thread *t, const char *name, int priority)
   
   list_init(&(t->children));
   // initialisation of the wait_lock (only if current thread is a child)
-  if(t->parent != NULL) sema_init(&(t->parent->wait_sema),0);
+  if(t->parent != NULL)  sema_init(&(t->parent->wait_sema),0);
 
   #ifdef USERPROG
   /* Initalize file descriptor table*/

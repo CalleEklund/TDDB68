@@ -1,11 +1,11 @@
-Copying tests/userprog/create-bad-ptr into /tmp/gxRd3NzZ4W.dsk...
-Writing command line to /tmp/E_pz610ULr.dsk...
-qemu -hda /tmp/E_pz610ULr.dsk -hdb /tmp/Xx81D3BSNU.dsk -hdc /tmp/gxRd3NzZ4W.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/create-bad-ptr into /tmp/gMVzFxUpjO.dsk...
+Writing command line to /tmp/K2cyvw5J5w.dsk...
+qemu -hda /tmp/K2cyvw5J5w.dsk -hdb /tmp/IHCjuk4X3y.dsk -hdc /tmp/gMVzFxUpjO.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put create-bad-ptr run create-bad-ptr
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
 371 pages available in user pool.
-Calibrating timer...  419,020,800 loops/s.
+Calibrating timer...  314,163,200 loops/s.
 hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 98 sector (49 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -13,107 +13,30 @@ Formatting file system...done.
 Boot complete.
 Putting 'create-bad-ptr' into the file system...
 Executing 'create-bad-ptr':
-Before child push back
-After child push back
 Before waiting in load_sema
-Writing create-bad-ptr to stack
-Put argv at addr 0xbfffffe4
-Put argc at addr 0xbfffffe0
 End of setup_stack()
-*esp is 0xbfffffdc
-stack contents:
-bfffffd0                                      00 00 00 00 |            ....|
-bfffffe0  01 00 00 00 e8 ff ff bf-f1 ff ff bf 00 00 00 00 |................|
-bffffff0  00 63 72 65 61 74 65 2d-62 61 64 2d 70 74 72 00 |.create-bad-ptr.|
-c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
-c000000f	 	
-c000000e	 	
-c000000d	 	
-c000000c	S	f000ff53	
---------------------------------------------------------------
-c000000b	 	
-c000000a	 	
-c0000009	 	
-c0000008	 	f000e2c3	
---------------------------------------------------------------
-c0000007	 	
-c0000006	 	
-c0000005	 	
-c0000004	S	f000ff53	
---------------------------------------------------------------
-c0000003	 	
-c0000002	 	
-c0000001	 	
-c0000000	S	f000ff53	
-------- the border between KERNEL SPACE and USER SPACE -------
-bfffffff	 	
-bffffffe	r	
-bffffffd	t	
-bffffffc	p	727470	
---------------------------------------------------------------
-bffffffb	-	
-bffffffa	d	
-bffffff9	a	
-bffffff8	b	2d646162	
---------------------------------------------------------------
-bffffff7	-	
-bffffff6	e	
-bffffff5	t	
-bffffff4	a	2d657461	
---------------------------------------------------------------
-bffffff3	e	
-bffffff2	r	
-bffffff1	c	
-bffffff0	 	65726300	
---------------------------------------------------------------
-bfffffef	 	
-bfffffee	 	
-bfffffed	 	
-bfffffec	 	0	
---------------------------------------------------------------
-bfffffeb	 	
-bfffffea	 	
-bfffffe9	 	
-bfffffe8	 	bffffff1	
---------------------------------------------------------------
-bfffffe7	 	
-bfffffe6	 	
-bfffffe5	 	
-bfffffe4	 	bfffffe8	
---------------------------------------------------------------
-bfffffe3	 	
-bfffffe2	 	
-bfffffe1	 	
-bfffffe0	 	1	
---------------------------------------------------------------
-bfffffdf	 	
-bfffffde	 	
-bfffffdd	 	
-bfffffdc	 	0	
---------------------------------------------------------------
+Before load sema up
 Before last line in start_process()
 (create-bad-ptr) begin
+Syscall exit
+Start of process_exit()
+create-bad-ptr: exit(-1)
+After sema up in process_exit() Exiting with status -1
+At end of process_exit()
 Awoke from load_sema
+Set new child id to 3
 End of process execute
 In process_wait()
-Waiting for child to terminate...
-Page fault at 0x20101234: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc010b751
- cr2=20101234 error=00000000
- eax=00000000 ebx=c011b02c ecx=c0114b98 edx=00000007
- esi=20101234 edi=00000000 esp=c011b00c ebp=c011b02c
- cs=0008 ds=0010 es=0010 ss=b01c
-Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070cb 0xc010b751 0 0xc011d00c.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Timer: 63 ticks
-Thread: 30 idle ticks, 25 kernel ticks, 8 user ticks
+Cmp children ids: 3 and given 3
+Child found in wait
+Child with exit status -1 has already exited
+Execution of 'create-bad-ptr' complete.
+Timer: 61 ticks
+Thread: 33 idle ticks, 27 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 62 reads, 207 writes
+hd0:1: 59 reads, 204 writes
 hd1:0: 98 reads, 0 writes
-Console: 3553 characters output
+Console: 1219 characters output
 Keyboard: 0 keys pressed
-Exception: 1 page faults
+Exception: 0 page faults
 Powering off...

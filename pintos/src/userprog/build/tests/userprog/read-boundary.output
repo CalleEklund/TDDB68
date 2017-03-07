@@ -1,7 +1,7 @@
-Copying tests/userprog/read-boundary into /tmp/lskkbOxCa5.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/lskkbOxCa5.dsk...
-Writing command line to /tmp/5gWidAn4Gj.dsk...
-qemu -hda /tmp/5gWidAn4Gj.dsk -hdb /tmp/AZUcvf43wO.dsk -hdc /tmp/lskkbOxCa5.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/read-boundary into /tmp/NY423TEQn2.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/NY423TEQn2.dsk...
+Writing command line to /tmp/M2_QolB3I2.dsk...
+qemu -hda /tmp/M2_QolB3I2.dsk -hdb /tmp/qTghSujsbn.dsk -hdc /tmp/NY423TEQn2.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put read-boundary put sample.txt run read-boundary
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
@@ -15,104 +15,33 @@ Boot complete.
 Putting 'read-boundary' into the file system...
 Putting 'sample.txt' into the file system...
 Executing 'read-boundary':
-Before child push back
-After child push back
 Before waiting in load_sema
-Writing read-boundary to stack
-Put argv at addr 0xbfffffe4
-Put argc at addr 0xbfffffe0
 End of setup_stack()
-*esp is 0xbfffffdc
-stack contents:
-bfffffd0                                      00 00 00 00 |            ....|
-bfffffe0  01 00 00 00 e8 ff ff bf-f2 ff ff bf 00 00 00 00 |................|
-bffffff0  00 00 72 65 61 64 2d 62-6f 75 6e 64 61 72 79 00 |..read-boundary.|
-c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
-c000000f	 	
-c000000e	 	
-c000000d	 	
-c000000c	S	f000ff53	
---------------------------------------------------------------
-c000000b	 	
-c000000a	 	
-c0000009	 	
-c0000008	 	f000e2c3	
---------------------------------------------------------------
-c0000007	 	
-c0000006	 	
-c0000005	 	
-c0000004	S	f000ff53	
---------------------------------------------------------------
-c0000003	 	
-c0000002	 	
-c0000001	 	
-c0000000	S	f000ff53	
-------- the border between KERNEL SPACE and USER SPACE -------
-bfffffff	 	
-bffffffe	y	
-bffffffd	r	
-bffffffc	a	797261	
---------------------------------------------------------------
-bffffffb	d	
-bffffffa	n	
-bffffff9	u	
-bffffff8	o	646e756f	
---------------------------------------------------------------
-bffffff7	b	
-bffffff6	-	
-bffffff5	d	
-bffffff4	a	622d6461	
---------------------------------------------------------------
-bffffff3	e	
-bffffff2	r	
-bffffff1	 	
-bffffff0	 	65720000	
---------------------------------------------------------------
-bfffffef	 	
-bfffffee	 	
-bfffffed	 	
-bfffffec	 	0	
---------------------------------------------------------------
-bfffffeb	 	
-bfffffea	 	
-bfffffe9	 	
-bfffffe8	 	bffffff2	
---------------------------------------------------------------
-bfffffe7	 	
-bfffffe6	 	
-bfffffe5	 	
-bfffffe4	 	bfffffe8	
---------------------------------------------------------------
-bfffffe3	 	
-bfffffe2	 	
-bfffffe1	 	
-bfffffe0	 	1	
---------------------------------------------------------------
-bfffffdf	 	
-bfffffde	 	
-bfffffdd	 	
-bfffffdc	 	0	
---------------------------------------------------------------
+Before load sema up
 Before last line in start_process()
 (read-boundary) begin
 (read-boundary) open "sample.txt"
 Awoke from load_sema
+Set new child id to 3
 End of process execute
 In process_wait()
+Cmp children ids: 3 and given 3
+Child found in wait
 Waiting for child to terminate...
 (read-boundary) end
 Syscall exit
-read-boundary: exit(0)
 Start of process_exit()
-After sema up in process_exit()
+read-boundary: exit(0)
+After sema up in process_exit() Exiting with status 0
 At end of process_exit()
+Child with exit status 0 has now exited
 Execution of 'read-boundary' complete.
-Timer: 72 ticks
-Thread: 31 idle ticks, 30 kernel ticks, 11 user ticks
+Timer: 58 ticks
+Thread: 33 idle ticks, 24 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 99 reads, 220 writes
 hd1:0: 105 reads, 0 writes
-Console: 3212 characters output
+Console: 1355 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

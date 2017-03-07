@@ -1,11 +1,11 @@
-Copying tests/userprog/exec-missing into /tmp/YJjTtveHUv.dsk...
-Writing command line to /tmp/Jpn8veoB_B.dsk...
-qemu -hda /tmp/Jpn8veoB_B.dsk -hdb /tmp/izcGNaJM39.dsk -hdc /tmp/YJjTtveHUv.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/exec-missing into /tmp/K4EsYowgU_.dsk...
+Writing command line to /tmp/TxP2mugfzw.dsk...
+qemu -hda /tmp/TxP2mugfzw.dsk -hdb /tmp/lpEu0snylL.dsk -hdc /tmp/K4EsYowgU_.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put exec-missing run exec-missing
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
 371 pages available in user pool.
-Calibrating timer...  222,412,800 loops/s.
+Calibrating timer...  419,020,800 loops/s.
 hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 98 sector (49 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -45,14 +45,15 @@ Syscall exit
 Start of process_exit()
 exec-missing: exit(0)
 After sema up in process_exit() Exiting with status 0
+At end of process_exit()
 Child with exit status 0 has now exited
 Execution of 'exec-missing' complete.
-Timer: 66 ticks
-Thread: 32 idle ticks, 31 kernel ticks, 3 user ticks
+Timer: 59 ticks
+Thread: 30 idle ticks, 27 kernel ticks, 3 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 76 reads, 204 writes
 hd1:0: 98 reads, 0 writes
-Console: 1633 characters output
+Console: 1658 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

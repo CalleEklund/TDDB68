@@ -1,6 +1,6 @@
-Copying tests/userprog/multi-recurse into /tmp/PySXNM2OIG.dsk...
-Writing command line to /tmp/CItNkWkkf2.dsk...
-qemu -hda /tmp/CItNkWkkf2.dsk -hdb /tmp/TOpmzv6olK.dsk -hdc /tmp/PySXNM2OIG.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/multi-recurse into /tmp/xrPws6qgE7.dsk...
+Writing command line to /tmp/lsMKTwsJBF.dsk...
+qemu -hda /tmp/lsMKTwsJBF.dsk -hdb /tmp/7dChJmRXiV.dsk -hdc /tmp/xrPws6qgE7.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put multi-recurse run 'multi-recurse 15'
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
@@ -13,302 +13,361 @@ Formatting file system...done.
 Boot complete.
 Putting 'multi-recurse' into the file system...
 Executing 'multi-recurse 15':
-Before child push back
-After child push back
 Before waiting in load_sema
-Writing multi-recurse to stack
-Writing 15 to stack
-Put argv at addr 0xbfffffdc
-Put argc at addr 0xbfffffd8
 End of setup_stack()
-*esp is 0xbfffffd4
-stack contents:
-bfffffd0              00 00 00 00-02 00 00 00 e0 ff ff bf |    ............|
-bfffffe0  f2 ff ff bf ef ff ff bf-00 00 00 00 00 00 00 31 |...............1|
-bffffff0  35 00 6d 75 6c 74 69 2d-72 65 63 75 72 73 65 00 |5.multi-recurse.|
-c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
-c000000f	 	
-c000000e	 	
-c000000d	 	
-c000000c	S	f000ff53	
---------------------------------------------------------------
-c000000b	 	
-c000000a	 	
-c0000009	 	
-c0000008	 	f000e2c3	
---------------------------------------------------------------
-c0000007	 	
-c0000006	 	
-c0000005	 	
-c0000004	S	f000ff53	
---------------------------------------------------------------
-c0000003	 	
-c0000002	 	
-c0000001	 	
-c0000000	S	f000ff53	
-------- the border between KERNEL SPACE and USER SPACE -------
-bfffffff	 	
-bffffffe	e	
-bffffffd	s	
-bffffffc	r	657372	
---------------------------------------------------------------
-bffffffb	u	
-bffffffa	c	
-bffffff9	e	
-bffffff8	r	75636572	
---------------------------------------------------------------
-bffffff7	-	
-bffffff6	i	
-bffffff5	t	
-bffffff4	l	2d69746c	
---------------------------------------------------------------
-bffffff3	u	
-bffffff2	m	
-bffffff1	 	
-bffffff0	5	756d0035	
---------------------------------------------------------------
-bfffffef	1	
-bfffffee	 	
-bfffffed	 	
-bfffffec	 	31000000	
---------------------------------------------------------------
-bfffffeb	 	
-bfffffea	 	
-bfffffe9	 	
-bfffffe8	 	0	
---------------------------------------------------------------
-bfffffe7	 	
-bfffffe6	 	
-bfffffe5	 	
-bfffffe4	 	bfffffef	
---------------------------------------------------------------
-bfffffe3	 	
-bfffffe2	 	
-bfffffe1	 	
-bfffffe0	 	bffffff2	
---------------------------------------------------------------
-bfffffdf	 	
-bfffffde	 	
-bfffffdd	 	
-bfffffdc	 	bfffffe0	
---------------------------------------------------------------
-bfffffdb	 	
-bfffffda	 	
-bfffffd9	 	
-bfffffd8	 	2	
---------------------------------------------------------------
-bfffffd7	 	
-bfffffd6	 	
-bfffffd5	 	
-bfffffd4	 	0	
---------------------------------------------------------------
+Before load sema up
 Before last line in start_process()
 (multi-recurse) begin 15
 (multi-recurse) exec("multi-recurse 14")
 Syscall exec
-Before child push back
-After child push back
 Before waiting in load_sema
 Awoke from load_sema
+Set new child id to 3
 End of process execute
 In process_wait()
+Cmp children ids: 3 and given 3
+Child found in wait
 Waiting for child to terminate...
-Writing multi-recurse to stack
-Writing 14 to stack
-Put argv at addr 0xbfffffdc
-Put argc at addr 0xbfffffd8
 End of setup_stack()
-*esp is 0xbfffffd4
-stack contents:
-bfffffd0              00 00 00 00-02 00 00 00 e0 ff ff bf |    ............|
-bfffffe0  f2 ff ff bf ef ff ff bf-00 00 00 00 00 00 00 31 |...............1|
-bffffff0  34 00 6d 75 6c 74 69 2d-72 65 63 75 72 73 65 00 |4.multi-recurse.|
-c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
-c000000f	 	
-c000000e	 	
-c000000d	 	
-c000000c	S	f000ff53	
---------------------------------------------------------------
-c000000b	 	
-c000000a	 	
-c0000009	 	
-c0000008	 	f000e2c3	
---------------------------------------------------------------
-c0000007	 	
-c0000006	 	
-c0000005	 	
-c0000004	S	f000ff53	
---------------------------------------------------------------
-c0000003	 	
-c0000002	 	
-c0000001	 	
-c0000000	S	f000ff53	
-------- the border between KERNEL SPACE and USER SPACE -------
-bfffffff	 	
-bffffffe	e	
-bffffffd	s	
-bffffffc	r	657372	
---------------------------------------------------------------
-bffffffb	u	
-bffffffa	c	
-bffffff9	e	
-bffffff8	r	75636572	
---------------------------------------------------------------
-bffffff7	-	
-bffffff6	i	
-bffffff5	t	
-bffffff4	l	2d69746c	
---------------------------------------------------------------
-bffffff3	u	
-bffffff2	m	
-bffffff1	 	
-bffffff0	4	756d0034	
---------------------------------------------------------------
-bfffffef	1	
-bfffffee	 	
-bfffffed	 	
-bfffffec	 	31000000	
---------------------------------------------------------------
-bfffffeb	 	
-bfffffea	 	
-bfffffe9	 	
-bfffffe8	 	0	
---------------------------------------------------------------
-bfffffe7	 	
-bfffffe6	 	
-bfffffe5	 	
-bfffffe4	 	bfffffef	
---------------------------------------------------------------
-bfffffe3	 	
-bfffffe2	 	
-bfffffe1	 	
-bfffffe0	 	bffffff2	
---------------------------------------------------------------
-bfffffdf	 	
-bfffffde	 	
-bfffffdd	 	
-bfffffdc	 	bfffffe0	
---------------------------------------------------------------
-bfffffdb	 	
-bfffffda	 	
-bfffffd9	 	
-bfffffd8	 	2	
---------------------------------------------------------------
-bfffffd7	 	
-bfffffd6	 	
-bfffffd5	 	
-bfffffd4	 	0	
---------------------------------------------------------------
+Before load sema up
 Before last line in start_process()
 (multi-recurse) begin 14
 (multi-recurse) exec("multi-recurse 13")
 Syscall exec
-Before child push back
-After child push back
 Before waiting in load_sema
 Awoke from load_sema
+Set new child id to 4
 End of process execute
-Syscall wait
+Created process with pid 4
+Syscall wait, wait for child with pid 4
 In process_wait()
-(multi-recurse) wait(exec("multi-recurse 14")) returned 0: FAILED
-Syscall exit
-multi-recurse: exit(1)
-Start of process_exit()
-After sema up in process_exit()
-At end of process_exit()
-Writing multi-recurse to stack
-Writing 13 to stack
-Put argv at addr 0xbfffffdc
-Put argc at addr 0xbfffffd8
+Cmp children ids: 4 and given 4
+Child found in wait
+Waiting for child to terminate...
 End of setup_stack()
-*esp is 0xbfffffd4
-stack contents:
-bfffffd0              00 00 00 00-02 00 00 00 e0 ff ff bf |    ............|
-bfffffe0  f2 ff ff bf ef ff ff bf-00 00 00 00 00 00 00 31 |...............1|
-bffffff0  33 00 6d 75 6c 74 69 2d-72 65 63 75 72 73 65 00 |3.multi-recurse.|
-c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
-c000000f	 	
-c000000e	 	
-c000000d	 	
-c000000c	S	f000ff53	
---------------------------------------------------------------
-c000000b	 	
-c000000a	 	
-c0000009	 	
-c0000008	 	f000e2c3	
---------------------------------------------------------------
-c0000007	 	
-c0000006	 	
-c0000005	 	
-c0000004	S	f000ff53	
---------------------------------------------------------------
-c0000003	 	
-c0000002	 	
-c0000001	 	
-c0000000	S	f000ff53	
-------- the border between KERNEL SPACE and USER SPACE -------
-bfffffff	 	
-bffffffe	e	
-bffffffd	s	
-bffffffc	r	657372	
---------------------------------------------------------------
-bffffffb	u	
-bffffffa	c	
-bffffff9	e	
-bffffff8	r	75636572	
---------------------------------------------------------------
-bffffff7	-	
-bffffff6	i	
-bffffff5	t	
-bffffff4	l	2d69746c	
---------------------------------------------------------------
-bffffff3	u	
-bffffff2	m	
-bffffff1	 	
-bffffff0	3	756d0033	
---------------------------------------------------------------
-bfffffef	1	
-bfffffee	 	
-bfffffed	 	
-bfffffec	 	31000000	
---------------------------------------------------------------
-bfffffeb	 	
-bfffffea	 	
-bfffffe9	 	
-bfffffe8	 	0	
---------------------------------------------------------------
-bfffffe7	 	
-bfffffe6	 	
-bfffffe5	 	
-bfffffe4	 	bfffffef	
---------------------------------------------------------------
-bfffffe3	 	
-bfffffe2	 	
-bfffffe1	 	
-bfffffe0	 	bffffff2	
---------------------------------------------------------------
-bfffffdf	 	
-bfffffde	 	
-bfffffdd	 	
-bfffffdc	 	bfffffe0	
---------------------------------------------------------------
-bfffffdb	 	
-bfffffda	 	
-bfffffd9	 	
-bfffffd8	 	2	
---------------------------------------------------------------
-bfffffd7	 	
-bfffffd6	 	
-bfffffd5	 	
-bfffffd4	 	0	
---------------------------------------------------------------
+Before load sema up
+Before last line in start_process()
+(multi-recurse) begin 13
+(multi-recurse) exec("multi-recurse 12")
+Syscall exec
+Before waiting in load_sema
+Awoke from load_sema
+Set new child id to 5
+End of process execute
+Created process with pid 5
+Syscall wait, wait for child with pid 5
+In process_wait()
+Cmp children ids: 5 and given 5
+Child found in wait
+Waiting for child to terminate...
+End of setup_stack()
+Before load sema up
+Before last line in start_process()
+(multi-recurse) begin 12
+(multi-recurse) exec("multi-recurse 11")
+Syscall exec
+Before waiting in load_sema
+Awoke from load_sema
+Set new child id to 6
+End of process execute
+Created process with pid 6
+Syscall wait, wait for child with pid 6
+In process_wait()
+Cmp children ids: 6 and given 6
+Child found in wait
+Waiting for child to terminate...
+End of setup_stack()
+Before load sema up
+Before last line in start_process()
+(multi-recurse) begin 11
+(multi-recurse) exec("multi-recurse 10")
+Syscall exec
+Before waiting in load_sema
+Awoke from load_sema
+Set new child id to 7
+End of process execute
+Created process with pid 7
+Syscall wait, wait for child with pid 7
+In process_wait()
+Cmp children ids: 7 and given 7
+Child found in wait
+Waiting for child to terminate...
+End of setup_stack()
+Before load sema up
+Before last line in start_process()
+(multi-recurse) begin 10
+(multi-recurse) exec("multi-recurse 9")
+Syscall exec
+Before waiting in load_sema
+Awoke from load_sema
+Set new child id to 8
+End of process execute
+Created process with pid 8
+Syscall wait, wait for child with pid 8
+In process_wait()
+Cmp children ids: 8 and given 8
+Child found in wait
+Waiting for child to terminate...
+End of setup_stack()
+Before load sema up
+Before last line in start_process()
+(multi-recurse) begin 9
+(multi-recurse) exec("multi-recurse 8")
+Syscall exec
+Before waiting in load_sema
+Awoke from load_sema
+Set new child id to 9
+End of process execute
+Created process with pid 9
+Syscall wait, wait for child with pid 9
+In process_wait()
+Cmp children ids: 9 and given 9
+Child found in wait
+Waiting for child to terminate...
+End of setup_stack()
+Before load sema up
+Before last line in start_process()
+(multi-recurse) begin 8
+(multi-recurse) exec("multi-recurse 7")
+Syscall exec
+Before waiting in load_sema
+Awoke from load_sema
+Set new child id to 10
+End of process execute
+Created process with pid 10
+Syscall wait, wait for child with pid 10
+In process_wait()
+Cmp children ids: 10 and given 10
+Child found in wait
+Waiting for child to terminate...
+End of setup_stack()
+Before load sema up
+Before last line in start_process()
+(multi-recurse) begin 7
+(multi-recurse) exec("multi-recurse 6")
+Syscall exec
+Before waiting in load_sema
+Awoke from load_sema
+Set new child id to 11
+End of process execute
+Created process with pid 11
+Syscall wait, wait for child with pid 11
+In process_wait()
+Cmp children ids: 11 and given 11
+Child found in wait
+Waiting for child to terminate...
+End of setup_stack()
+Before load sema up
+Before last line in start_process()
+(multi-recurse) begin 6
+(multi-recurse) exec("multi-recurse 5")
+Syscall exec
+Before waiting in load_sema
+Awoke from load_sema
+Set new child id to 12
+End of process execute
+Created process with pid 12
+Syscall wait, wait for child with pid 12
+In process_wait()
+Cmp children ids: 12 and given 12
+Child found in wait
+Waiting for child to terminate...
+End of setup_stack()
+Before load sema up
+Before last line in start_process()
+(multi-recurse) begin 5
+(multi-recurse) exec("multi-recurse 4")
+Syscall exec
+Before waiting in load_sema
+Awoke from load_sema
+Set new child id to 13
+End of process execute
+Created process with pid 13
+Syscall wait, wait for child with pid 13
+In process_wait()
+Cmp children ids: 13 and given 13
+Child found in wait
+Waiting for child to terminate...
+End of setup_stack()
+Before load sema up
+Before last line in start_process()
+(multi-recurse) begin 4
+(multi-recurse) exec("multi-recurse 3")
+Syscall exec
+Before waiting in load_sema
+Awoke from load_sema
+Set new child id to 14
+End of process execute
+Created process with pid 14
+Syscall wait, wait for child with pid 14
+In process_wait()
+Cmp children ids: 14 and given 14
+Child found in wait
+Waiting for child to terminate...
+End of setup_stack()
+Before load sema up
+Before last line in start_process()
+(multi-recurse) begin 3
+(multi-recurse) exec("multi-recurse 2")
+Syscall exec
+Before waiting in load_sema
+Awoke from load_sema
+Set new child id to 15
+End of process execute
+Created process with pid 15
+Syscall wait, wait for child with pid 15
+In process_wait()
+Cmp children ids: 15 and given 15
+Child found in wait
+Waiting for child to terminate...
+End of setup_stack()
+Before load sema up
+Before last line in start_process()
+(multi-recurse) begin 2
+(multi-recurse) exec("multi-recurse 1")
+Syscall exec
+Before waiting in load_sema
+Awoke from load_sema
+Set new child id to 16
+End of process execute
+Created process with pid 16
+Syscall wait, wait for child with pid 16
+In process_wait()
+Cmp children ids: 16 and given 16
+Child found in wait
+Waiting for child to terminate...
+End of setup_stack()
+Before load sema up
+Before last line in start_process()
+(multi-recurse) begin 1
+(multi-recurse) exec("multi-recurse 0")
+Syscall exec
+Before waiting in load_sema
+Awoke from load_sema
+Set new child id to 17
+End of process execute
+Created process with pid 17
+Syscall wait, wait for child with pid 17
+In process_wait()
+Cmp children ids: 17 and given 17
+Child found in wait
+Waiting for child to terminate...
+End of setup_stack()
+Before load sema up
+Before last line in start_process()
+(multi-recurse) begin 0
+(multi-recurse) end 0
+Syscall exit
+Start of process_exit()
+multi-recurse: exit(0)
+After sema up in process_exit() Exiting with status 0
+At end of process_exit()
+Awoke from load_sema
+Set new child id to 18
+End of process execute
+Created process with pid 18
+Syscall wait, wait for child with pid 18
+In process_wait()
+Cmp children ids: 18 and given 18
+Child found in wait
+Child with exit status 0 has already exited
+(multi-recurse) end 1
+Syscall exit
+Start of process_exit()
+multi-recurse: exit(1)
+After sema up in process_exit() Exiting with status 1
+Child with exit status 1 has now exited
+(multi-recurse) end 2
+Syscall exit
+Start of process_exit()
+multi-recurse: exit(2)
+After sema up in process_exit() Exiting with status 2
+Child with exit status 2 has now exited
+(multi-recurse) end 3
+Syscall exit
+Start of process_exit()
+multi-recurse: exit(3)
+After sema up in process_exit() Exiting with status 3
+Child with exit status 3 has now exited
+(multi-recurse) end 4
+Syscall exit
+Start of process_exit()
+multi-recurse: exit(4)
+After sema up in process_exit() Exiting with status 4
+Child with exit status 4 has now exited
+(multi-recurse) end 5
+Syscall exit
+Start of process_exit()
+multi-recurse: exit(5)
+After sema up in process_exit() Exiting with status 5
+Child with exit status 5 has now exited
+(multi-recurse) end 6
+Syscall exit
+Start of process_exit()
+multi-recurse: exit(6)
+After sema up in process_exit() Exiting with status 6
+Child with exit status 6 has now exited
+(multi-recurse) end 7
+Syscall exit
+Start of process_exit()
+multi-recurse: exit(7)
+After sema up in process_exit() Exiting with status 7
+Child with exit status 7 has now exited
+(multi-recurse) end 8
+Syscall exit
+Start of process_exit()
+multi-recurse: exit(8)
+After sema up in process_exit() Exiting with status 8
+Child with exit status 8 has now exited
+(multi-recurse) end 9
+Syscall exit
+Start of process_exit()
+multi-recurse: exit(9)
+After sema up in process_exit() Exiting with status 9
+Child with exit status 9 has now exited
+(multi-recurse) end 10
+Syscall exit
+Start of process_exit()
+multi-recurse: exit(10)
+After sema up in process_exit() Exiting with status 10
+Child with exit status 10 has now exited
+(multi-recurse) end 11
+Syscall exit
+Start of process_exit()
+multi-recurse: exit(11)
+After sema up in process_exit() Exiting with status 11
+Child with exit status 11 has now exited
+(multi-recurse) end 12
+Syscall exit
+Start of process_exit()
+multi-recurse: exit(12)
+After sema up in process_exit() Exiting with status 12
+Child with exit status 12 has now exited
+(multi-recurse) end 13
+Syscall exit
+Start of process_exit()
+multi-recurse: exit(13)
+After sema up in process_exit() Exiting with status 13
+Child with exit status 13 has now exited
+(multi-recurse) end 14
+Syscall exit
+Start of process_exit()
+multi-recurse: exit(14)
+After sema up in process_exit() Exiting with status 14
+Child with exit status 14 has now exited
+(multi-recurse) end 15
+Syscall exit
+Start of process_exit()
+multi-recurse: exit(15)
+After sema up in process_exit() Exiting with status 15
+Child with exit status 15 has now exited
 Execution of 'multi-recurse 15' complete.
-Timer: 89 ticks
-Thread: 32 idle ticks, 29 kernel ticks, 28 user ticks
+Timer: 99 ticks
+Thread: 37 idle ticks, 25 kernel ticks, 37 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 108 reads, 228 writes
+hd0:1: 654 reads, 228 writes
 hd1:0: 110 reads, 0 writes
-Console: 8325 characters output
+Console: 10253 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

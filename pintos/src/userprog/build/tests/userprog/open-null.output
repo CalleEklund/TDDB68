@@ -1,6 +1,6 @@
-Copying tests/userprog/open-null into /tmp/5ywLUfQPx1.dsk...
-Writing command line to /tmp/owivkdLYzp.dsk...
-qemu -hda /tmp/owivkdLYzp.dsk -hdb /tmp/UuZA6_eiN0.dsk -hdc /tmp/5ywLUfQPx1.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/open-null into /tmp/QqU_G8lz66.dsk...
+Writing command line to /tmp/cbk2oAqJ4A.dsk...
+qemu -hda /tmp/cbk2oAqJ4A.dsk -hdb /tmp/w0VkWNgeqp.dsk -hdc /tmp/QqU_G8lz66.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put open-null run open-null
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
@@ -13,95 +13,30 @@ Formatting file system...done.
 Boot complete.
 Putting 'open-null' into the file system...
 Executing 'open-null':
-Before child push back
-After child push back
 Before waiting in load_sema
-Writing open-null to stack
-Put argv at addr 0xbfffffe8
-Put argc at addr 0xbfffffe4
 End of setup_stack()
-*esp is 0xbfffffe0
-stack contents:
-bfffffe0  00 00 00 00 01 00 00 00-ec ff ff bf f6 ff ff bf |................|
-bffffff0  00 00 00 00 00 00 6f 70-65 6e 2d 6e 75 6c 6c 00 |......open-null.|
-c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
-c000000f	 	
-c000000e	 	
-c000000d	 	
-c000000c	S	f000ff53	
---------------------------------------------------------------
-c000000b	 	
-c000000a	 	
-c0000009	 	
-c0000008	 	f000e2c3	
---------------------------------------------------------------
-c0000007	 	
-c0000006	 	
-c0000005	 	
-c0000004	S	f000ff53	
---------------------------------------------------------------
-c0000003	 	
-c0000002	 	
-c0000001	 	
-c0000000	S	f000ff53	
-------- the border between KERNEL SPACE and USER SPACE -------
-bfffffff	 	
-bffffffe	l	
-bffffffd	l	
-bffffffc	u	6c6c75	
---------------------------------------------------------------
-bffffffb	n	
-bffffffa	-	
-bffffff9	n	
-bffffff8	e	6e2d6e65	
---------------------------------------------------------------
-bffffff7	p	
-bffffff6	o	
-bffffff5	 	
-bffffff4	 	706f0000	
---------------------------------------------------------------
-bffffff3	 	
-bffffff2	 	
-bffffff1	 	
-bffffff0	 	0	
---------------------------------------------------------------
-bfffffef	 	
-bfffffee	 	
-bfffffed	 	
-bfffffec	 	bffffff6	
---------------------------------------------------------------
-bfffffeb	 	
-bfffffea	 	
-bfffffe9	 	
-bfffffe8	 	bfffffec	
---------------------------------------------------------------
-bfffffe7	 	
-bfffffe6	 	
-bfffffe5	 	
-bfffffe4	 	1	
---------------------------------------------------------------
-bfffffe3	 	
-bfffffe2	 	
-bfffffe1	 	
-bfffffe0	 	0	
---------------------------------------------------------------
+Before load sema up
 Before last line in start_process()
 (open-null) begin
+Syscall exit
+Start of process_exit()
+open-null: exit(-1)
+After sema up in process_exit() Exiting with status -1
+At end of process_exit()
 Awoke from load_sema
+Set new child id to 3
 End of process execute
 In process_wait()
-Waiting for child to terminate...
-Kernel PANIC at ../../filesys/directory.c:125 in dir_lookup(): assertion `name != NULL' failed.
-Call stack: 0xc01070cb 0x804a15f 0x80480af.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Timer: 65 ticks
-Thread: 32 idle ticks, 26 kernel ticks, 7 user ticks
+Cmp children ids: 3 and given 3
+Child found in wait
+Child with exit status -1 has already exited
+Execution of 'open-null' complete.
+Timer: 58 ticks
+Thread: 32 idle ticks, 25 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 60 reads, 202 writes
+hd0:1: 59 reads, 202 writes
 hd1:0: 97 reads, 0 writes
-Console: 3012 characters output
+Console: 1184 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

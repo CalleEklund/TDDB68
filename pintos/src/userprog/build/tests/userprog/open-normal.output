@@ -1,7 +1,7 @@
-Copying tests/userprog/open-normal into /tmp/JTkDMWtPgh.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/JTkDMWtPgh.dsk...
-Writing command line to /tmp/ckUJo3Gml5.dsk...
-qemu -hda /tmp/ckUJo3Gml5.dsk -hdb /tmp/70l32JExT0.dsk -hdc /tmp/JTkDMWtPgh.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/open-normal into /tmp/QeDgUCZlI7.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/QeDgUCZlI7.dsk...
+Writing command line to /tmp/NPCErkvxHB.dsk...
+qemu -hda /tmp/NPCErkvxHB.dsk -hdb /tmp/VTq3nlLX1z.dsk -hdc /tmp/QeDgUCZlI7.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put open-normal put sample.txt run open-normal
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
@@ -15,97 +15,32 @@ Boot complete.
 Putting 'open-normal' into the file system...
 Putting 'sample.txt' into the file system...
 Executing 'open-normal':
-Before child push back
-After child push back
 Before waiting in load_sema
-Writing open-normal to stack
-Put argv at addr 0xbfffffe8
-Put argc at addr 0xbfffffe4
 End of setup_stack()
-*esp is 0xbfffffe0
-stack contents:
-bfffffe0  00 00 00 00 01 00 00 00-ec ff ff bf f4 ff ff bf |................|
-bffffff0  00 00 00 00 6f 70 65 6e-2d 6e 6f 72 6d 61 6c 00 |....open-normal.|
-c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
-c000000f	 	
-c000000e	 	
-c000000d	 	
-c000000c	S	f000ff53	
---------------------------------------------------------------
-c000000b	 	
-c000000a	 	
-c0000009	 	
-c0000008	 	f000e2c3	
---------------------------------------------------------------
-c0000007	 	
-c0000006	 	
-c0000005	 	
-c0000004	S	f000ff53	
---------------------------------------------------------------
-c0000003	 	
-c0000002	 	
-c0000001	 	
-c0000000	S	f000ff53	
-------- the border between KERNEL SPACE and USER SPACE -------
-bfffffff	 	
-bffffffe	l	
-bffffffd	a	
-bffffffc	m	6c616d	
---------------------------------------------------------------
-bffffffb	r	
-bffffffa	o	
-bffffff9	n	
-bffffff8	-	726f6e2d	
---------------------------------------------------------------
-bffffff7	n	
-bffffff6	e	
-bffffff5	p	
-bffffff4	o	6e65706f	
---------------------------------------------------------------
-bffffff3	 	
-bffffff2	 	
-bffffff1	 	
-bffffff0	 	0	
---------------------------------------------------------------
-bfffffef	 	
-bfffffee	 	
-bfffffed	 	
-bfffffec	 	bffffff4	
---------------------------------------------------------------
-bfffffeb	 	
-bfffffea	 	
-bfffffe9	 	
-bfffffe8	 	bfffffec	
---------------------------------------------------------------
-bfffffe7	 	
-bfffffe6	 	
-bfffffe5	 	
-bfffffe4	 	1	
---------------------------------------------------------------
-bfffffe3	 	
-bfffffe2	 	
-bfffffe1	 	
-bfffffe0	 	0	
---------------------------------------------------------------
+Before load sema up
 Before last line in start_process()
 (open-normal) begin
 Awoke from load_sema
+Set new child id to 3
 End of process execute
 In process_wait()
+Cmp children ids: 3 and given 3
+Child found in wait
 Waiting for child to terminate...
 (open-normal) end
 Syscall exit
-open-normal: exit(0)
 Start of process_exit()
-After sema up in process_exit()
+open-normal: exit(0)
+After sema up in process_exit() Exiting with status 0
 At end of process_exit()
+Child with exit status 0 has now exited
 Execution of 'open-normal' complete.
-Timer: 65 ticks
-Thread: 31 idle ticks, 28 kernel ticks, 7 user ticks
+Timer: 61 ticks
+Thread: 31 idle ticks, 29 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 90 reads, 210 writes
 hd1:0: 100 reads, 0 writes
-Console: 2962 characters output
+Console: 1305 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

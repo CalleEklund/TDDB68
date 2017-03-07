@@ -1,6 +1,6 @@
-Copying tests/userprog/read-stdout into /tmp/YCK5ZLl_Um.dsk...
-Writing command line to /tmp/KFo2TgDwEY.dsk...
-qemu -hda /tmp/KFo2TgDwEY.dsk -hdb /tmp/N7wHtvahzu.dsk -hdc /tmp/YCK5ZLl_Um.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/read-stdout into /tmp/eeS43dlK_y.dsk...
+Writing command line to /tmp/pSfIifan45.dsk...
+qemu -hda /tmp/pSfIifan45.dsk -hdb /tmp/yXqWfJHihs.dsk -hdc /tmp/eeS43dlK_y.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put read-stdout run read-stdout
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
@@ -13,96 +13,31 @@ Formatting file system...done.
 Boot complete.
 Putting 'read-stdout' into the file system...
 Executing 'read-stdout':
-Before child push back
-After child push back
 Before waiting in load_sema
-Writing read-stdout to stack
-Put argv at addr 0xbfffffe8
-Put argc at addr 0xbfffffe4
 End of setup_stack()
-*esp is 0xbfffffe0
-stack contents:
-bfffffe0  00 00 00 00 01 00 00 00-ec ff ff bf f4 ff ff bf |................|
-bffffff0  00 00 00 00 72 65 61 64-2d 73 74 64 6f 75 74 00 |....read-stdout.|
-c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
-c000000f	 	
-c000000e	 	
-c000000d	 	
-c000000c	S	f000ff53	
---------------------------------------------------------------
-c000000b	 	
-c000000a	 	
-c0000009	 	
-c0000008	 	f000e2c3	
---------------------------------------------------------------
-c0000007	 	
-c0000006	 	
-c0000005	 	
-c0000004	S	f000ff53	
---------------------------------------------------------------
-c0000003	 	
-c0000002	 	
-c0000001	 	
-c0000000	S	f000ff53	
-------- the border between KERNEL SPACE and USER SPACE -------
-bfffffff	 	
-bffffffe	t	
-bffffffd	u	
-bffffffc	o	74756f	
---------------------------------------------------------------
-bffffffb	d	
-bffffffa	t	
-bffffff9	s	
-bffffff8	-	6474732d	
---------------------------------------------------------------
-bffffff7	d	
-bffffff6	a	
-bffffff5	e	
-bffffff4	r	64616572	
---------------------------------------------------------------
-bffffff3	 	
-bffffff2	 	
-bffffff1	 	
-bffffff0	 	0	
---------------------------------------------------------------
-bfffffef	 	
-bfffffee	 	
-bfffffed	 	
-bfffffec	 	bffffff4	
---------------------------------------------------------------
-bfffffeb	 	
-bfffffea	 	
-bfffffe9	 	
-bfffffe8	 	bfffffec	
---------------------------------------------------------------
-bfffffe7	 	
-bfffffe6	 	
-bfffffe5	 	
-bfffffe4	 	1	
---------------------------------------------------------------
-bfffffe3	 	
-bfffffe2	 	
-bfffffe1	 	
-bfffffe0	 	0	
---------------------------------------------------------------
+Before load sema up
 Before last line in start_process()
 (read-stdout) begin
 (read-stdout) end
 Syscall exit
-read-stdout: exit(0)
 Start of process_exit()
-After sema up in process_exit()
+read-stdout: exit(0)
+After sema up in process_exit() Exiting with status 0
 At end of process_exit()
 Awoke from load_sema
+Set new child id to 3
 End of process execute
 In process_wait()
+Cmp children ids: 3 and given 3
+Child found in wait
+Child with exit status 0 has already exited
 Execution of 'read-stdout' complete.
-Timer: 65 ticks
-Thread: 30 idle ticks, 29 kernel ticks, 7 user ticks
+Timer: 60 ticks
+Thread: 33 idle ticks, 27 kernel ticks, 0 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 59 reads, 202 writes
 hd1:0: 97 reads, 0 writes
-Console: 2866 characters output
+Console: 1213 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

@@ -1,7 +1,7 @@
-Copying tests/userprog/exec-multiple into /tmp/Hnu4CCIIi3.dsk...
-Copying tests/userprog/child-simple into /tmp/Hnu4CCIIi3.dsk...
-Writing command line to /tmp/mb8zLwTM4h.dsk...
-qemu -hda /tmp/mb8zLwTM4h.dsk -hdb /tmp/ssxAA7xRtz.dsk -hdc /tmp/Hnu4CCIIi3.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/exec-multiple into /tmp/97B73UoxDc.dsk...
+Copying tests/userprog/child-simple into /tmp/97B73UoxDc.dsk...
+Writing command line to /tmp/mk2mG85VOO.dsk...
+qemu -hda /tmp/mk2mG85VOO.dsk -hdb /tmp/x955fHfUAH.dsk -hdc /tmp/97B73UoxDc.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put exec-multiple put child-simple run exec-multiple
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
@@ -15,117 +15,117 @@ Boot complete.
 Putting 'exec-multiple' into the file system...
 Putting 'child-simple' into the file system...
 Executing 'exec-multiple':
-Before child push back
-After child push back
 Before waiting in load_sema
-Value of load_sema in pr_execute: 0
-Writing exec-multiple to stack
-Put argv at addr 0xbfffffe4
-Put argc at addr 0xbfffffe0
 End of setup_stack()
 Before load sema up
 Before last line in start_process()
 (exec-multiple) begin
 Syscall exec
-Before child push back
-After child push back
 Before waiting in load_sema
-Value of load_sema in pr_execute: 0
 Awoke from load_sema
+Set new child id to 3
 End of process execute
 In process_wait()
+Cmp children ids: 3 and given 3
+Child found in wait
 Waiting for child to terminate...
-Writing child-simple to stack
-Put argv at addr 0xbfffffe4
-Put argc at addr 0xbfffffe0
 End of setup_stack()
 Before load sema up
 Before last line in start_process()
 (child-simple) run
 Syscall exit
-child-simple: exit(81)
 Start of process_exit()
-After sema up in process_exit()
+child-simple: exit(81)
+After sema up in process_exit() Exiting with status 81
 At end of process_exit()
 Awoke from load_sema
+Set new child id to 4
 End of process execute
-Syscall wait
+Created process with pid 4
+Syscall wait, wait for child with pid 4
 In process_wait()
+Cmp children ids: 4 and given 4
+Child found in wait
+Child with exit status 81 has already exited
 Syscall exec
-Before child push back
-After child push back
 Before waiting in load_sema
-Value of load_sema in pr_execute: 0
-Writing child-simple to stack
-Put argv at addr 0xbfffffe4
-Put argc at addr 0xbfffffe0
 End of setup_stack()
 Before load sema up
 Before last line in start_process()
 (child-simple) run
 Syscall exit
-child-simple: exit(81)
 Start of process_exit()
-After sema up in process_exit()
+child-simple: exit(81)
+After sema up in process_exit() Exiting with status 81
 At end of process_exit()
 Awoke from load_sema
+Set new child id to 5
 End of process execute
-Syscall wait
+Created process with pid 5
+Syscall wait, wait for child with pid 5
 In process_wait()
+Cmp children ids: 4 and given 5
+Cmp children ids: 5 and given 5
+Child found in wait
+Child with exit status 81 has already exited
 Syscall exec
-Before child push back
-After child push back
 Before waiting in load_sema
-Value of load_sema in pr_execute: 0
-Writing child-simple to stack
-Put argv at addr 0xbfffffe4
-Put argc at addr 0xbfffffe0
 End of setup_stack()
 Before load sema up
 Before last line in start_process()
 (child-simple) run
 Syscall exit
-child-simple: exit(81)
 Start of process_exit()
-After sema up in process_exit()
+child-simple: exit(81)
+After sema up in process_exit() Exiting with status 81
 At end of process_exit()
 Awoke from load_sema
+Set new child id to 6
 End of process execute
-Syscall wait
+Created process with pid 6
+Syscall wait, wait for child with pid 6
 In process_wait()
+Cmp children ids: 4 and given 6
+Cmp children ids: 5 and given 6
+Cmp children ids: 6 and given 6
+Child found in wait
+Child with exit status 81 has already exited
 Syscall exec
-Before child push back
-After child push back
 Before waiting in load_sema
-Value of load_sema in pr_execute: 0
-Writing child-simple to stack
-Put argv at addr 0xbfffffe4
-Put argc at addr 0xbfffffe0
 End of setup_stack()
 Before load sema up
 Before last line in start_process()
 (child-simple) run
 Syscall exit
-child-simple: exit(81)
 Start of process_exit()
-After sema up in process_exit()
+child-simple: exit(81)
+After sema up in process_exit() Exiting with status 81
 At end of process_exit()
 Awoke from load_sema
+Set new child id to 7
 End of process execute
-Syscall wait
+Created process with pid 7
+Syscall wait, wait for child with pid 7
 In process_wait()
+Cmp children ids: 4 and given 7
+Cmp children ids: 5 and given 7
+Cmp children ids: 6 and given 7
+Cmp children ids: 7 and given 7
+Child found in wait
+Child with exit status 81 has already exited
 (exec-multiple) end
 Syscall exit
-exec-multiple: exit(0)
 Start of process_exit()
-After sema up in process_exit()
+exec-multiple: exit(0)
+After sema up in process_exit() Exiting with status 0
+Child with exit status 0 has now exited
 Execution of 'exec-multiple' complete.
-Timer: 68 ticks
-Thread: 35 idle ticks, 24 kernel ticks, 9 user ticks
+Timer: 72 ticks
+Thread: 34 idle ticks, 27 kernel ticks, 11 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 230 reads, 398 writes
 hd1:0: 194 reads, 0 writes
-Console: 3317 characters output
+Console: 3594 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

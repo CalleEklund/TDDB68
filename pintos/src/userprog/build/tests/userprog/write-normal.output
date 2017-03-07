@@ -1,7 +1,7 @@
-Copying tests/userprog/write-normal into /tmp/u5FSlliSo5.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/u5FSlliSo5.dsk...
-Writing command line to /tmp/06nHKBDc8U.dsk...
-qemu -hda /tmp/06nHKBDc8U.dsk -hdb /tmp/9BpPz4SSz9.dsk -hdc /tmp/u5FSlliSo5.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/write-normal into /tmp/AAhSUWH16C.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/AAhSUWH16C.dsk...
+Writing command line to /tmp/AV0tPQwvXs.dsk...
+qemu -hda /tmp/AV0tPQwvXs.dsk -hdb /tmp/Kgfx80Xg0T.dsk -hdc /tmp/AAhSUWH16C.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put write-normal put sample.txt run write-normal
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
@@ -15,105 +15,34 @@ Boot complete.
 Putting 'write-normal' into the file system...
 Putting 'sample.txt' into the file system...
 Executing 'write-normal':
-Before child push back
-After child push back
 Before waiting in load_sema
-Writing write-normal to stack
-Put argv at addr 0xbfffffe4
-Put argc at addr 0xbfffffe0
 End of setup_stack()
-*esp is 0xbfffffdc
-stack contents:
-bfffffd0                                      00 00 00 00 |            ....|
-bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
-bffffff0  00 00 00 77 72 69 74 65-2d 6e 6f 72 6d 61 6c 00 |...write-normal.|
-c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
-c000000f	 	
-c000000e	 	
-c000000d	 	
-c000000c	S	f000ff53	
---------------------------------------------------------------
-c000000b	 	
-c000000a	 	
-c0000009	 	
-c0000008	 	f000e2c3	
---------------------------------------------------------------
-c0000007	 	
-c0000006	 	
-c0000005	 	
-c0000004	S	f000ff53	
---------------------------------------------------------------
-c0000003	 	
-c0000002	 	
-c0000001	 	
-c0000000	S	f000ff53	
-------- the border between KERNEL SPACE and USER SPACE -------
-bfffffff	 	
-bffffffe	l	
-bffffffd	a	
-bffffffc	m	6c616d	
---------------------------------------------------------------
-bffffffb	r	
-bffffffa	o	
-bffffff9	n	
-bffffff8	-	726f6e2d	
---------------------------------------------------------------
-bffffff7	e	
-bffffff6	t	
-bffffff5	i	
-bffffff4	r	65746972	
---------------------------------------------------------------
-bffffff3	w	
-bffffff2	 	
-bffffff1	 	
-bffffff0	 	77000000	
---------------------------------------------------------------
-bfffffef	 	
-bfffffee	 	
-bfffffed	 	
-bfffffec	 	0	
---------------------------------------------------------------
-bfffffeb	 	
-bfffffea	 	
-bfffffe9	 	
-bfffffe8	 	bffffff3	
---------------------------------------------------------------
-bfffffe7	 	
-bfffffe6	 	
-bfffffe5	 	
-bfffffe4	 	bfffffe8	
---------------------------------------------------------------
-bfffffe3	 	
-bfffffe2	 	
-bfffffe1	 	
-bfffffe0	 	1	
---------------------------------------------------------------
-bfffffdf	 	
-bfffffde	 	
-bfffffdd	 	
-bfffffdc	 	0	
---------------------------------------------------------------
+Before load sema up
 Before last line in start_process()
 (write-normal) begin
 (write-normal) create "test.txt"
 Awoke from load_sema
+Set new child id to 3
 End of process execute
 In process_wait()
+Cmp children ids: 3 and given 3
+Child found in wait
 Waiting for child to terminate...
 (write-normal) open "test.txt"
 (write-normal) end
 Syscall exit
-write-normal: exit(0)
 Start of process_exit()
-After sema up in process_exit()
+write-normal: exit(0)
+After sema up in process_exit() Exiting with status 0
 At end of process_exit()
+Child with exit status 0 has now exited
 Execution of 'write-normal' complete.
-Timer: 71 ticks
-Thread: 32 idle ticks, 27 kernel ticks, 12 user ticks
+Timer: 61 ticks
+Thread: 33 idle ticks, 27 kernel ticks, 2 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 122 reads, 220 writes
 hd1:0: 102 reads, 0 writes
-Console: 3234 characters output
+Console: 1378 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

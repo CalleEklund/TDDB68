@@ -28,8 +28,8 @@ Differences in `diff -u' format:
 + Before last line in start_process()
   (child-simple) run
 + Syscall exit
-  child-simple: exit(81)
 + Start of process_exit()
+  child-simple: exit(81)
 + After sema up in process_exit() Exiting with status 81
 + At end of process_exit()
 + Awoke from load_sema
@@ -44,7 +44,7 @@ Differences in `diff -u' format:
   (wait-simple) wait(exec()) = 81
   (wait-simple) end
 + Syscall exit
-  wait-simple: exit(0)
 + Start of process_exit()
+  wait-simple: exit(0)
 + After sema up in process_exit() Exiting with status 0
 + Child with exit status 0 has now exited

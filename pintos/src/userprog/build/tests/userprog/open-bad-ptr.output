@@ -1,6 +1,6 @@
-Copying tests/userprog/open-bad-ptr into /tmp/i9nuc98nv8.dsk...
-Writing command line to /tmp/S7QhZ92DNG.dsk...
-qemu -hda /tmp/S7QhZ92DNG.dsk -hdb /tmp/WwOcR_zrZN.dsk -hdc /tmp/i9nuc98nv8.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/open-bad-ptr into /tmp/4PdZ0EzHgN.dsk...
+Writing command line to /tmp/eIbJtfsbhG.dsk...
+qemu -hda /tmp/eIbJtfsbhG.dsk -hdb /tmp/n8AdCtdFmP.dsk -hdc /tmp/4PdZ0EzHgN.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put open-bad-ptr run open-bad-ptr
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
@@ -13,110 +13,30 @@ Formatting file system...done.
 Boot complete.
 Putting 'open-bad-ptr' into the file system...
 Executing 'open-bad-ptr':
-Before child push back
-After child push back
 Before waiting in load_sema
-Writing open-bad-ptr to stack
-Put argv at addr 0xbfffffe4
-Put argc at addr 0xbfffffe0
 End of setup_stack()
-*esp is 0xbfffffdc
-stack contents:
-bfffffd0                                      00 00 00 00 |            ....|
-bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
-bffffff0  00 00 00 6f 70 65 6e 2d-62 61 64 2d 70 74 72 00 |...open-bad-ptr.|
-c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
-c000000f	 	
-c000000e	 	
-c000000d	 	
-c000000c	S	f000ff53	
---------------------------------------------------------------
-c000000b	 	
-c000000a	 	
-c0000009	 	
-c0000008	 	f000e2c3	
---------------------------------------------------------------
-c0000007	 	
-c0000006	 	
-c0000005	 	
-c0000004	S	f000ff53	
---------------------------------------------------------------
-c0000003	 	
-c0000002	 	
-c0000001	 	
-c0000000	S	f000ff53	
-------- the border between KERNEL SPACE and USER SPACE -------
-bfffffff	 	
-bffffffe	r	
-bffffffd	t	
-bffffffc	p	727470	
---------------------------------------------------------------
-bffffffb	-	
-bffffffa	d	
-bffffff9	a	
-bffffff8	b	2d646162	
---------------------------------------------------------------
-bffffff7	-	
-bffffff6	n	
-bffffff5	e	
-bffffff4	p	2d6e6570	
---------------------------------------------------------------
-bffffff3	o	
-bffffff2	 	
-bffffff1	 	
-bffffff0	 	6f000000	
---------------------------------------------------------------
-bfffffef	 	
-bfffffee	 	
-bfffffed	 	
-bfffffec	 	0	
---------------------------------------------------------------
-bfffffeb	 	
-bfffffea	 	
-bfffffe9	 	
-bfffffe8	 	bffffff3	
---------------------------------------------------------------
-bfffffe7	 	
-bfffffe6	 	
-bfffffe5	 	
-bfffffe4	 	bfffffe8	
---------------------------------------------------------------
-bfffffe3	 	
-bfffffe2	 	
-bfffffe1	 	
-bfffffe0	 	1	
---------------------------------------------------------------
-bfffffdf	 	
-bfffffde	 	
-bfffffdd	 	
-bfffffdc	 	0	
---------------------------------------------------------------
+Before load sema up
 Before last line in start_process()
 (open-bad-ptr) begin
+Syscall exit
+Start of process_exit()
+open-bad-ptr: exit(-1)
+After sema up in process_exit() Exiting with status -1
+At end of process_exit()
 Awoke from load_sema
+Set new child id to 3
 End of process execute
 In process_wait()
-Waiting for child to terminate...
-Page fault at 0x20101234: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc01067a6
- cr2=20101234 error=00000000
- eax=20101234 ebx=00000000 ecx=20101234 edx=c0122e7c
- esi=00000001 edi=c011b02c esp=c011c20c ebp=c0122e78
- cs=0008 ds=0010 es=0010 ss=0014
-Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070cb 0xc01067a6 0x6e65706fPage fault at 0x4: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc0105307
- cr2=00000004 error=00000000
- eax=0000000b ebx=00000004 ecx=000007ac edx=000003d4
- esi=00000064 edi=c010cf91 esp=c010e237 ebp=c0122d28
- cs=0008 ds=0010 es=0010 ss=706f
-Kernel PANIC recursion at ../../userprog/exception.c:100 in kill().
-Timer: 65 ticks
-Thread: 32 idle ticks, 24 kernel ticks, 9 user ticks
+Cmp children ids: 3 and given 3
+Child found in wait
+Child with exit status -1 has already exited
+Execution of 'open-bad-ptr' complete.
+Timer: 58 ticks
+Thread: 32 idle ticks, 25 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
-hd0:1: 61 reads, 204 writes
+hd0:1: 59 reads, 204 writes
 hd1:0: 98 reads, 0 writes
-Console: 3748 characters output
+Console: 1205 characters output
 Keyboard: 0 keys pressed
-Exception: 2 page faults
+Exception: 0 page faults
 Powering off...

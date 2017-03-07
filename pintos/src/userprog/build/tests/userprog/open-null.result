@@ -1,12 +1,48 @@
 FAIL
-Kernel panic in run: PANIC at ../../filesys/directory.c:125 in dir_lookup(): assertion `name != NULL' failed.
-Call stack: 0xc01070cb 0x804a15f 0x80480af
-Translation of call stack:
-In kernel.o:
-0xc01070cb: debug_panic (.../../lib/kernel/debug.c:34)
-In tests/userprog/open-null:
-0x0804a15f: open (...../lib/user/syscall.c:105)
-0x080480af: test_main (...s/userprog/open-null.c:12)
-Translations of user virtual addresses above are based on a guess at
-the binary to use.  If this guess is incorrect, then those
-translations will be misleading.
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (open-null) begin
+  open-null: exit(-1)
+Differences in `diff -u' format:
++ Before waiting in load_sema
++ End of setup_stack()
++ Before load sema up
++ Before last line in start_process()
+  (open-null) begin
++ Syscall exit
++ Start of process_exit()
+  open-null: exit(-1)
++ After sema up in process_exit() Exiting with status -1
++ At end of process_exit()
++ Awoke from load_sema
++ Set new child id to 3
++ End of process execute
++ In process_wait()
++ Cmp children ids: 3 and given 3
++ Child found in wait
++ Child with exit status -1 has already exited
+Acceptable output:
+  (open-null) begin
+  (open-null) end
+  open-null: exit(0)
+Differences in `diff -u' format:
++ Before waiting in load_sema
++ End of setup_stack()
++ Before load sema up
++ Before last line in start_process()
+  (open-null) begin
+- (open-null) end
+- open-null: exit(0)
++ Syscall exit
++ Start of process_exit()
++ open-null: exit(-1)
++ After sema up in process_exit() Exiting with status -1
++ At end of process_exit()
++ Awoke from load_sema
++ Set new child id to 3
++ End of process execute
++ In process_wait()
++ Cmp children ids: 3 and given 3
++ Child found in wait
++ Child with exit status -1 has already exited

@@ -8,44 +8,41 @@ Acceptable output:
   (exec-once) end
   exec-once: exit(0)
 Differences in `diff -u' format:
-+ Before child push back
-+ After child push back
 + Before waiting in load_sema
-+ Value of load_sema in pr_execute: 0
-+ Writing exec-once to stack
-+ Put argv at addr 0xbfffffe8
-+ Put argc at addr 0xbfffffe4
 + End of setup_stack()
 + Before load sema up
 + Before last line in start_process()
   (exec-once) begin
 + Syscall exec
-+ Before child push back
-+ After child push back
 + Before waiting in load_sema
-+ Value of load_sema in pr_execute: 0
 + Awoke from load_sema
++ Set new child id to 3
 + End of process execute
 + In process_wait()
++ Cmp children ids: 3 and given 3
++ Child found in wait
 + Waiting for child to terminate...
-+ Writing child-simple to stack
-+ Put argv at addr 0xbfffffe4
-+ Put argc at addr 0xbfffffe0
 + End of setup_stack()
 + Before load sema up
 + Before last line in start_process()
   (child-simple) run
 + Syscall exit
-  child-simple: exit(81)
 + Start of process_exit()
-+ After sema up in process_exit()
+  child-simple: exit(81)
++ After sema up in process_exit() Exiting with status 81
 + At end of process_exit()
 + Awoke from load_sema
++ Set new child id to 4
 + End of process execute
-+ Syscall wait
++ Created process with pid 4
++ Syscall wait, wait for child with pid 4
 + In process_wait()
++ Cmp children ids: 4 and given 4
++ Child found in wait
++ Child with exit status 81 has already exited
   (exec-once) end
 + Syscall exit
-  exec-once: exit(0)
 + Start of process_exit()
-+ After sema up in process_exit()
+  exec-once: exit(0)
++ After sema up in process_exit() Exiting with status 0
++ Child with exit status 0 has now exited

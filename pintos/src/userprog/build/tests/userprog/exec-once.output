@@ -1,7 +1,7 @@
-Copying tests/userprog/exec-once into /tmp/5CdqHt6CZ6.dsk...
-Copying tests/userprog/child-simple into /tmp/5CdqHt6CZ6.dsk...
-Writing command line to /tmp/RHC4YkbAbB.dsk...
-qemu -hda /tmp/RHC4YkbAbB.dsk -hdb /tmp/F1jklIu0IS.dsk -hdc /tmp/5CdqHt6CZ6.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/exec-once into /tmp/iPf9IBBgng.dsk...
+Copying tests/userprog/child-simple into /tmp/iPf9IBBgng.dsk...
+Writing command line to /tmp/IhyQBW3wFx.dsk...
+qemu -hda /tmp/IhyQBW3wFx.dsk -hdb /tmp/uqi2Wrox7n.dsk -hdc /tmp/iPf9IBBgng.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put exec-once put child-simple run exec-once
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
@@ -15,54 +15,51 @@ Boot complete.
 Putting 'exec-once' into the file system...
 Putting 'child-simple' into the file system...
 Executing 'exec-once':
-Before child push back
-After child push back
 Before waiting in load_sema
-Value of load_sema in pr_execute: 0
-Writing exec-once to stack
-Put argv at addr 0xbfffffe8
-Put argc at addr 0xbfffffe4
 End of setup_stack()
 Before load sema up
 Before last line in start_process()
 (exec-once) begin
 Syscall exec
-Before child push back
-After child push back
 Before waiting in load_sema
-Value of load_sema in pr_execute: 0
 Awoke from load_sema
+Set new child id to 3
 End of process execute
 In process_wait()
+Cmp children ids: 3 and given 3
+Child found in wait
 Waiting for child to terminate...
-Writing child-simple to stack
-Put argv at addr 0xbfffffe4
-Put argc at addr 0xbfffffe0
 End of setup_stack()
 Before load sema up
 Before last line in start_process()
 (child-simple) run
 Syscall exit
-child-simple: exit(81)
 Start of process_exit()
-After sema up in process_exit()
+child-simple: exit(81)
+After sema up in process_exit() Exiting with status 81
 At end of process_exit()
 Awoke from load_sema
+Set new child id to 4
 End of process execute
-Syscall wait
+Created process with pid 4
+Syscall wait, wait for child with pid 4
 In process_wait()
+Cmp children ids: 4 and given 4
+Child found in wait
+Child with exit status 81 has already exited
 (exec-once) end
 Syscall exit
-exec-once: exit(0)
 Start of process_exit()
-After sema up in process_exit()
+exec-once: exit(0)
+After sema up in process_exit() Exiting with status 0
+Child with exit status 0 has now exited
 Execution of 'exec-once' complete.
-Timer: 66 ticks
-Thread: 34 idle ticks, 28 kernel ticks, 4 user ticks
+Timer: 63 ticks
+Thread: 35 idle ticks, 25 kernel ticks, 3 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 122 reads, 396 writes
 hd1:0: 193 reads, 0 writes
-Console: 1793 characters output
+Console: 1794 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

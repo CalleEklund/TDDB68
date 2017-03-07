@@ -1,6 +1,6 @@
-Copying tests/userprog/create-normal into /tmp/TzgQ2H6n4H.dsk...
-Writing command line to /tmp/WAmwHUbpEt.dsk...
-qemu -hda /tmp/WAmwHUbpEt.dsk -hdb /tmp/94zQ74CNrP.dsk -hdc /tmp/TzgQ2H6n4H.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/create-normal into /tmp/uYGgU5ZC3X.dsk...
+Writing command line to /tmp/3EXTIN0BTw.dsk...
+qemu -hda /tmp/3EXTIN0BTw.dsk -hdb /tmp/W_LngAYOiT.dsk -hdc /tmp/uYGgU5ZC3X.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put create-normal run create-normal
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
@@ -13,104 +13,33 @@ Formatting file system...done.
 Boot complete.
 Putting 'create-normal' into the file system...
 Executing 'create-normal':
-Before child push back
-After child push back
 Before waiting in load_sema
-Writing create-normal to stack
-Put argv at addr 0xbfffffe4
-Put argc at addr 0xbfffffe0
 End of setup_stack()
-*esp is 0xbfffffdc
-stack contents:
-bfffffd0                                      00 00 00 00 |            ....|
-bfffffe0  01 00 00 00 e8 ff ff bf-f2 ff ff bf 00 00 00 00 |................|
-bffffff0  00 00 63 72 65 61 74 65-2d 6e 6f 72 6d 61 6c 00 |..create-normal.|
-c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
-c000000f	 	
-c000000e	 	
-c000000d	 	
-c000000c	S	f000ff53	
---------------------------------------------------------------
-c000000b	 	
-c000000a	 	
-c0000009	 	
-c0000008	 	f000e2c3	
---------------------------------------------------------------
-c0000007	 	
-c0000006	 	
-c0000005	 	
-c0000004	S	f000ff53	
---------------------------------------------------------------
-c0000003	 	
-c0000002	 	
-c0000001	 	
-c0000000	S	f000ff53	
-------- the border between KERNEL SPACE and USER SPACE -------
-bfffffff	 	
-bffffffe	l	
-bffffffd	a	
-bffffffc	m	6c616d	
---------------------------------------------------------------
-bffffffb	r	
-bffffffa	o	
-bffffff9	n	
-bffffff8	-	726f6e2d	
---------------------------------------------------------------
-bffffff7	e	
-bffffff6	t	
-bffffff5	a	
-bffffff4	e	65746165	
---------------------------------------------------------------
-bffffff3	r	
-bffffff2	c	
-bffffff1	 	
-bffffff0	 	72630000	
---------------------------------------------------------------
-bfffffef	 	
-bfffffee	 	
-bfffffed	 	
-bfffffec	 	0	
---------------------------------------------------------------
-bfffffeb	 	
-bfffffea	 	
-bfffffe9	 	
-bfffffe8	 	bffffff2	
---------------------------------------------------------------
-bfffffe7	 	
-bfffffe6	 	
-bfffffe5	 	
-bfffffe4	 	bfffffe8	
---------------------------------------------------------------
-bfffffe3	 	
-bfffffe2	 	
-bfffffe1	 	
-bfffffe0	 	1	
---------------------------------------------------------------
-bfffffdf	 	
-bfffffde	 	
-bfffffdd	 	
-bfffffdc	 	0	
---------------------------------------------------------------
+Before load sema up
 Before last line in start_process()
 (create-normal) begin
 (create-normal) create quux.dat
 Awoke from load_sema
+Set new child id to 3
 End of process execute
 In process_wait()
+Cmp children ids: 3 and given 3
+Child found in wait
 Waiting for child to terminate...
 (create-normal) end
 Syscall exit
-create-normal: exit(0)
 Start of process_exit()
-After sema up in process_exit()
+create-normal: exit(0)
+After sema up in process_exit() Exiting with status 0
 At end of process_exit()
+Child with exit status 0 has now exited
 Execution of 'create-normal' complete.
-Timer: 65 ticks
-Thread: 31 idle ticks, 25 kernel ticks, 9 user ticks
+Timer: 61 ticks
+Thread: 32 idle ticks, 28 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 81 reads, 208 writes
 hd1:0: 98 reads, 0 writes
-Console: 3147 characters output
+Console: 1291 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

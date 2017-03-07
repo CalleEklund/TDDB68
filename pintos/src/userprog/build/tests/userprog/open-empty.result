@@ -6,87 +6,22 @@ Acceptable output:
   (open-empty) end
   open-empty: exit(0)
 Differences in `diff -u' format:
-+ Before child push back
-+ After child push back
 + Before waiting in load_sema
-+ Writing open-empty to stack
-+ Put argv at addr 0xbfffffe8
-+ Put argc at addr 0xbfffffe4
 + End of setup_stack()
-+ *esp is 0xbfffffe0
-+ stack contents:
-+ bfffffe0  00 00 00 00 01 00 00 00-ec ff ff bf f5 ff ff bf |................|
-+ bffffff0  00 00 00 00 00 6f 70 65-6e 2d 65 6d 70 74 79 00 |.....open-empty.|
-+ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
-+ c000000f	 	
-+ c000000e	 	
-+ c000000d	 	
-+ c000000c	S	f000ff53	
-+ --------------------------------------------------------------
-+ c000000b	 	
-+ c000000a	 	
-+ c0000009	 	
-+ c0000008	 	f000e2c3	
-+ --------------------------------------------------------------
-+ c0000007	 	
-+ c0000006	 	
-+ c0000005	 	
-+ c0000004	S	f000ff53	
-+ --------------------------------------------------------------
-+ c0000003	 	
-+ c0000002	 	
-+ c0000001	 	
-+ c0000000	S	f000ff53	
-+ ------- the border between KERNEL SPACE and USER SPACE -------
-+ bfffffff	 	
-+ bffffffe	y	
-+ bffffffd	t	
-+ bffffffc	p	797470	
-+ --------------------------------------------------------------
-+ bffffffb	m	
-+ bffffffa	e	
-+ bffffff9	-	
-+ bffffff8	n	6d652d6e	
-+ --------------------------------------------------------------
-+ bffffff7	e	
-+ bffffff6	p	
-+ bffffff5	o	
-+ bffffff4	 	65706f00	
-+ --------------------------------------------------------------
-+ bffffff3	 	
-+ bffffff2	 	
-+ bffffff1	 	
-+ bffffff0	 	0	
-+ --------------------------------------------------------------
-+ bfffffef	 	
-+ bfffffee	 	
-+ bfffffed	 	
-+ bfffffec	 	bffffff5	
-+ --------------------------------------------------------------
-+ bfffffeb	 	
-+ bfffffea	 	
-+ bfffffe9	 	
-+ bfffffe8	 	bfffffec	
-+ --------------------------------------------------------------
-+ bfffffe7	 	
-+ bfffffe6	 	
-+ bfffffe5	 	
-+ bfffffe4	 	1	
-+ --------------------------------------------------------------
-+ bfffffe3	 	
-+ bfffffe2	 	
-+ bfffffe1	 	
-+ bfffffe0	 	0	
-+ --------------------------------------------------------------
++ Before load sema up
 + Before last line in start_process()
   (open-empty) begin
 + Awoke from load_sema
++ Set new child id to 3
 + End of process execute
 + In process_wait()
++ Cmp children ids: 3 and given 3
++ Child found in wait
 + Waiting for child to terminate...
   (open-empty) end
 + Syscall exit
-  open-empty: exit(0)
 + Start of process_exit()
-+ After sema up in process_exit()
+  open-empty: exit(0)
++ After sema up in process_exit() Exiting with status 0
 + At end of process_exit()
++ Child with exit status 0 has now exited

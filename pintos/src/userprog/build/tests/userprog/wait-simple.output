@@ -1,7 +1,7 @@
-Copying tests/userprog/wait-simple into /tmp/dd4AOCrfzQ.dsk...
-Copying tests/userprog/child-simple into /tmp/dd4AOCrfzQ.dsk...
-Writing command line to /tmp/7gm62d6SEs.dsk...
-qemu -hda /tmp/7gm62d6SEs.dsk -hdb /tmp/mlZk_0aaLO.dsk -hdc /tmp/dd4AOCrfzQ.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/wait-simple into /tmp/Z7SlzYSQa8.dsk...
+Copying tests/userprog/child-simple into /tmp/Z7SlzYSQa8.dsk...
+Writing command line to /tmp/zax7dbIlsW.dsk...
+qemu -hda /tmp/zax7dbIlsW.dsk -hdb /tmp/2lCTwQSvkU.dsk -hdc /tmp/Z7SlzYSQa8.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put wait-simple put child-simple run wait-simple
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
@@ -34,8 +34,8 @@ Before load sema up
 Before last line in start_process()
 (child-simple) run
 Syscall exit
-child-simple: exit(81)
 Start of process_exit()
+child-simple: exit(81)
 After sema up in process_exit() Exiting with status 81
 At end of process_exit()
 Awoke from load_sema
@@ -50,13 +50,13 @@ Child with exit status 81 has already exited
 (wait-simple) wait(exec()) = 81
 (wait-simple) end
 Syscall exit
-wait-simple: exit(0)
 Start of process_exit()
+wait-simple: exit(0)
 After sema up in process_exit() Exiting with status 0
 Child with exit status 0 has now exited
 Execution of 'wait-simple' complete.
-Timer: 67 ticks
-Thread: 34 idle ticks, 29 kernel ticks, 4 user ticks
+Timer: 63 ticks
+Thread: 31 idle ticks, 30 kernel ticks, 2 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 122 reads, 398 writes
 hd1:0: 194 reads, 0 writes

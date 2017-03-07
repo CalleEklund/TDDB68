@@ -7,88 +7,23 @@ Acceptable output:
   (create-long) end
   create-long: exit(0)
 Differences in `diff -u' format:
-+ Before child push back
-+ After child push back
 + Before waiting in load_sema
-+ Writing create-long to stack
-+ Put argv at addr 0xbfffffe8
-+ Put argc at addr 0xbfffffe4
 + End of setup_stack()
-+ *esp is 0xbfffffe0
-+ stack contents:
-+ bfffffe0  00 00 00 00 01 00 00 00-ec ff ff bf f4 ff ff bf |................|
-+ bffffff0  00 00 00 00 63 72 65 61-74 65 2d 6c 6f 6e 67 00 |....create-long.|
-+ c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
-+ c000000f	 	
-+ c000000e	 	
-+ c000000d	 	
-+ c000000c	S	f000ff53	
-+ --------------------------------------------------------------
-+ c000000b	 	
-+ c000000a	 	
-+ c0000009	 	
-+ c0000008	 	f000e2c3	
-+ --------------------------------------------------------------
-+ c0000007	 	
-+ c0000006	 	
-+ c0000005	 	
-+ c0000004	S	f000ff53	
-+ --------------------------------------------------------------
-+ c0000003	 	
-+ c0000002	 	
-+ c0000001	 	
-+ c0000000	S	f000ff53	
-+ ------- the border between KERNEL SPACE and USER SPACE -------
-+ bfffffff	 	
-+ bffffffe	g	
-+ bffffffd	n	
-+ bffffffc	o	676e6f	
-+ --------------------------------------------------------------
-+ bffffffb	l	
-+ bffffffa	-	
-+ bffffff9	e	
-+ bffffff8	t	6c2d6574	
-+ --------------------------------------------------------------
-+ bffffff7	a	
-+ bffffff6	e	
-+ bffffff5	r	
-+ bffffff4	c	61657263	
-+ --------------------------------------------------------------
-+ bffffff3	 	
-+ bffffff2	 	
-+ bffffff1	 	
-+ bffffff0	 	0	
-+ --------------------------------------------------------------
-+ bfffffef	 	
-+ bfffffee	 	
-+ bfffffed	 	
-+ bfffffec	 	bffffff4	
-+ --------------------------------------------------------------
-+ bfffffeb	 	
-+ bfffffea	 	
-+ bfffffe9	 	
-+ bfffffe8	 	bfffffec	
-+ --------------------------------------------------------------
-+ bfffffe7	 	
-+ bfffffe6	 	
-+ bfffffe5	 	
-+ bfffffe4	 	1	
-+ --------------------------------------------------------------
-+ bfffffe3	 	
-+ bfffffe2	 	
-+ bfffffe1	 	
-+ bfffffe0	 	0	
-+ --------------------------------------------------------------
++ Before load sema up
 + Before last line in start_process()
   (create-long) begin
 + Awoke from load_sema
++ Set new child id to 3
 + End of process execute
 + In process_wait()
++ Cmp children ids: 3 and given 3
++ Child found in wait
 + Waiting for child to terminate...
   (create-long) create("x..."): 0
   (create-long) end
 + Syscall exit
-  create-long: exit(0)
 + Start of process_exit()
-+ After sema up in process_exit()
+  create-long: exit(0)
++ After sema up in process_exit() Exiting with status 0
 + At end of process_exit()
++ Child with exit status 0 has now exited

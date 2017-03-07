@@ -1,11 +1,11 @@
-Copying tests/userprog/close-stdout into /tmp/AABxExa19u.dsk...
-Writing command line to /tmp/u15MLjujHH.dsk...
-qemu -hda /tmp/u15MLjujHH.dsk -hdb /tmp/euCvxD6rAH.dsk -hdc /tmp/AABxExa19u.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/close-stdout into /tmp/TnTJk6EfUT.dsk...
+Writing command line to /tmp/g6yHo9jBKh.dsk...
+qemu -hda /tmp/g6yHo9jBKh.dsk -hdb /tmp/bOMiIlsal7.dsk -hdc /tmp/TnTJk6EfUT.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put close-stdout run close-stdout
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
 371 pages available in user pool.
-Calibrating timer...  261,734,400 loops/s.
+Calibrating timer...  419,020,800 loops/s.
 hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 97 sector (48 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -13,102 +13,31 @@ Formatting file system...done.
 Boot complete.
 Putting 'close-stdout' into the file system...
 Executing 'close-stdout':
-Before child push back
-After child push back
 Before waiting in load_sema
-Writing close-stdout to stack
-Put argv at addr 0xbfffffe4
-Put argc at addr 0xbfffffe0
 End of setup_stack()
-*esp is 0xbfffffdc
-stack contents:
-bfffffd0                                      00 00 00 00 |            ....|
-bfffffe0  01 00 00 00 e8 ff ff bf-f3 ff ff bf 00 00 00 00 |................|
-bffffff0  00 00 00 63 6c 6f 73 65-2d 73 74 64 6f 75 74 00 |...close-stdout.|
-c0000000  53 ff 00 f0 53 ff 00 f0-c3 e2 00 f0 53 ff 00 f0 |S...S.......S...|
-c000000f	 	
-c000000e	 	
-c000000d	 	
-c000000c	S	f000ff53	
---------------------------------------------------------------
-c000000b	 	
-c000000a	 	
-c0000009	 	
-c0000008	 	f000e2c3	
---------------------------------------------------------------
-c0000007	 	
-c0000006	 	
-c0000005	 	
-c0000004	S	f000ff53	
---------------------------------------------------------------
-c0000003	 	
-c0000002	 	
-c0000001	 	
-c0000000	S	f000ff53	
-------- the border between KERNEL SPACE and USER SPACE -------
-bfffffff	 	
-bffffffe	t	
-bffffffd	u	
-bffffffc	o	74756f	
---------------------------------------------------------------
-bffffffb	d	
-bffffffa	t	
-bffffff9	s	
-bffffff8	-	6474732d	
---------------------------------------------------------------
-bffffff7	e	
-bffffff6	s	
-bffffff5	o	
-bffffff4	l	65736f6c	
---------------------------------------------------------------
-bffffff3	c	
-bffffff2	 	
-bffffff1	 	
-bffffff0	 	63000000	
---------------------------------------------------------------
-bfffffef	 	
-bfffffee	 	
-bfffffed	 	
-bfffffec	 	0	
---------------------------------------------------------------
-bfffffeb	 	
-bfffffea	 	
-bfffffe9	 	
-bfffffe8	 	bffffff3	
---------------------------------------------------------------
-bfffffe7	 	
-bfffffe6	 	
-bfffffe5	 	
-bfffffe4	 	bfffffe8	
---------------------------------------------------------------
-bfffffe3	 	
-bfffffe2	 	
-bfffffe1	 	
-bfffffe0	 	1	
---------------------------------------------------------------
-bfffffdf	 	
-bfffffde	 	
-bfffffdd	 	
-bfffffdc	 	0	
---------------------------------------------------------------
+Before load sema up
 Before last line in start_process()
 (close-stdout) begin
 (close-stdout) end
 Syscall exit
-close-stdout: exit(0)
 Start of process_exit()
-After sema up in process_exit()
+close-stdout: exit(0)
+After sema up in process_exit() Exiting with status 0
 At end of process_exit()
 Awoke from load_sema
+Set new child id to 3
 End of process execute
 In process_wait()
+Cmp children ids: 3 and given 3
+Child found in wait
+Child with exit status 0 has already exited
 Execution of 'close-stdout' complete.
-Timer: 71 ticks
-Thread: 30 idle ticks, 30 kernel ticks, 11 user ticks
+Timer: 60 ticks
+Thread: 33 idle ticks, 26 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 59 reads, 202 writes
 hd1:0: 97 reads, 0 writes
-Console: 3073 characters output
+Console: 1221 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

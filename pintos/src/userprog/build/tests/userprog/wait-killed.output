@@ -1,12 +1,12 @@
-Copying tests/userprog/wait-killed into /tmp/5Pdno5zm5X.dsk...
-Copying tests/userprog/child-bad into /tmp/5Pdno5zm5X.dsk...
-Writing command line to /tmp/rwIgLpI4F_.dsk...
-qemu -hda /tmp/rwIgLpI4F_.dsk -hdb /tmp/sI2GVlujJt.dsk -hdc /tmp/5Pdno5zm5X.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/wait-killed into /tmp/t7YdiRpUG2.dsk...
+Copying tests/userprog/child-bad into /tmp/t7YdiRpUG2.dsk...
+Writing command line to /tmp/3QSTlvNecU.dsk...
+qemu -hda /tmp/3QSTlvNecU.dsk -hdb /tmp/wQKsrUqzzG.dsk -hdc /tmp/t7YdiRpUG2.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put wait-killed put child-bad run wait-killed
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
 371 pages available in user pool.
-Calibrating timer...  419,020,800 loops/s.
+Calibrating timer...  314,163,200 loops/s.
 hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 195 sector (97 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -33,23 +33,34 @@ End of setup_stack()
 Before load sema up
 Before last line in start_process()
 (child-bad) begin
-Page fault at 0x20101234: not present error reading page in kernel context.
-Interrupt 0x0e (#PF Page-Fault Exception) at eip=0xc010a949
- cr2=20101234 error=00000000
- eax=20101234 ebx=c0126fb0 ecx=0000000e edx=00000030
- esi=00000000 edi=00000000 esp=00000001 ebp=c0126fe8
- cs=0008 ds=0010 es=0010 ss=bb40
-Kernel PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070cb 0xc010a949 0x80480aa.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Timer: 63 ticks
-Thread: 35 idle ticks, 26 kernel ticks, 2 user ticks
+Syscall exit
+Start of process_exit()
+child-bad: exit(-1)
+After sema up in process_exit() Exiting with status -1
+At end of process_exit()
+Awoke from load_sema
+Set new child id to 4
+End of process execute
+Created process with pid 4
+Syscall wait, wait for child with pid 4
+In process_wait()
+Cmp children ids: 4 and given 4
+Child found in wait
+Child with exit status -1 has already exited
+(wait-killed) wait(exec()) = -1
+(wait-killed) end
+Syscall exit
+Start of process_exit()
+wait-killed: exit(0)
+After sema up in process_exit() Exiting with status 0
+Child with exit status 0 has now exited
+Execution of 'wait-killed' complete.
+Timer: 68 ticks
+Thread: 34 idle ticks, 30 kernel ticks, 4 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 116 reads, 400 writes
 hd1:0: 195 reads, 0 writes
-Console: 1813 characters output
+Console: 1832 characters output
 Keyboard: 0 keys pressed
-Exception: 1 page faults
+Exception: 0 page faults
 Powering off...

@@ -1,8 +1,48 @@
 FAIL
-Kernel panic in run: PANIC at ../../userprog/exception.c:100 in kill(): Kernel bug - unexpected interrupt in kernel
-Call stack: 0xc01070cb 0xc01067a6 0x6e65706f
-Translation of call stack:
-In kernel.o:
-0xc01070cb: debug_panic (.../../lib/kernel/debug.c:34)
-0xc01067a6: strcmp (...ng.c:81 (discriminator 1))
-0x6e65706f: (unknown)
+Test output failed to match any acceptable form.
+
+Acceptable output:
+  (open-bad-ptr) begin
+  open-bad-ptr: exit(-1)
+Differences in `diff -u' format:
++ Before waiting in load_sema
++ End of setup_stack()
++ Before load sema up
++ Before last line in start_process()
+  (open-bad-ptr) begin
++ Syscall exit
++ Start of process_exit()
+  open-bad-ptr: exit(-1)
++ After sema up in process_exit() Exiting with status -1
++ At end of process_exit()
++ Awoke from load_sema
++ Set new child id to 3
++ End of process execute
++ In process_wait()
++ Cmp children ids: 3 and given 3
++ Child found in wait
++ Child with exit status -1 has already exited
+Acceptable output:
+  (open-bad-ptr) begin
+  (open-bad-ptr) end
+  open-bad-ptr: exit(0)
+Differences in `diff -u' format:
++ Before waiting in load_sema
++ End of setup_stack()
++ Before load sema up
++ Before last line in start_process()
+  (open-bad-ptr) begin
+- (open-bad-ptr) end
+- open-bad-ptr: exit(0)
++ Syscall exit
++ Start of process_exit()
++ open-bad-ptr: exit(-1)
++ After sema up in process_exit() Exiting with status -1
++ At end of process_exit()
++ Awoke from load_sema
++ Set new child id to 3
++ End of process execute
++ In process_wait()
++ Cmp children ids: 3 and given 3
++ Child found in wait
++ Child with exit status -1 has already exited

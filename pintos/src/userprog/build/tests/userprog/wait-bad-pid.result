@@ -5,49 +5,14 @@ Acceptable output:
   (wait-bad-pid) begin
   wait-bad-pid: exit(-1)
 Differences in `diff -u' format:
-+ Before waiting in load_sema
-+ End of setup_stack()
-+ Before load sema up
-+ Before last line in start_process()
   (wait-bad-pid) begin
 - wait-bad-pid: exit(-1)
-+ Syscall wait, wait for child with pid 201458433
-+ In process_wait()
 + (wait-bad-pid) end
-+ Syscall exit
-+ Start of process_exit()
-+ wait-bad-pid: exit(0)
-+ After sema up in process_exit() Exiting with status 0
-+ At end of process_exit()
-+ Awoke from load_sema
-+ Set new child id to 3
-+ End of process execute
-+ In process_wait()
-+ Cmp children ids: 3 and given 3
-+ Child found in wait
-+ Child with exit status 0 has already exited
 Acceptable output:
   (wait-bad-pid) begin
   (wait-bad-pid) end
   wait-bad-pid: exit(0)
 Differences in `diff -u' format:
-+ Before waiting in load_sema
-+ End of setup_stack()
-+ Before load sema up
-+ Before last line in start_process()
   (wait-bad-pid) begin
-+ Syscall wait, wait for child with pid 201458433
-+ In process_wait()
   (wait-bad-pid) end
-+ Syscall exit
-+ Start of process_exit()
-  wait-bad-pid: exit(0)
-+ After sema up in process_exit() Exiting with status 0
-+ At end of process_exit()
-+ Awoke from load_sema
-+ Set new child id to 3
-+ End of process execute
-+ In process_wait()
-+ Cmp children ids: 3 and given 3
-+ Child found in wait
-+ Child with exit status 0 has already exited
+- wait-bad-pid: exit(0)

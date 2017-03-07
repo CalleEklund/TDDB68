@@ -4,9 +4,11 @@
 ./threads/thread.h
 ./threads/synch.c
 ./threads/synch.h
-./devices/timer.c
-./devices/timer.h
-./lib/kernel/list.c
-./lib/kernel/list.h
-./threads/malloc.c
-./threads/malloc.h
+./userprog/process.c
+./userprog/process.h
+./userprog/syscall.c
+./userprog/syscall.h
+./userprog/pagedir.c
+./userprog/pagedir.h
+./lib/string.c
+./lib/string.h

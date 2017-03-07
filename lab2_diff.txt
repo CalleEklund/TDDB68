@@ -1,0 +1,4707 @@
+diff --git a/.gitignore b/.gitignore
+index 4110281..ae79639 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,3 +1,5 @@
+ # Compiler generated files
+ *.o
+ *.d
++#
++*~
+diff --git a/curr_files.txt b/curr_files.txt
+index 4338a9a..a61e99d 100644
+--- a/curr_files.txt
++++ b/curr_files.txt
+@@ -8,3 +8,5 @@
+ ./devices/timer.h
+ ./lib/kernel/list.c
+ ./lib/kernel/list.h
++./threads/malloc.c
++./threads/malloc.h
+diff --git a/lab00/linked-list-lab00.c b/lab00/linked-list-lab00.c
+old mode 100644
+new mode 100755
+index 1f23ab2..c02fc60
+--- a/lab00/linked-list-lab00.c
++++ b/lab00/linked-list-lab00.c
+@@ -70,6 +70,7 @@ void clear(struct list_item *first) {
+ 		item = temp;
+ 	}
+ 	while(item->next != NULL);
++	free(item);
+ }
+ 
+ void main(int argc, char **argv) {
+diff --git a/lab1_diff.txt b/lab1_diff.txt
+new file mode 100644
+index 0000000..490f7db
+--- /dev/null
++++ b/lab1_diff.txt
+@@ -0,0 +1,1064 @@
++diff --git a/.gitignore b/.gitignore
++new file mode 100644
++index 0000000..4110281
++--- /dev/null
+++++ b/.gitignore
++@@ -0,0 +1,3 @@
+++# Compiler generated files
+++*.o
+++*.d
++diff --git a/curr_files.txt b/curr_files.txt
++new file mode 100644
++index 0000000..0d4a68e
++--- /dev/null
+++++ b/curr_files.txt
++@@ -0,0 +1,15 @@
+++./lib/user/syscall.c
+++./lib/user/syscall.h
+++./lib/syscall-nr.h
+++./threads/interrupt.c
+++./threads/interrupt.h
+++./userprog/syscall.c
+++./userprog/syscall.h
+++./threads/thread.c 
+++./threads/thread.h
+++./filesys/filesys.c 
+++./filesys/filesys.h 
+++./filesys/file.h 
+++./filesys/file.c
+++./examples/custom_lab1.c 
+++
++diff --git a/lab00/debugthis-lab00.c b/lab00/debugthis-lab00.c
++new file mode 100644
++index 0000000..9aedc1c
++--- /dev/null
+++++ b/lab00/debugthis-lab00.c
++@@ -0,0 +1,33 @@
+++#include <stdio.h>
+++
+++int main(int argc, char ** argv)
+++{
+++  char str[] = "sihtgubed";
+++  char *stri = &str[8];
+++  char *buf[9];
+++  char **bufi, **bufend;
+++  bufi = buf;
+++  bufend = &buf[9];
+++
+++  while (bufi != bufend){
+++    *bufi = stri;
+++    bufi++;
+++    stri--;
+++  }
+++
+++	// compensate for extra ++ in above loop - caused the segmentation fault!
+++	bufi--;
+++
+++  while (bufi != buf-1){          // added -1 so to cover first letter
+++    **bufi -= 32;
+++	  bufi--;
+++  }
+++
+++	// compensate for extra -- in above loop
+++	bufi++;
+++
+++  while (bufi != bufend){
+++    printf("%c", **bufi);
+++    bufi++;
+++  }
+++}
++diff --git a/lab00/debugthis.o b/lab00/debugthis.o
++new file mode 100755
++index 0000000..a6085bc
++Binary files /dev/null and b/lab00/debugthis.o differ
++diff --git a/lab00/link.o b/lab00/link.o
++new file mode 100755
++index 0000000..1fdee3e
++Binary files /dev/null and b/lab00/link.o differ
++diff --git a/lab00/linked-list-lab00.c b/lab00/linked-list-lab00.c
++new file mode 100644
++index 0000000..1f23ab2
++--- /dev/null
+++++ b/lab00/linked-list-lab00.c
++@@ -0,0 +1,105 @@
+++#include <stdio.h>
+++#include <stdlib.h>
+++
+++struct list_item {
+++	int value;
+++	struct list_item* next;
+++};
+++
+++void append(struct list_item *first, int x) {
+++	struct list_item *item = first;
+++	while(item->next != NULL) {
+++		item = item->next;
+++	}
+++	struct list_item *last = (struct list_item*)malloc(sizeof(struct list_item));
+++	item->next = last;
+++	last->value = x; 
+++	last->next = NULL;
+++}
+++
+++void prepend(struct list_item *first, int x) {
+++	struct list_item *new = (struct list_item*)malloc(sizeof(struct list_item));
+++	new->value = x;
+++	new->next = first->next;
+++	first->next = new;
+++	printf("%p\n", new);
+++	printf("%p\n", first->next);
+++}
+++
+++void print(struct list_item *first) {
+++	struct list_item *item = first;
+++	// Skip the root (if exists any other items)
+++	if(first->next != NULL){
+++		item = first->next;
+++	}
+++	else{
+++		return;
+++	}
+++	while(item->next != NULL) {
+++		printf("%d \n", item->value);
+++		item = item->next;
+++	}
+++	printf("%d \n\n", item->value);
+++}
+++
+++void input_sorted(struct list_item *first, int x) {
+++	struct list_item *new = (struct list_item*) malloc(sizeof(struct list_item));	
+++	struct list_item *item = first;
+++	struct list_item *previous = NULL;
+++	while(item->next != NULL) {
+++		previous = item;
+++		item = item->next;
+++		if(item->value >= x) {
+++			previous->next = new;
+++			new->next = item;
+++			break;
+++		}
+++		else if(item->next == NULL) {
+++			item->next = new;
+++			new->next = NULL;
+++		}
+++	}
+++	new->value = x;
+++}
+++
+++void clear(struct list_item *first) {
+++	struct list_item *item = first->next;
+++	do{
+++		struct list_item *temp = item->next;
+++		free(item);
+++		item = temp;
+++	}
+++	while(item->next != NULL);
+++}
+++
+++void main(int argc, char **argv) {
+++	struct list_item root;
+++	root.value = -1;
+++	root.next = NULL;
+++
+++	// Testing the linked list
+++	append(&root, 2);
+++	append(&root, 3);
+++	append(&root, 5);
+++	append(&root, 6);
+++	print(&root);
+++	prepend(&root, 1);
+++	print(&root);
+++	input_sorted(&root, 4);
+++	input_sorted(&root, 7);
+++	print(&root);
+++	clear(&root);
+++}
+++
+++
+++
+++
+++
+++
+++
+++
+++
+++
+++
+++
+++
++diff --git a/pintos/src/examples/Makefile b/pintos/src/examples/Makefile
++index 10da438..92d9038 100644
++--- a/pintos/src/examples/Makefile
+++++ b/pintos/src/examples/Makefile
++@@ -5,13 +5,14 @@ SRCDIR = ..
++ # and then add a name_SRC line that lists its source files.
++ PROGS = cat cmp cp echo halt hex-dump ls mcat mcp mkdir pwd rm shell \
++ 	bubsort insult lineup matmult recursor \
++-	sumargv lab2test lab1test pfs pfs_reader pfs_writer dummy longrun \
+++	sumargv lab2test lab1test lab1test2 pfs pfs_reader pfs_writer dummy longrun \
++ 	child parent create-bad
++ 
++ # Added test programs
++ sumargv_SRC = sumargv.c
++ lab2test_SRC = lab2test.c
++ lab1test_SRC = lab1test.c
+++lab1test2_SRC = lab1test2.c
++ pfs_SRC = pfs.c
++ pfs_reader_SRC = pfs_reader.c
++ pfs_writer_SRC = pfs_writer.c
++diff --git a/pintos/src/examples/custom_lab1.c b/pintos/src/examples/custom_lab1.c
++new file mode 100644
++index 0000000..5a6dcae
++--- /dev/null
+++++ b/pintos/src/examples/custom_lab1.c
++@@ -0,0 +1,16 @@
+++#include <syscall.h>
+++#include <stdbool.h>
+++#include <stdlib.h>
+++#include <stdio.h>
+++
+++int
+++main (void)
+++{
+++  printf("Start of customlab1\n");
+++  char filename[6] = {'t','1','.','t','x','t'};
+++  char filename_a[5] = {'a','.','t','x','t'};
+++  int fd =  open(filename_a);
+++  //bool success = create(filename,20);
+++  //if(success) printf("Sucessfully created file");
+++  printf("End of customlab1 \n");
+++}
++diff --git a/pintos/src/examples/halt.c b/pintos/src/examples/halt.c
++index bad7250..b1f4d0c 100644
++--- a/pintos/src/examples/halt.c
+++++ b/pintos/src/examples/halt.c
++@@ -11,4 +11,5 @@ main (void)
++ {
++   halt ();
++   /* not reached */
+++  printf("Förbi syscall i halt\n");
++ }
++diff --git a/pintos/src/threads/thread.c b/pintos/src/threads/thread.c
++index 92d1aa8..8e41160 100644
++--- a/pintos/src/threads/thread.c
+++++ b/pintos/src/threads/thread.c
++@@ -13,6 +13,7 @@
++ #include "threads/vaddr.h"
++ #ifdef USERPROG
++ #include "userprog/process.h"
+++#include "filesys/file.h"
++ #endif
++ 
++ /* Random value for struct thread's `magic' member.
++@@ -93,6 +94,7 @@ thread_init (void)
++   init_thread (initial_thread, "main", PRI_DEFAULT);
++   initial_thread->status = THREAD_RUNNING;
++   initial_thread->tid = allocate_tid ();
+++
++ }
++ 
++ /* Starts preemptive thread scheduling by enabling interrupts.
++@@ -277,6 +279,16 @@ thread_exit (void)
++   ASSERT (!intr_context ());
++ 
++ #ifdef USERPROG
+++  struct thread* t = thread_current();
+++   if (t->nr_open_files > 0) { 
+++     int i;
+++     for(i=0; i<t->max_nr_open_files; i++) {
+++       struct file* file = t->fd_table[i];
+++       if(file != NULL) {
+++         file_close(file);
+++       }
+++     } 
+++  }
++   process_exit ();
++ #endif
++ 
++@@ -436,6 +448,17 @@ init_thread (struct thread *t, const char *name, int priority)
++   t->stack = (uint8_t *) t + PGSIZE;
++   t->priority = priority;
++   t->magic = THREAD_MAGIC;
+++
+++  #ifdef USERPROG
+++  /* Initalize file descriptor table and constants */
+++  t->max_nr_open_files = 128;
+++  t->fd_table_offset = 2;
+++  t->nr_open_files = 0;
+++  int i;
+++  for(i=0; i<t->max_nr_open_files; i++) {
+++    t->fd_table[i] = NULL;
+++  }
+++  #endif
++ }
++ 
++ /* Allocates a SIZE-byte frame at the top of thread T's stack and
++diff --git a/pintos/src/threads/thread.h b/pintos/src/threads/thread.h
++index 0039560..440ba4c 100644
++--- a/pintos/src/threads/thread.h
+++++ b/pintos/src/threads/thread.h
++@@ -4,6 +4,7 @@
++ #include <debug.h>
++ #include <list.h>
++ #include <stdint.h>
+++#include "filesys/file.h"
++ 
++ /* States in a thread's life cycle. */
++ enum thread_status
++@@ -95,6 +96,14 @@ struct thread
++ #ifdef USERPROG
++     /* Owned by userprog/process.c. */
++     uint32_t *pagedir;                  /* Page directory. */
+++
+++    /* Owned by userprog/syscall.c. */
+++    struct file* fd_table[128];         /* File descriptor table */
+++    int nr_open_files;
+++    int max_nr_open_files;
+++    int fd_table_offset;                /* Used to calculate actual index in fd_table. 
+++                                           (needed since fd nr 0 and 1 are reserved and not stored
+++                                           in fd table)*/
++ #endif
++ 
++     /* Owned by thread.c. */
++diff --git a/pintos/src/userprog/build/Makefile b/pintos/src/userprog/build/Makefile
++new file mode 100644
++index 0000000..1fbf29b
++--- /dev/null
+++++ b/pintos/src/userprog/build/Makefile
++@@ -0,0 +1,106 @@
+++# -*- makefile -*-
+++
+++SRCDIR = ../..
+++
+++all: os.dsk
+++
+++include ../../Make.config
+++include ../Make.vars
+++include ../../tests/Make.tests
+++
+++# Compiler and assembler options.
+++os.dsk: CPPFLAGS += -I$(SRCDIR)/lib/kernel
+++
+++# Core kernel.
+++threads_SRC  = threads/init.c		# Main program.
+++threads_SRC += threads/thread.c		# Thread management core.
+++threads_SRC += threads/switch.S		# Thread switch routine.
+++threads_SRC += threads/interrupt.c	# Interrupt core.
+++threads_SRC += threads/intr-stubs.S	# Interrupt stubs.
+++threads_SRC += threads/synch.c		# Synchronization.
+++threads_SRC += threads/palloc.c		# Page allocator.
+++threads_SRC += threads/malloc.c		# Subpage allocator.
+++threads_SRC += threads/start.S		# Startup code.
+++threads_SRC += threads/boundedbuffer.c	# bounded buffer code
+++threads_SRC += threads/synchlist.c	# synchronized list code
+++
+++# Device driver code.
+++devices_SRC  = devices/timer.c		# Timer device.
+++devices_SRC += devices/kbd.c		# Keyboard device.
+++devices_SRC += devices/vga.c		# Video device.
+++devices_SRC += devices/serial.c		# Serial port device.
+++devices_SRC += devices/disk.c		# IDE disk device.
+++devices_SRC += devices/input.c		# Serial and keyboard input.
+++devices_SRC += devices/intq.c		# Interrupt queue.
+++
+++# Library code shared between kernel and user programs.
+++lib_SRC  = lib/debug.c			# Debug helpers.
+++lib_SRC += lib/random.c			# Pseudo-random numbers.
+++lib_SRC += lib/stdio.c			# I/O library.
+++lib_SRC += lib/stdlib.c			# Utility functions.
+++lib_SRC += lib/string.c			# String functions.
+++lib_SRC += lib/arithmetic.c
+++
+++# Kernel-specific library code.
+++lib/kernel_SRC  = lib/kernel/debug.c	# Debug helpers.
+++lib/kernel_SRC += lib/kernel/list.c	# Doubly-linked lists.
+++lib/kernel_SRC += lib/kernel/bitmap.c	# Bitmaps.
+++lib/kernel_SRC += lib/kernel/hash.c	# Hash tables.
+++lib/kernel_SRC += lib/kernel/console.c	# printf(), putchar().
+++lib/kernel_SRC += lib/kernel/slist.c    # simple list
+++
+++# User process code.
+++userprog_SRC  = userprog/process.c	# Process loading.
+++userprog_SRC += userprog/pagedir.c	# Page directories.
+++userprog_SRC += userprog/exception.c	# User exception handler.
+++userprog_SRC += userprog/syscall.c	# System call handler.
+++userprog_SRC += userprog/gdt.c		# GDT initialization.
+++userprog_SRC += userprog/tss.c		# TSS management.
+++
+++# No virtual memory code yet.
+++#vm_SRC = vm/file.c			# Some file.
+++
+++# Filesystem code.
+++filesys_SRC  = filesys/filesys.c	# Filesystem core.
+++filesys_SRC += filesys/free-map.c	# Free sector bitmap.
+++filesys_SRC += filesys/file.c		# Files.
+++filesys_SRC += filesys/directory.c	# Directories.
+++filesys_SRC += filesys/inode.c		# File headers.
+++filesys_SRC += filesys/fsutil.c		# Utilities.
+++
+++SOURCES = $(foreach dir,$(KERNEL_SUBDIRS),$($(dir)_SRC))
+++OBJECTS = $(patsubst %.c,%.o,$(patsubst %.S,%.o,$(SOURCES)))
+++DEPENDS = $(patsubst %.o,%.d,$(OBJECTS))
+++
+++threads/kernel.lds.s: CPPFLAGS += -P
+++threads/kernel.lds.s: threads/kernel.lds.S threads/loader.h
+++
+++kernel.o: threads/kernel.lds.s $(OBJECTS) 
+++	$(LD) -T $< -o $@ $(OBJECTS)
+++
+++kernel.bin: kernel.o
+++	$(OBJCOPY) -O binary -R .note -R .comment -S $< $@.tmp
+++	dd if=$@.tmp of=$@ bs=4096 conv=sync
+++	rm $@.tmp
+++
+++threads/loader.o: threads/loader.S kernel.bin
+++	$(CC) -c $< -o $@ $(ASFLAGS) $(CPPFLAGS) $(DEFINES) -DKERNEL_LOAD_PAGES=`perl -e 'print +(-s "kernel.bin") / 4096;'`
+++
+++loader.bin: threads/loader.o
+++	$(LD) -N -e start -Ttext 0x7c00 --oformat binary -o $@ $<
+++
+++os.dsk: loader.bin kernel.bin
+++	cat $^ > $@
+++
+++clean::
+++	rm -f $(OBJECTS) $(DEPENDS) 
+++	rm -f threads/loader.o threads/kernel.lds.s threads/loader.d
+++	rm -f kernel.o kernel.lds.s
+++	rm -f kernel.bin loader.bin os.dsk
+++	rm -f bochsout.txt bochsrc.txt
+++	rm -f results grade
+++
+++Makefile: $(SRCDIR)/Makefile.build
+++	cp $< $@
+++
+++-include $(DEPENDS)
++diff --git a/pintos/src/userprog/build/bochsrc.txt b/pintos/src/userprog/build/bochsrc.txt
++new file mode 100644
++index 0000000..92100cd
++--- /dev/null
+++++ b/pintos/src/userprog/build/bochsrc.txt
++@@ -0,0 +1,11 @@
+++romimage: file=$BXSHARE/BIOS-bochs-latest, address=0xf0000
+++vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest
+++boot: disk
+++cpu: ips=1000000
+++megs: 4
+++log: bochsout.txt
+++panic: action=fatal
+++clock: sync=none, time0=0
+++ata0-master: type=disk, path=/tmp/ecuWGMV4Ns.dsk, mode=flat, cylinders=1, heads=16, spt=63, translation=none
+++ata0-slave: type=disk, path=fs.dsk, mode=flat, cylinders=4, heads=16, spt=63, translation=none
+++com1: enabled=1, mode=term, dev=/dev/stdout
++diff --git a/pintos/src/userprog/build/fs.dsk b/pintos/src/userprog/build/fs.dsk
++new file mode 100644
++index 0000000..bc88863
++Binary files /dev/null and b/pintos/src/userprog/build/fs.dsk differ
++diff --git a/pintos/src/userprog/build/kernel.bin b/pintos/src/userprog/build/kernel.bin
++new file mode 100644
++index 0000000..856327a
++Binary files /dev/null and b/pintos/src/userprog/build/kernel.bin differ
++diff --git a/pintos/src/userprog/build/libc.a b/pintos/src/userprog/build/libc.a
++new file mode 100644
++index 0000000..2fe520e
++Binary files /dev/null and b/pintos/src/userprog/build/libc.a differ
++diff --git a/pintos/src/userprog/build/loader.bin b/pintos/src/userprog/build/loader.bin
++new file mode 100755
++index 0000000..46ad495
++Binary files /dev/null and b/pintos/src/userprog/build/loader.bin differ
++diff --git a/pintos/src/userprog/build/os.dsk b/pintos/src/userprog/build/os.dsk
++new file mode 100644
++index 0000000..5e68e5d
++Binary files /dev/null and b/pintos/src/userprog/build/os.dsk differ
++diff --git a/pintos/src/userprog/build/tests/userprog/args-dbl-space b/pintos/src/userprog/build/tests/userprog/args-dbl-space
++new file mode 100755
++index 0000000..837937f
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/args-dbl-space differ
++diff --git a/pintos/src/userprog/build/tests/userprog/args-many b/pintos/src/userprog/build/tests/userprog/args-many
++new file mode 100755
++index 0000000..837937f
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/args-many differ
++diff --git a/pintos/src/userprog/build/tests/userprog/args-multiple b/pintos/src/userprog/build/tests/userprog/args-multiple
++new file mode 100755
++index 0000000..837937f
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/args-multiple differ
++diff --git a/pintos/src/userprog/build/tests/userprog/args-none b/pintos/src/userprog/build/tests/userprog/args-none
++new file mode 100755
++index 0000000..837937f
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/args-none differ
++diff --git a/pintos/src/userprog/build/tests/userprog/args-single b/pintos/src/userprog/build/tests/userprog/args-single
++new file mode 100755
++index 0000000..837937f
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/args-single differ
++diff --git a/pintos/src/userprog/build/tests/userprog/child-args b/pintos/src/userprog/build/tests/userprog/child-args
++new file mode 100755
++index 0000000..837937f
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/child-args differ
++diff --git a/pintos/src/userprog/build/tests/userprog/child-bad b/pintos/src/userprog/build/tests/userprog/child-bad
++new file mode 100755
++index 0000000..c15423c
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/child-bad differ
++diff --git a/pintos/src/userprog/build/tests/userprog/child-close b/pintos/src/userprog/build/tests/userprog/child-close
++new file mode 100755
++index 0000000..2afb380
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/child-close differ
++diff --git a/pintos/src/userprog/build/tests/userprog/child-rox b/pintos/src/userprog/build/tests/userprog/child-rox
++new file mode 100755
++index 0000000..d011d2e
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/child-rox differ
++diff --git a/pintos/src/userprog/build/tests/userprog/child-simple b/pintos/src/userprog/build/tests/userprog/child-simple
++new file mode 100755
++index 0000000..2aed7e1
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/child-simple differ
++diff --git a/pintos/src/userprog/build/tests/userprog/close-bad-fd b/pintos/src/userprog/build/tests/userprog/close-bad-fd
++new file mode 100755
++index 0000000..4a8b55d
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/close-bad-fd differ
++diff --git a/pintos/src/userprog/build/tests/userprog/close-normal b/pintos/src/userprog/build/tests/userprog/close-normal
++new file mode 100755
++index 0000000..161dd6a
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/close-normal differ
++diff --git a/pintos/src/userprog/build/tests/userprog/close-stdin b/pintos/src/userprog/build/tests/userprog/close-stdin
++new file mode 100755
++index 0000000..8c664f5
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/close-stdin differ
++diff --git a/pintos/src/userprog/build/tests/userprog/close-stdout b/pintos/src/userprog/build/tests/userprog/close-stdout
++new file mode 100755
++index 0000000..43759f9
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/close-stdout differ
++diff --git a/pintos/src/userprog/build/tests/userprog/create-bad-ptr b/pintos/src/userprog/build/tests/userprog/create-bad-ptr
++new file mode 100755
++index 0000000..b998a25
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/create-bad-ptr differ
++diff --git a/pintos/src/userprog/build/tests/userprog/create-bound b/pintos/src/userprog/build/tests/userprog/create-bound
++new file mode 100755
++index 0000000..677a05b
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/create-bound differ
++diff --git a/pintos/src/userprog/build/tests/userprog/create-empty b/pintos/src/userprog/build/tests/userprog/create-empty
++new file mode 100755
++index 0000000..1f966bb
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/create-empty differ
++diff --git a/pintos/src/userprog/build/tests/userprog/create-exists b/pintos/src/userprog/build/tests/userprog/create-exists
++new file mode 100755
++index 0000000..954f1de
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/create-exists differ
++diff --git a/pintos/src/userprog/build/tests/userprog/create-long b/pintos/src/userprog/build/tests/userprog/create-long
++new file mode 100755
++index 0000000..33709a2
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/create-long differ
++diff --git a/pintos/src/userprog/build/tests/userprog/create-normal b/pintos/src/userprog/build/tests/userprog/create-normal
++new file mode 100755
++index 0000000..6d9a8f5
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/create-normal differ
++diff --git a/pintos/src/userprog/build/tests/userprog/create-null b/pintos/src/userprog/build/tests/userprog/create-null
++new file mode 100755
++index 0000000..03acaa9
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/create-null differ
++diff --git a/pintos/src/userprog/build/tests/userprog/exec-arg b/pintos/src/userprog/build/tests/userprog/exec-arg
++new file mode 100755
++index 0000000..977d383
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/exec-arg differ
++diff --git a/pintos/src/userprog/build/tests/userprog/exec-bad-ptr b/pintos/src/userprog/build/tests/userprog/exec-bad-ptr
++new file mode 100755
++index 0000000..cb2374f
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/exec-bad-ptr differ
++diff --git a/pintos/src/userprog/build/tests/userprog/exec-missing b/pintos/src/userprog/build/tests/userprog/exec-missing
++new file mode 100755
++index 0000000..f4820c3
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/exec-missing differ
++diff --git a/pintos/src/userprog/build/tests/userprog/exec-multiple b/pintos/src/userprog/build/tests/userprog/exec-multiple
++new file mode 100755
++index 0000000..2d5c26c
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/exec-multiple differ
++diff --git a/pintos/src/userprog/build/tests/userprog/exec-once b/pintos/src/userprog/build/tests/userprog/exec-once
++new file mode 100755
++index 0000000..309ba21
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/exec-once differ
++diff --git a/pintos/src/userprog/build/tests/userprog/exit b/pintos/src/userprog/build/tests/userprog/exit
++new file mode 100755
++index 0000000..b7a05b0
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/exit differ
++diff --git a/pintos/src/userprog/build/tests/userprog/halt b/pintos/src/userprog/build/tests/userprog/halt
++new file mode 100755
++index 0000000..3cd177d
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/halt differ
++diff --git a/pintos/src/userprog/build/tests/userprog/multi-recurse b/pintos/src/userprog/build/tests/userprog/multi-recurse
++new file mode 100755
++index 0000000..90e1531
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/multi-recurse differ
++diff --git a/pintos/src/userprog/build/tests/userprog/open-bad-ptr b/pintos/src/userprog/build/tests/userprog/open-bad-ptr
++new file mode 100755
++index 0000000..1baa4c1
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/open-bad-ptr differ
++diff --git a/pintos/src/userprog/build/tests/userprog/open-boundary b/pintos/src/userprog/build/tests/userprog/open-boundary
++new file mode 100755
++index 0000000..70edbb5
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/open-boundary differ
++diff --git a/pintos/src/userprog/build/tests/userprog/open-empty b/pintos/src/userprog/build/tests/userprog/open-empty
++new file mode 100755
++index 0000000..4ac829e
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/open-empty differ
++diff --git a/pintos/src/userprog/build/tests/userprog/open-missing b/pintos/src/userprog/build/tests/userprog/open-missing
++new file mode 100755
++index 0000000..4355b63
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/open-missing differ
++diff --git a/pintos/src/userprog/build/tests/userprog/open-normal b/pintos/src/userprog/build/tests/userprog/open-normal
++new file mode 100755
++index 0000000..e92065d
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/open-normal differ
++diff --git a/pintos/src/userprog/build/tests/userprog/open-null b/pintos/src/userprog/build/tests/userprog/open-null
++new file mode 100755
++index 0000000..ec80745
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/open-null differ
++diff --git a/pintos/src/userprog/build/tests/userprog/open-twice b/pintos/src/userprog/build/tests/userprog/open-twice
++new file mode 100755
++index 0000000..747c887
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/open-twice differ
++diff --git a/pintos/src/userprog/build/tests/userprog/read-bad-fd b/pintos/src/userprog/build/tests/userprog/read-bad-fd
++new file mode 100755
++index 0000000..6ba90e9
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/read-bad-fd differ
++diff --git a/pintos/src/userprog/build/tests/userprog/read-bad-ptr b/pintos/src/userprog/build/tests/userprog/read-bad-ptr
++new file mode 100755
++index 0000000..dac75ef
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/read-bad-ptr differ
++diff --git a/pintos/src/userprog/build/tests/userprog/read-boundary b/pintos/src/userprog/build/tests/userprog/read-boundary
++new file mode 100755
++index 0000000..ba6e7be
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/read-boundary differ
++diff --git a/pintos/src/userprog/build/tests/userprog/read-stdout b/pintos/src/userprog/build/tests/userprog/read-stdout
++new file mode 100755
++index 0000000..a82a66d
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/read-stdout differ
++diff --git a/pintos/src/userprog/build/tests/userprog/read-zero b/pintos/src/userprog/build/tests/userprog/read-zero
++new file mode 100755
++index 0000000..237abe1
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/read-zero differ
++diff --git a/pintos/src/userprog/build/tests/userprog/sc-bad-arg b/pintos/src/userprog/build/tests/userprog/sc-bad-arg
++new file mode 100755
++index 0000000..1b44393
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/sc-bad-arg differ
++diff --git a/pintos/src/userprog/build/tests/userprog/sc-bad-sp b/pintos/src/userprog/build/tests/userprog/sc-bad-sp
++new file mode 100755
++index 0000000..b398a20
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/sc-bad-sp differ
++diff --git a/pintos/src/userprog/build/tests/userprog/sc-boundary b/pintos/src/userprog/build/tests/userprog/sc-boundary
++new file mode 100755
++index 0000000..56045a0
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/sc-boundary differ
++diff --git a/pintos/src/userprog/build/tests/userprog/sc-boundary-2 b/pintos/src/userprog/build/tests/userprog/sc-boundary-2
++new file mode 100755
++index 0000000..90345b5
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/sc-boundary-2 differ
++diff --git a/pintos/src/userprog/build/tests/userprog/wait-bad-pid b/pintos/src/userprog/build/tests/userprog/wait-bad-pid
++new file mode 100755
++index 0000000..fc07827
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/wait-bad-pid differ
++diff --git a/pintos/src/userprog/build/tests/userprog/wait-killed b/pintos/src/userprog/build/tests/userprog/wait-killed
++new file mode 100755
++index 0000000..e83511b
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/wait-killed differ
++diff --git a/pintos/src/userprog/build/tests/userprog/wait-simple b/pintos/src/userprog/build/tests/userprog/wait-simple
++new file mode 100755
++index 0000000..c1690c8
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/wait-simple differ
++diff --git a/pintos/src/userprog/build/tests/userprog/wait-twice b/pintos/src/userprog/build/tests/userprog/wait-twice
++new file mode 100755
++index 0000000..98560a3
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/wait-twice differ
++diff --git a/pintos/src/userprog/build/tests/userprog/write-bad-fd b/pintos/src/userprog/build/tests/userprog/write-bad-fd
++new file mode 100755
++index 0000000..44eb87b
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/write-bad-fd differ
++diff --git a/pintos/src/userprog/build/tests/userprog/write-bad-ptr b/pintos/src/userprog/build/tests/userprog/write-bad-ptr
++new file mode 100755
++index 0000000..5782c35
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/write-bad-ptr differ
++diff --git a/pintos/src/userprog/build/tests/userprog/write-boundary b/pintos/src/userprog/build/tests/userprog/write-boundary
++new file mode 100755
++index 0000000..036e07a
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/write-boundary differ
++diff --git a/pintos/src/userprog/build/tests/userprog/write-normal b/pintos/src/userprog/build/tests/userprog/write-normal
++new file mode 100755
++index 0000000..e0cc331
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/write-normal differ
++diff --git a/pintos/src/userprog/build/tests/userprog/write-stdin b/pintos/src/userprog/build/tests/userprog/write-stdin
++new file mode 100755
++index 0000000..b444b21
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/write-stdin differ
++diff --git a/pintos/src/userprog/build/tests/userprog/write-zero b/pintos/src/userprog/build/tests/userprog/write-zero
++new file mode 100755
++index 0000000..4f67494
++Binary files /dev/null and b/pintos/src/userprog/build/tests/userprog/write-zero differ
++diff --git a/pintos/src/userprog/build/threads/kernel.lds.s b/pintos/src/userprog/build/threads/kernel.lds.s
++new file mode 100644
++index 0000000..0f841da
++--- /dev/null
+++++ b/pintos/src/userprog/build/threads/kernel.lds.s
++@@ -0,0 +1,17 @@
+++OUTPUT_FORMAT("elf32-i386")
+++OUTPUT_ARCH("i386")
+++ENTRY(start)
+++SECTIONS
+++{
+++  . = 0xc0000000 + 0x100000;
+++  _start = .;
+++  .text : { *(.start) *(.text) } = 0x90
+++  .rodata : { *(.rodata) *(.rodata.*)
+++       . = ALIGN(0x1000);
+++       _end_kernel_text = .; }
+++  .data : { *(.data) }
+++  _start_bss = .;
+++  .bss : { *(.bss) }
+++  _end_bss = .;
+++  _end = .;
+++}
++diff --git a/pintos/src/userprog/process.c b/pintos/src/userprog/process.c
++index b3e16bb..3553623 100644
++--- a/pintos/src/userprog/process.c
+++++ b/pintos/src/userprog/process.c
++@@ -88,6 +88,9 @@ start_process (void *file_name_)
++ int
++ process_wait (tid_t child_tid UNUSED) 
++ {
+++  while(true){
+++    continue;
+++  }
++   return -1;
++ }
++ 
++@@ -476,7 +479,7 @@ setup_stack (void **esp)
++     {
++       success = install_page (((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
++       if (success)
++-        *esp = PHYS_BASE;
+++        *esp = PHYS_BASE - 12;   // Makeshift change! (until arguments passing implemented)
++       else
++         palloc_free_page (kpage);
++     }
++diff --git a/pintos/src/userprog/syscall.c b/pintos/src/userprog/syscall.c
++index 370c89b..bea8e5b 100644
++--- a/pintos/src/userprog/syscall.c
+++++ b/pintos/src/userprog/syscall.c
++@@ -1,8 +1,35 @@
++-#include "userprog/syscall.h"
++ #include <stdio.h>
+++#include <stdbool.h>
+++#include <stdlib.h>
++ #include <syscall-nr.h>
+++#include "userprog/syscall.h"
++ #include "threads/interrupt.h"
++ #include "threads/thread.h"
+++#include "filesys/filesys.h"
+++#include "filesys/off_t.h"
+++#include "lib/kernel/console.h"
+++#include "devices/input.h"
+++
+++
+++void halt(void);
+++
+++void exit(int status);
+++
+++bool create (const char *file, unsigned initial_size);
+++
+++int open (const char *file); 
+++
+++void close(int fd);
+++
+++int write(int fd, const void *buffer, unsigned size);
+++
+++int read (int fd, void *buffer, unsigned size);
+++
+++int add_file_to_fd_table(struct file* openfile, struct thread* current_thread);
+++
+++void get_args(int nr_args, int* args, void* esp);
+++
+++bool validate_fd(int fd, struct thread* current_thread);
++ 
++ static void syscall_handler (struct intr_frame *);
++ 
++@@ -13,8 +40,198 @@ syscall_init (void)
++ }
++ 
++ static void
++-syscall_handler (struct intr_frame *f UNUSED) 
+++syscall_handler (struct intr_frame *f) 
+++{
+++  uint32_t return_value = NULL;
+++  int syscall_nr =  *((int*)f->esp);
+++
+++  int args[3];                      // Used to store syscall args, max nr args 3
+++
+++  switch(syscall_nr) {
+++
+++  case SYS_HALT :                   /* Halt the operating system.*/
+++    halt();
+++    break;
+++    
+++  case SYS_EXIT :                   /* Terminate this process. */
+++    get_args(1, args, f->esp);
+++    exit((int) args[0]);
+++    break; 
+++
+++  case SYS_CREATE :                 /* Create a file. */
+++    get_args(2, args, f->esp);
+++    return_value = (uint32_t) create((const char*)args[0], (unsigned)args[1]);
+++    break;
+++
+++  case SYS_OPEN :                   /* Open a file. */
+++    get_args(1, args, f->esp);
+++    return_value = (uint32_t) open((const char*) args[0]);
+++    break;
+++
+++  case SYS_READ :                   /* Read from a file. */
+++    get_args(3, args, f->esp);
+++    return_value = (uint32_t) read((int)args[0], (void*)args[1], (unsigned)args[2]);
+++    break;
+++
+++  case SYS_WRITE :                  /* Write to a file. */
+++    get_args(3, args, f->esp);
+++    return_value = (uint32_t) write((int)args[0], (const void*)args[1], (unsigned)args[2]);
+++    break;
+++
+++  case SYS_CLOSE :                  /* Close a file. */
+++    get_args(1, args, f->esp);
+++    close((int) args[0]);
+++    break;
+++  }
+++
+++  f->eax = return_value;
+++}
+++
+++void halt(void)
+++{
+++  power_off();  
+++}
+++
+++void exit(int status UNUSED)
+++{
+++  thread_exit();
+++}
+++
+++bool create (const char *file, unsigned initial_size)
+++{
+++  off_t init_size = (off_t) initial_size;
+++  return filesys_create(file, init_size);
+++}
+++
+++int open (const char *file)
+++{
+++  struct thread* current_thread = thread_current();
+++  struct file* openfile = filesys_open(file);
+++  if(openfile == NULL) {
+++    return -1;
+++  }
+++  int index = add_file_to_fd_table(openfile, current_thread);
+++  int fd = index + current_thread->fd_table_offset;              //offset is 2 in our case
+++
+++  return fd;
+++} 
+++
+++void close(int fd)
+++{ 
+++  struct thread* current_thread = thread_current();
+++  if (!(validate_fd(fd, current_thread))) return;
+++  int i = fd - current_thread->fd_table_offset;
+++  struct file* closing_file = current_thread->fd_table[i];
+++  if (closing_file != NULL)
+++    { file_close(closing_file);
+++      current_thread->fd_table[i] = NULL;
+++      (current_thread->nr_open_files)-- ;  
+++    }
+++}
+++
+++int write(int fd, const void *buffer, unsigned size)
+++{
+++  int nr_bytes_written = -1;
+++  
+++  if(fd == 1) {
+++    // File descriptor 1 writes to console
+++    const unsigned  max_size = 500;            // bytes
+++    const void *curr_buffer = buffer;
+++    unsigned curr_size = size;
+++    while(curr_size > max_size) {
+++      putbuf(curr_buffer, (size_t) max_size);
+++      curr_size -= max_size;
+++      curr_buffer += max_size;
+++    }
+++    putbuf(curr_buffer, (size_t) curr_size);
+++    return (int) size;   
+++  }
+++
+++  // Deal with all file descriptors stored in current thread's 
+++  // file descriptor table.
+++  
+++  struct thread* current_thread = thread_current();
+++  if ( !(validate_fd(fd, current_thread))) return nr_bytes_written;
+++  int i = fd - current_thread->fd_table_offset;
+++  struct file* file = current_thread->fd_table[i];
+++
+++  off_t size_var = (off_t)size;
+++  if (file == NULL || buffer == NULL) {
+++    nr_bytes_written = -1;
+++  }
+++  else{ 
+++    nr_bytes_written = (int)file_write(file, buffer, size_var);
+++    if (nr_bytes_written == 0){    
+++      nr_bytes_written = -1;
+++  }
+++ }
+++  return nr_bytes_written;
+++}
+++
+++int read (int fd, void *buffer, unsigned size) 
+++{
+++  int nr_bytes_read = -1;
+++  
+++  if (fd == 0) 
+++  {
+++    uint8_t* curr_buffer = (uint8_t*)buffer; 
+++    unsigned i;
+++    for(i=0 ; i<size; i++){               // read from the keyboard
+++      uint8_t key; 
+++      key = input_getc();
+++      curr_buffer[i]=key;
+++      }
+++    return size;
+++  }
+++  struct thread* current_thread = thread_current();
+++  if ( !(validate_fd(fd, current_thread))) return nr_bytes_read;
+++  int i = fd - current_thread->fd_table_offset;
+++  struct file* file = current_thread->fd_table[i];
+++  if ( file != NULL && buffer != NULL)
+++    {
+++      nr_bytes_read = (int)file_read(file, buffer, (off_t)size);
+++    }
+++  return nr_bytes_read;
+++}
+++
+++/* 
+++Puts the file at the first found avaiable spot in the file descriptor table,
+++and returns the index or -1 if the file descriptor table is full.
+++ */
+++int add_file_to_fd_table(struct file* openfile, struct thread* current_thread)
+++{
+++  if(current_thread->nr_open_files <= current_thread->max_nr_open_files) {
+++      int i;
+++      for(i=0; i < current_thread->max_nr_open_files; i++) {
+++        if(current_thread->fd_table[i]==NULL){
+++          current_thread->fd_table[i] = openfile;
+++	  current_thread->nr_open_files++;
+++	  break;
+++        }
+++      }
+++      return i;
+++  }
+++  return -1;
+++}
+++
+++/*
+++Retrieves nr_args arguments from the stack pointed to by esp. Stores them in args.
+++ */
+++void get_args(int nr_args, int* args, void* esp)
+++{
+++  int i;
+++  int* p;
+++  for(i=0; i < nr_args; i++) {
+++    p = (int*) esp + 1 + i;
+++    args[i] = *p;
+++  }
+++}
+++
+++/*
+++Confirms that the file descriptor is within the acceptable bounds (2 - 127). 
+++STDIN and STDOUT for values 0 and 1 are not accounted for. 
+++ */
+++bool validate_fd(int fd, struct thread* current_thread)
++ {
++-  printf ("system call!\n");
++-  thread_exit ();
+++  return ((fd < current_thread->max_nr_open_files) & (fd > 1)); 
++ }
++diff --git a/pintos/src/userprog/syscall.h b/pintos/src/userprog/syscall.h
++index 9059096..98901f7 100644
++--- a/pintos/src/userprog/syscall.h
+++++ b/pintos/src/userprog/syscall.h
++@@ -1,3 +1,5 @@
+++#include <stdbool.h>
+++
++ #ifndef USERPROG_SYSCALL_H
++ #define USERPROG_SYSCALL_H
++ 
++diff --git a/work-log.txt b/work-log.txt
++new file mode 100644
++index 0000000..00dd967
++--- /dev/null
+++++ b/work-log.txt
++@@ -0,0 +1,68 @@
+++----------------------------------------------------
+++NOTES TO KEEP TRACK OF PROGRESS, IDEAS, PROBLEMS EG.
+++----------------------------------------------------
+++
+++--- 1/23/17 ---
+++Matildha:
+++Created git repo. Copied fhresh pintos files into it and commited, 
+++none of my previous changes to lab1 added yet. 
+++  Made all the tests in lab0 and added commands to .bashrc. Unsure if it works 
+++properly though. Added the tags to emacs and ran the alarm-single with and without gdb.
+++  
+++TODO: Try to understand what changes I made to lab1 and then transfer them into new 
+++project if seems correct. !DONE!
+++
+++--- 1/27/17 ---
+++Matildha:
+++Changed the *esp pointer to PYSBASE - 12 and set process_wait() to infinite loop. 
+++   Much of what I did previously in lab1 seem to be kinda of wrong... 
+++
+++--- 1/31/17 ---
+++Matildha:
+++Copied old halt() function to present. 
+++   
+++TODO: Should all syscall functions be declared static? 
+++
+++--- 2/1/17 ---
+++Matildha:
+++Create file function seems to work. Does not test arguments. 
+++   Found useful read and write operations in file.c. (good filename lol)
+++
+++Added nr_open_files to 'struct thread' and pointer to dynamically allocated array for file descriptor table - which consists of 'struct file*' pointers. Failed to allocate array in thread_init() since #ifdef USERPROG made it unavaiable.
+++   Wrote something quick in syscall, a function callled init_fd_table that allocates the array and sets nr_open_files to 0. Not finished, not tested. 
+++TODO: Try to initialize fd_table and nr_open_files in syscall.c. 
+++
+++--- 2/2/17 ---
+++Matildha:
+++You are allowed to put fd_table array i thread struct. Set all elements to NULL in thread_init. 
+++  Succeeded to open a file and put it at the first position in the fd_table. Added max_nr_open_files in thread struct. 
+++TODO: Should this be constant? HOW?
+++TODO: Fix get_new_fd() to handle several open calls.
+++
+++--- 2/3/17 ---
+++Matildha & Dominique:
+++We have done the write and close functions, the write function is tested and seems to work. We moved initialasion of thread struct variables to init_thread instead of thread_init. 
+++
+++--- 2/7/17 --- 
+++Matildha & Dominique:
+++Done write and read functions, works both from files and from console. Haven't confirmed that read works from keyboard. 
+++TODO: Unsure what/how to test?
+++  Close seems to work, at least for a single open file. 
+++
+++PROBLEM: Can't have 2 open files at the same time. First open call fails if there is a second open call afterwards. Close in between don't matter. 
+++
+++-- 2/7/17 ---
+++Matildha:
+++Wrote skeleton for switch statement in syscall handler. Created a custom test in examples. Is going to test create which is the only case with function call in handler.
+++TODO: Fix compilation errors and test the create syscall. (Does retreiving of arguments work as I've written it now?)
+++
+++-- 2/8/17 ---
+++Matildha:
+++Finished switch statement with call to all out functions. Created a function get_args() which puts the right number of arguments into an array allocated in syscall_handler. Create, write and open and exit seems to work. Not tested halt yet. 
+++   I thiiiink the problem with opening 2 files did not appear to be a problem when running lab1test. 
+++PROBLEM: Read from console deos however NOT work with lab1test. I can't currently rule out that it's because of the ssh x11 connection i used in doing the test. 
+++TODO: Test lab1test from school pc.  
+++
+++-- 2/9/17 ---
+++Dominique & Matildha
+++Passed the lab1test. Fixed the problems when reading on the console. Adding the validate_fd function into several other functions. Closed the files that the user did not close in exit(). 
+diff --git a/pintos/src/TAGS b/pintos/src/TAGS
+new file mode 100644
+index 0000000..48a0ecd
+--- /dev/null
++++ b/pintos/src/TAGS
+@@ -0,0 +1,1433 @@
++
++threads/boundedbuffer.c,87
++void bb_init(15,448
++void bb_destroy(21,550
++int bb_read(26,624
++void bb_write(31,694
++
++threads/boundedbuffer.h,79
++#define BOUNDEDBUFFER_H9,206
++struct bounded_buffer 13,259
++  int size;14,283
++
++threads/copyright.h,42
++static char *copyright copyright23,1095
++
++threads/flags.h,75
++#define THREADS_FLAGS_H2,24
++#define FLAG_MBS 5,72
++#define FLAG_IF 6,123
++
++threads/init.c,475
++size_t ram_pages;39,889
++uint32_t *base_page_dir;base_page_dir42,956
++static bool format_filesys;46,1031
++bool power_off_when_done;50,1116
++int main 63,1388
++ram_init 131,2717
++paging_init 156,3669
++read_command_line 192,4800
++parse_options 227,5545
++run_task 260,6378
++run_actions 276,6718
++  struct action 279,6766
++      char *name;name281,6789
++      int argc;282,6848
++      void (*function)function283,6928
++usage 327,7988
++power_off 363,9403
++print_stats 386,9813
++
++threads/init.h,51
++#define THREADS_INIT_H2,23
++void power_off 18,360
++
++threads/interrupt.c,714
++#define INTR_CNT 14,309
++static uint64_t idt[idt20,575
++static intr_handler_func *intr_handlers[intr_handlers23,661
++static const char *intr_names[intr_names26,769
++static bool in_external_intr;35,1205
++static bool yield_on_return;36,1284
++intr_get_level 52,1848
++intr_set_level 68,2328
++intr_enable 75,2519
++intr_disable 91,2903
++intr_init 105,3236
++register_handler 152,4930
++intr_register_ext 168,5490
++intr_register_int 189,6387
++intr_context 199,6723
++intr_yield_on_return 209,6976
++pic_init 232,7856
++pic_end_of_interrupt 259,8799
++make_gate 288,9875
++make_intr_gate 311,10633
++make_trap_gate 319,10815
++make_idtr_operand 327,11050
++intr_handler 339,11409
++intr_dump_frame 392,12850
++intr_name 416,13788
++
++threads/interrupt.h,710
++#define THREADS_INTERRUPT_H2,28
++enum intr_level 8,127
++    INTR_OFF,10,148
++    INTR_ON 11,201
++struct intr_frame20,452
++    uint32_t edi;24,579
++    uint32_t esi;25,628
++    uint32_t ebp;26,677
++    uint32_t esp_dummy;27,726
++    uint32_t ebx;28,774
++    uint32_t edx;29,823
++    uint32_t ecx;30,872
++    uint32_t eax;31,921
++    uint16_t gs,32,970
++    uint16_t fs,33,1035
++    uint16_t es,34,1100
++    uint16_t ds,35,1165
++    uint32_t vec_no;38,1280
++    uint32_t error_code;43,1506
++    void *frame_pointer;frame_pointer47,1668
++    void (*eip)eip51,1820
++    uint16_t cs,52,1887
++    uint32_t eflags;53,1947
++    void *esp;esp54,2002
++    uint16_t ss,55,2061
++typedef void intr_handler_func 58,2127
++
++threads/intr-stubs.S,199
++.func 18,535
++intr_entry:intr_entry19,552
++.globl 36,916
++.globl 49,1251
++.func 50,1268
++intr_exit:intr_exit51,1284
++.globl 94,2433
++intr_stubs:intr_stubs95,2451
++.globl 114,3177
++.func 115,3227
++
++threads/intr-stubs.h,70
++#define THREADS_INTR_STUBS_H2,29
++typedef void intr_stub_func 13,423
++
++threads/io.h,204
++#define THREADS_IO_H42,1987
++inb 49,2114
++insb 60,2381
++inw 71,2691
++insw 82,2977
++inl 93,3287
++insl 104,3569
++outb 115,3864
++outsb 124,4095
++outw 135,4395
++outsw 144,4649
++outl 155,4949
++outsl 164,5195
++
++threads/loader.S,247
++.globl 60,2723
++start:start61,2736
++read_sector:read_sector236,7150
++gdt:gdt304,8114
++gdtdesc:gdtdesc309,8239
++panic:panic316,8406
++panic_message:panic_message326,8574
++ram_pgs:ram_pgs333,8755
++arg_cnt:arg_cnt340,8990
++args:args343,9040
++
++threads/loader.h,481
++#define THREADS_LOADER_H2,25
++#define LOADER_BASE 5,89
++#define LOADER_END 6,162
++#define LOADER_KERN_BASE 9,275
++#define LOADER_PHYS_BASE 18,611
++#define LOADER_SIG 21,707
++#define LOADER_ARGS 22,787
++#define LOADER_ARG_CNT 23,867
++#define LOADER_RAM_PGS 24,947
++#define LOADER_SIG_LEN 27,1067
++#define LOADER_ARGS_LEN 28,1092
++#define LOADER_ARG_CNT_LEN 29,1120
++#define LOADER_RAM_PGS_LEN 30,1149
++#define SEL_NULL 34,1267
++#define SEL_KCSEG 35,1320
++#define SEL_KDSEG 36,1380
++
++threads/malloc.c,589
++struct desc38,1402
++    size_t block_size;40,1418
++    size_t blocks_per_arena;41,1487
++    struct list free_list;42,1555
++    struct lock lock;43,1614
++#define ARENA_MAGIC 47,1715
++struct arena 50,1760
++    unsigned magic;52,1778
++    struct desc *desc;desc53,1843
++    size_t free_cnt;54,1920
++struct block 58,2015
++    struct list_elem free_elem;60,2033
++static struct desc descs[descs64,2126
++static size_t desc_cnt;65,2177
++malloc_init 72,2409
++malloc 90,2927
++calloc 159,4751
++block_size 179,5115
++realloc 195,5625
++free 219,6220
++block_to_arena 268,7469
++arena_to_block 286,7945
++
++threads/malloc.h,84
++#define THREADS_MALLOC_H2,25
++void *malloc malloc8,116
++void *calloc calloc9,164
++
++threads/palloc.c,414
++struct pool30,966
++    struct lock lock;32,982
++    struct bitmap *used_map;used_map33,1046
++    uint8_t *base;base34,1114
++struct pool kernel_pool,38,1238
++struct pool kernel_pool, user_pool;38,1238
++size_t user_page_limit 41,1326
++palloc_init 49,1577
++palloc_get_multiple 78,2645
++palloc_get_page 118,3686
++palloc_free_multiple 125,3830
++palloc_free_page 153,4457
++init_pool 161,4646
++page_from_pool 182,5356
++
++threads/palloc.h,118
++#define THREADS_PALLOC_H2,25
++enum palloc_flags7,101
++    PAL_ASSERT 9,123
++    PAL_ZERO 10,179
++    PAL_USER 11,237
++
++threads/pte.h,714
++#define THREADS_PTE_H2,22
++#define	PTSHIFT 21,612
++#define PTBITS 22,675
++#define PTSPAN 23,751
++#define PTMASK 24,831
++#define PDSHIFT 27,947
++#define PDBITS 28,1022
++#define PDMASK 29,1096
++static inline unsigned pt_no 32,1230
++static inline uintptr_t pd_no 37,1387
++#define PTE_FLAGS 61,2329
++#define PTE_ADDR 62,2378
++#define PTE_AVL 63,2430
++#define PTE_P 64,2495
++#define PTE_W 65,2559
++#define PTE_U 66,2624
++#define PTE_A 67,2692
++#define PTE_D 68,2759
++static inline uint32_t pde_create 71,2882
++static inline uint32_t *pde_get_pt pde_get_pt78,3118
++static inline uint32_t pte_create_kernel 87,3419
++static inline uint32_t pte_create_user 96,3765
++static inline void *pte_get_page pte_get_page102,3966
++
++threads/start.S,64
++.section 7,329
++.globl 9,347
++.func 10,360
++start:start12,386
++
++threads/switch.S,165
++.globl 15,605
++.func 16,627
++switch_threads:switch_threads17,648
++.globl 32,1045
++.globl 51,1424
++.func 52,1444
++switch_entry:switch_entry53,1463
++.globl 59,1573
++
++threads/switch.h,379
++#define THREADS_SWITCH_H2,25
++struct switch_threads_frame 6,110
++    uint32_t edi;8,143
++    uint32_t esi;9,197
++    uint32_t ebp;10,251
++    uint32_t ebx;11,305
++    void (*eip)eip12,359
++    struct thread *cur;cur13,417
++    struct thread *next;next14,492
++struct switch_entry_frame23,838
++    void (*eip)eip25,868
++#define SWITCH_CUR 36,1080
++#define SWITCH_NEXT 37,1107
++
++threads/synch.c,458
++sema_init 45,1674
++sema_down 61,2174
++sema_try_down 84,2728
++sema_up 109,3226
++sema_self_test 129,3751
++sema_test_helper 148,4152
++lock_init 176,5133
++lock_acquire 193,5598
++lock_try_acquire 210,6043
++lock_release 229,6496
++lock_held_by_current_thread 242,6817
++struct semaphore_elem 250,6979
++    struct list_elem elem;252,7006
++    struct semaphore semaphore;253,7066
++cond_init 260,7317
++cond_wait 288,8337
++cond_signal 312,9056
++cond_broadcast 331,9693
++
++threads/synch.h,294
++#define THREADS_SYNCH_H2,24
++struct semaphore 8,117
++    unsigned value;10,139
++    struct list waiters;11,192
++struct lock 21,468
++    struct thread *holder;holder23,485
++    struct semaphore semaphore;24,560
++struct condition 34,865
++    struct list waiters;36,887
++#define barrier(49,1341
++
++threads/synchlist.c,105
++void sl_init(29,978
++void sl_destroy(42,1337
++void sl_append(63,1944
++void *sl_remove(sl_remove83,2646
++
++threads/synchlist.h,204
++struct SynchList 24,773
++  struct list sl_list;25,792
++  struct lock sl_lock;26,815
++  struct condition sl_empty;27,838
++struct SL_element30,871
++  struct list_elem elem;32,891
++  void *item;item33,916
++
++threads/thread.c,1288
++#define THREAD_MAGIC 21,529
++static struct list ready_list;25,679
++static struct thread *idle_thread;idle_thread28,730
++static struct thread *initial_thread;initial_thread31,822
++static struct lock tid_lock;34,896
++struct kernel_thread_frame 37,965
++    void *eip;eip39,997
++    thread_func *function;function40,1051
++    void *aux;aux41,1107
++static long long idle_ticks;45,1198
++static long long kernel_ticks;46,1265
++static long long user_ticks;47,1339
++#define TIME_SLICE 50,1431
++static unsigned thread_ticks;51,1507
++bool thread_mlfqs;56,1744
++static bool is_thread 64,2025
++thread_start 101,3225
++thread_tick 118,3688
++thread_print_stats 139,4053
++thread_create 161,5013
++thread_block 208,6174
++thread_unblock 226,6713
++thread_name 241,7040
++thread_current 250,7268
++thread_tid 267,7728
++thread_exit 275,7877
++thread_yield 294,8334
++thread_set_priority 311,8706
++thread_get_priority 318,8846
++thread_set_nice 325,8974
++thread_get_nice 332,9094
++thread_get_load_avg 340,9217
++thread_get_recent_cpu 348,9358
++idle 364,9932
++kernel_thread 394,10856
++running_thread 405,11191
++is_thread 419,11634
++init_thread 427,11800
++alloc_frame 444,12287
++next_thread_to_run 460,12802
++schedule_tail 485,13689
++schedule 522,14743
++allocate_tid 539,15140
++uint32_t thread_stack_ofs 553,15415
++
++threads/thread.h,624
++#define THREADS_THREAD_H2,25
++enum thread_status9,148
++    THREAD_RUNNING,11,171
++    THREAD_READY,12,217
++    THREAD_BLOCKED,13,277
++    THREAD_DYING 14,340
++typedef int tid_t;19,481
++#define TID_ERROR 20,500
++#define PRI_MIN 23,595
++#define PRI_DEFAULT 24,658
++#define PRI_MAX 25,722
++struct thread83,3477
++    tid_t tid;86,3524
++    enum thread_status status;87,3589
++    char name[name88,3649
++    uint8_t *stack;stack89,3726
++    int priority;90,3793
++    struct list_elem elem;93,3897
++    uint32_t *pagedir;pagedir97,4013
++    unsigned magic;101,4112
++typedef void thread_func 115,4488
++void thread_exit 125,4766
++
++threads/vaddr.h,434
++#define THREADS_VADDR_H2,24
++#define BITMASK(15,288
++#define PGSHIFT 18,382
++#define PGBITS 19,458
++#define PGSIZE 20,530
++#define PGMASK 21,596
++static inline unsigned pg_ofs 24,699
++static inline uintptr_t pg_no 29,812
++static inline void *pg_round_up pg_round_up34,940
++static inline void *pg_round_down pg_round_down39,1098
++#define	PHYS_BASE 53,1700
++is_user_vaddr 57,1821
++is_kernel_vaddr 64,1965
++ptov 72,2140
++vtop 82,2354
++
++userprog/exception.c,128
++static long long page_fault_cnt;9,198
++exception_init 30,941
++exception_print_stats 65,2677
++kill 72,2852
++page_fault 123,4949
++
++userprog/exception.h,94
++#define USERPROG_EXCEPTION_H2,29
++#define PF_P 5,135
++#define PF_W 6,210
++#define PF_U 7,255
++
++userprog/gdt.c,324
++static uint64_t gdt[gdt25,919
++gdt_init 36,1294
++enum seg_class57,2025
++    CLS_SYSTEM 59,2044
++    CLS_CODE_DATA 60,2098
++enum seg_granularity64,2211
++    GRAN_BYTE 66,2236
++    GRAN_PAGE 67,2304
++make_seg_desc 82,2985
++make_code_desc 116,4233
++make_data_desc 124,4461
++make_tss_desc 134,4807
++make_gdtr_operand 143,5052
++
++userprog/gdt.h,126
++#define USERPROG_GDT_H2,23
++#define SEL_UCSEG 8,158
++#define SEL_UDSEG 9,216
++#define SEL_TSS 10,274
++#define SEL_CNT 11,332
++
++userprog/pagedir.c,342
++pagedir_create 17,470
++pagedir_destroy 28,686
++lookup_page 57,1502
++pagedir_set_page 99,2588
++pagedir_get_page 126,3285
++pagedir_clear_page 144,3755
++pagedir_is_dirty 164,4238
++pagedir_set_dirty 173,4472
++pagedir_is_accessed 193,4999
++pagedir_set_accessed 202,5243
++pagedir_activate 220,5632
++active_pd 235,6137
++invalidate_pagedir 255,6846
++
++userprog/pagedir.h,32
++#define USERPROG_PAGEDIR_H2,27
++
++userprog/process.c,1700
++static thread_func start_process NO_RETURN;21,485
++process_execute 29,860
++start_process 51,1432
++process_wait 89,2748
++process_exit 96,2854
++process_activate 123,3720
++typedef uint32_t Elf32_Word,139,4117
++typedef uint32_t Elf32_Word, Elf32_Addr,139,4117
++typedef uint32_t Elf32_Word, Elf32_Addr, Elf32_Off;139,4117
++typedef uint16_t Elf32_Half;140,4169
++#define PE32Wx 143,4241
++#define PE32Ax 144,4304
++#define PE32Ox 145,4367
++#define PE32Hx 146,4429
++struct Elf32_Ehdr150,4598
++    unsigned char e_ident[e_ident152,4620
++    Elf32_Half    e_type;153,4651
++    Elf32_Half    e_machine;154,4677
++    Elf32_Word    e_version;155,4706
++    Elf32_Addr    e_entry;156,4735
++    Elf32_Off     e_phoff;157,4762
++    Elf32_Off     e_shoff;158,4789
++    Elf32_Word    e_flags;159,4816
++    Elf32_Half    e_ehsize;160,4843
++    Elf32_Half    e_phentsize;161,4871
++    Elf32_Half    e_phnum;162,4902
++    Elf32_Half    e_shentsize;163,4929
++    Elf32_Half    e_shnum;164,4960
++    Elf32_Half    e_shstrndx;165,4987
++struct Elf32_Phdr171,5153
++    Elf32_Word p_type;173,5175
++    Elf32_Off  p_offset;174,5198
++    Elf32_Addr p_vaddr;175,5223
++    Elf32_Addr p_paddr;176,5247
++    Elf32_Word p_filesz;177,5271
++    Elf32_Word p_memsz;178,5296
++    Elf32_Word p_flags;179,5320
++    Elf32_Word p_align;180,5344
++#define PT_NULL 184,5416
++#define PT_LOAD 185,5462
++#define PT_DYNAMIC 186,5518
++#define PT_INTERP 187,5578
++#define PT_NOTE 188,5640
++#define PT_SHLIB 189,5694
++#define PT_PHDR 190,5742
++#define PT_STACK 191,5802
++#define PF_X 194,5906
++#define PF_W 195,5948
++#define PF_R 196,5988
++load 209,6539
++validate_segment 365,11051
++load_segment 422,12891
++setup_stack 469,14313
++install_page 496,15090
++
++userprog/process.h,32
++#define USERPROG_PROCESS_H2,27
++
++userprog/syscall.c,45
++syscall_init 10,190
++syscall_handler 16,296
++
++userprog/syscall.h,32
++#define USERPROG_SYSCALL_H2,27
++
++userprog/tss.c,899
++struct tss51,2307
++    uint16_t back_link,53,2322
++    void *esp0;esp054,2351
++    uint16_t ss0,55,2427
++    void *esp1;esp156,2504
++    uint16_t ss1,57,2520
++    void *esp2;esp258,2543
++    uint16_t ss2,59,2559
++    uint32_t cr3;60,2582
++    void (*eip)eip61,2600
++    uint32_t eflags;62,2624
++    uint32_t eax,63,2645
++    uint32_t eax, ecx,63,2645
++    uint32_t eax, ecx, edx,63,2645
++    uint32_t eax, ecx, edx, ebx;63,2645
++    uint32_t esp,64,2678
++    uint32_t esp, ebp,64,2678
++    uint32_t esp, ebp, esi,64,2678
++    uint32_t esp, ebp, esi, edi;64,2678
++    uint16_t es,65,2711
++    uint16_t cs,66,2733
++    uint16_t ss,67,2755
++    uint16_t ds,68,2777
++    uint16_t fs,69,2799
++    uint16_t gs,70,2821
++    uint16_t ldt,71,2843
++    uint16_t trace,72,2866
++    uint16_t trace, bitmap;72,2866
++static struct tss *tss;tss76,2918
++tss_init 80,2982
++tss_get 93,3321
++tss_update 102,3476
++
++userprog/tss.h,28
++#define USERPROG_TSS_H2,23
++
++filesys/directory.c,414
++struct dir 10,192
++    struct inode *inode;inode12,208
++    off_t pos;13,269
++struct dir_entry 17,371
++    disk_sector_t inode_sector;19,393
++    char name[name20,464
++    bool in_use;21,537
++dir_create 27,740
++dir_open 35,1009
++dir_open_root 55,1411
++dir_reopen 63,1605
++dir_close 70,1743
++dir_get_inode 81,1918
++lookup 92,2260
++dir_lookup 119,2960
++dir_add 142,3531
++dir_remove 185,4738
++dir_readdir 222,5519
++
++filesys/directory.h,58
++#define FILESYS_DIRECTORY_H2,28
++#define NAME_MAX 12,347
++
++filesys/file.c,388
++struct file 7,121
++    struct inode *inode;inode9,138
++    off_t pos;10,190
++    bool deny_write;11,246
++file_open 18,508
++file_reopen 39,947
++file_close 46,1058
++file_get_inode 58,1272
++file_read 69,1592
++file_read_at 82,2023
++file_write 95,2517
++file_write_at 110,3059
++file_deny_write 119,3346
++file_allow_write 133,3673
++file_length 145,3896
++file_seek 154,4089
++file_tell 164,4309
++
++filesys/file.h,28
++#define FILESYS_FILE_H2,23
++
++filesys/filesys.c,178
++struct disk *filesys_disk;filesys_disk12,274
++filesys_init 19,429
++filesys_done 37,776
++filesys_create 47,1027
++filesys_open 68,1694
++filesys_remove 85,2077
++do_format 96,2294
++
++filesys/filesys.h,93
++#define FILESYS_FILESYS_H2,26
++#define FREE_MAP_SECTOR 8,139
++#define ROOT_DIR_SECTOR 9,205
++
++filesys/free-map.c,248
++static struct file *free_map_file;free_map_file8,152
++static struct bitmap *free_map;free_map9,210
++free_map_init 13,326
++free_map_allocate 27,748
++free_map_release 44,1245
++free_map_open 53,1504
++free_map_close 64,1805
++free_map_create 72,1944
++
++filesys/free-map.h,32
++#define FILESYS_FREE_MAP_H2,27
++
++filesys/fsutil.c,97
++fsutil_ls 16,347
++fsutil_cat 33,742
++fsutil_rm 60,1312
++fsutil_put 82,2055
++fsutil_get 147,3971
++
++filesys/fsutil.h,30
++#define FILESYS_FSUTIL_H2,25
++
++filesys/inode.c,754
++#define INODE_MAGIC 11,218
++struct inode_disk15,319
++    disk_sector_t start;17,341
++    off_t length;18,406
++    unsigned magic;19,472
++    uint32_t unused[unused20,532
++bytes_to_sectors 26,696
++struct inode 32,802
++    struct list_elem elem;34,820
++    disk_sector_t sector;35,889
++    int open_cnt;36,967
++    bool removed;37,1032
++    int deny_write_cnt;38,1112
++    struct inode_disk data;39,1189
++byte_to_sector 47,1428
++static struct list open_inodes;58,1723
++inode_init 62,1797
++inode_create 73,2064
++inode_open 112,3212
++inode_reopen 146,4011
++inode_get_inumber 158,4212
++inode_close 167,4452
++inode_remove 194,5109
++inode_read_at 204,5406
++inode_write_at 261,7310
++inode_deny_write 326,9390
++inode_allow_write 336,9675
++inode_length 345,9898
++
++filesys/inode.h,29
++#define FILESYS_INODE_H2,24
++
++filesys/off_t.h,80
++#define FILESYS_OFF_T_H2,24
++typedef int32_t off_t;9,199
++#define PROTd 13,307
++
++devices/disk.h,122
++#define DEVICES_DISK_H2,23
++#define DISK_SECTOR_SIZE 8,128
++typedef uint32_t disk_sector_t;12,239
++#define PRDSNu 16,357
++
++devices/disk.c,1649
++#define reg_data(15,365
++#define reg_error(16,433
++#define reg_nsect(17,502
++#define reg_lbal(18,578
++#define reg_lbam(19,649
++#define reg_lbah(20,721
++#define reg_device(21,794
++#define reg_status(22,874
++#define reg_command(23,950
++#define reg_ctl(28,1184
++#define reg_alt_status(29,1261
++#define STA_BSY 32,1380
++#define STA_DRDY 33,1424
++#define STA_DRQ 34,1476
++#define CTL_SRST 37,1558
++#define DEV_MBS 40,1641
++#define DEV_LBA 41,1692
++#define DEV_DEV 42,1755
++#define CMD_IDENTIFY_DEVICE 47,1914
++#define CMD_READ_SECTOR_RETRY 48,1977
++#define CMD_WRITE_SECTOR_RETRY 49,2049
++struct disk 52,2144
++    char name[name54,2161
++    struct channel *channel;channel55,2219
++    int dev_no;56,2277
++    bool is_ata;58,2351
++    disk_sector_t capacity;59,2419
++    long long read_cnt;61,2491
++    long long write_cnt;62,2553
++struct channel 67,2708
++    char name[name69,2728
++    uint16_t reg_base;70,2784
++    uint8_t irq;71,2837
++    struct lock lock;73,2894
++    bool expecting_interrupt;74,2971
++    struct semaphore completion_wait;76,3120
++    struct disk devices[devices78,3194
++#define CHANNEL_CNT 82,3338
++static struct channel channels[channels83,3360
++disk_init 103,4107
++disk_print_stats 164,5659
++disk_get 192,6377
++disk_size 208,6714
++disk_read 220,6993
++disk_write 245,7717
++reset_channel 271,8402
++check_device_type 336,10046
++identify_ata_device 366,10818
++print_ata_string 411,12327
++select_sector 432,12813
++issue_pio_command 451,13337
++input_sector 464,13752
++output_sector 472,13979
++wait_until_idle 485,14355
++wait_while_busy 504,14805
++select_device 528,15329
++select_device_wait 542,15681
++interrupt_handler 551,15838
++
++devices/input.h,29
++#define DEVICES_INPUT_H2,24
++
++devices/input.c,109
++static struct intq buffer;7,154
++input_init 11,223
++input_putc 19,372
++input_getc 31,638
++input_full 48,934
++
++devices/intq.h,270
++#define DEVICES_INTQ_H2,23
++#define INTQ_BUFSIZE 21,692
++struct intq24,750
++    struct lock lock;27,793
++    struct thread *not_full;not_full28,865
++    struct thread *not_empty;not_empty29,942
++    uint8_t buf[buf32,1038
++    int head;33,1084
++    int tail;34,1148
++
++devices/intq.c,137
++intq_init 11,264
++intq_empty 20,439
++intq_full 28,605
++intq_getc 39,902
++intq_putc 63,1426
++next 81,1825
++wait 89,2008
++signal 105,2520
++
++devices/serial.c,889
++#define IO_BASE 18,488
++#define RBR_REG 21,535
++#define THR_REG 22,607
++#define IER_REG 23,684
++#define LS_REG 26,770
++#define MS_REG 27,829
++#define IIR_REG 30,923
++#define FCR_REG 31,1003
++#define LCR_REG 32,1073
++#define MCR_REG 33,1134
++#define LSR_REG 34,1196
++#define IER_RECV 37,1307
++#define IER_XMIT 38,1375
++#define LCR_N81 41,1482
++#define LCR_DLAB 42,1556
++#define MCR_OUT2 45,1658
++#define LSR_DR 48,1740
++#define LSR_THRE 49,1820
++static enum { UNINIT,52,1896
++static enum { UNINIT, POLL,52,1896
++static enum { UNINIT, POLL, QUEUE 52,1896
++static enum { UNINIT, POLL, QUEUE } mode;52,1896
++static struct intq txq;55,1969
++static intr_handler_func serial_interrupt;60,2091
++init_poll 67,2371
++serial_init_queue 82,2913
++serial_putc 99,3235
++serial_flush 135,4181
++serial_notify 148,4565
++set_serial 157,4744
++write_ier 177,5201
++putc_poll 199,5658
++serial_interrupt 210,5856
++
++devices/kbd.c,859
++#define DATA_REG 11,220
++static bool left_shift,15,317
++static bool left_shift, right_shift;15,317
++static bool left_alt,16,390
++static bool left_alt, right_alt;16,390
++static bool left_ctrl,17,461
++static bool left_ctrl, right_ctrl;17,461
++static bool caps_lock;21,593
++static int64_t key_cnt;24,647
++static intr_handler_func keyboard_interrupt;26,672
++kbd_init 30,755
++kbd_print_stats 37,881
++struct keymap43,1022
++    uint8_t first_scancode;45,1040
++    const char *chars;chars46,1094
++static const struct keymap invariant_keymap[invariant_keymap54,1483
++static const struct keymap unshifted_keymap[unshifted_keymap69,1808
++static const struct keymap shifted_keymap[shifted_keymap81,2068
++keyboard_interrupt 94,2330
++      struct shift_key 161,4115
++          unsigned scancode;163,4149
++          bool *state_var;state_var164,4178
++map_key 196,4978
++
++devices/kbd.h,27
++#define DEVICES_KBD_H2,22
++
++devices/timer.c,420
++static int64_t ticks;21,466
++static unsigned loops_per_tick;25,564
++static intr_handler_func timer_interrupt;27,597
++timer_init 36,933
++timer_calibrate 51,1356
++timer_ticks 78,2134
++timer_elapsed 90,2410
++timer_sleep 97,2544
++timer_msleep 108,2781
++timer_usleep 115,2908
++timer_nsleep 122,3041
++timer_print_stats 129,3153
++timer_interrupt 136,3283
++too_many_loops 145,3473
++busy_wait 169,4074
++real_time_sleep 177,4205
++
++devices/serial.h,30
++#define DEVICES_SERIAL_H2,25
++
++devices/timer.h,55
++#define DEVICES_TIMER_H2,24
++#define TIMER_FREQ 8,134
++
++devices/vga.c,290
++#define COL_CNT 13,310
++#define ROW_CNT 14,329
++static size_t cx,18,434
++static size_t cx, cy;18,434
++#define GRAY_ON_BLACK 21,516
++static uint8_t (*fb)fb26,695
++init 36,949
++vga_putc 51,1230
++cls 100,2043
++clear_row 113,2199
++newline 128,2533
++move_cursor 142,2777
++find_cursor 152,3049
++
++devices/vga.h,27
++#define DEVICES_VGA_H2,22
++
++lib/kernel/bitmap.h,65
++#define __LIB_KERNEL_BITMAP_H2,30
++#define BITMAP_ERROR 36,1307
++
++lib/kernel/bitmap.c,789
++typedef unsigned long elem_type;19,444
++#define ELEM_BITS 22,514
++struct bitmap27,719
++    size_t bit_cnt;29,737
++    elem_type *bits;bits30,783
++elem_idx 36,952
++bit_mask 44,1126
++elem_cnt 51,1292
++byte_cnt 58,1449
++last_mask 66,1686
++bitmap_create 79,2046
++bitmap_create_in_buf 100,2568
++bitmap_buf_size 115,2967
++bitmap_destroy 124,3181
++bitmap_size 137,3356
++bitmap_set 146,3523
++bitmap_mark 158,3773
++bitmap_reset 171,4222
++bitmap_flip 186,4747
++bitmap_test 199,5190
++bitmap_set_all 210,5437
++bitmap_set_multiple 219,5628
++bitmap_count 234,5998
++bitmap_contains 252,6451
++bitmap_any 269,6875
++bitmap_none 277,7113
++bitmap_all 285,7355
++bitmap_scan 297,7709
++bitmap_scan_and_flip 321,8426
++bitmap_file_size 334,8765
++bitmap_read 342,8924
++bitmap_write 357,9297
++bitmap_dump 368,9560
++
++lib/kernel/console.c,440
++static struct lock console_lock;18,525
++static bool use_console_lock;31,1105
++static int console_lock_depth;57,1940
++static int64_t write_cnt;60,2019
++console_init 64,2081
++console_panic 74,2303
++console_print_stats 81,2396
++acquire_console 88,2533
++release_console 101,2801
++console_locked_by_current_thread 115,3096
++vprintf 126,3405
++puts 140,3673
++putbuf 153,3897
++putchar 163,4093
++vprintf_helper 174,4249
++putchar_have_lock 185,4501
++
++lib/kernel/console.h,36
++#define __LIB_KERNEL_CONSOLE_H2,31
++
++lib/kernel/debug.c,20
++debug_panic 15,347
++
++lib/kernel/hash.c,708
++#define list_elem_to_hash_elem(12,215
++hash_init 25,844
++hash_clear 54,1670
++hash_destroy 87,2636
++hash_insert 99,3000
++hash_replace 115,3371
++hash_find 132,3782
++hash_delete 145,4204
++hash_apply 163,4743
++hash_first 200,5648
++hash_next 219,6236
++hash_cur 241,6865
++hash_size 248,6974
++hash_empty 255,7097
++#define FNV_32_PRIME 261,7218
++#define FNV_32_BASIS 262,7249
++hash_bytes 266,7339
++hash_string 283,7659
++hash_int 299,7935
++find_bucket 306,8065
++find_elem 315,8357
++turn_off_least_1bit 330,8784
++is_power_of_2 337,8922
++#define MIN_ELEMS_PER_BUCKET 343,9035
++#define BEST_ELEMS_PER_BUCKET 344,9112
++#define MAX_ELEMS_PER_BUCKET 345,9170
++rehash 352,9481
++insert_elem 417,11430
++remove_elem 425,11614
++
++lib/kernel/hash.h,617
++#define __LIB_KERNEL_HASH_H2,28
++struct hash_elem 29,971
++    struct list_elem list_elem;31,993
++#define hash_entry(39,1314
++typedef unsigned hash_hash_func 45,1599
++typedef bool hash_less_func 50,1839
++typedef void hash_action_func 56,2071
++struct hash 59,2154
++    size_t elem_cnt;61,2171
++    size_t bucket_cnt;62,2238
++    struct list *buckets;buckets63,2309
++    hash_hash_func *hash;hash64,2376
++    hash_less_func *less;less65,2429
++    void *aux;aux66,2488
++struct hash_iterator 70,2599
++    struct hash *hash;hash72,2625
++    struct list *bucket;bucket73,2679
++    struct hash_elem *elem;elem74,2733
++
++lib/kernel/list.c,719
++static bool is_sorted 34,1344
++is_interior 47,1743
++is_tail 54,1926
++list_init 61,2077
++list_begin 72,2312
++list_next 82,2593
++list_end 94,2890
++list_rbegin 103,3102
++list_prev 113,3387
++list_rend 133,3929
++list_head 151,4267
++list_tail 159,4397
++list_insert 169,4633
++list_splice 184,5062
++list_push_front 209,5714
++list_push_back 217,5904
++list_remove 257,7081
++list_pop_front 268,7373
++list_pop_back 278,7630
++list_front 288,7851
++list_back 297,8043
++list_size 306,8231
++list_empty 318,8463
++swap 325,8619
++list_reverse 334,8763
++is_sorted 350,9223
++find_end_of_run 366,9736
++inplace_merge 388,10362
++list_sort 413,11088
++list_insert_ordered 454,12480
++list_unique 474,13096
++list_max 501,13875
++list_min 520,14460
++
++lib/kernel/list.h,300
++#define __LIB_KERNEL_LIST_H2,28
++struct list_elem 90,3087
++    struct list_elem *prev;prev92,3109
++    struct list_elem *next;next93,3170
++struct list 97,3245
++    struct list_elem head;99,3262
++    struct list_elem tail;100,3311
++#define list_entry(108,3649
++typedef bool list_less_func 152,5162
++
++lib/kernel/slist.c,285
++struct Node7,118
++  ListElement Element;9,132
++  Position    Next;10,155
++MakeEmpty(16,208
++IsEmpty(32,454
++int IsLast(40,611
++Find(48,743
++Delete(65,1031
++FindPrevious(83,1445
++Insert(99,1726
++DeleteList(117,2034
++Header(132,2231
++First(138,2275
++Advance(144,2324
++Retrieve(150,2381
++
++lib/kernel/slist.h,173
++typedef void * ListElement;4,106
++#define _SList_H7,152
++typedef struct Node *PtrToNode;PtrToNode10,183
++typedef PtrToNode SList;11,215
++typedef PtrToNode Position;12,240
++
++lib/kernel/stdio.h,34
++#define __LIB_KERNEL_STDIO_H2,29
++
++lib/user/console.c,235
++vprintf 9,174
++hprintf 16,336
++puts 31,604
++putchar 41,737
++struct vhprintf_aux 49,864
++    char buf[buf51,889
++    char *p;p52,937
++    int char_cnt;53,995
++    int handle;54,1058
++vhprintf 64,1332
++add_char 78,1652
++flush 89,1865
++
++lib/user/debug.c,20
++debug_panic 10,233
++
++lib/user/entry.c,13
++_start 7,92
++
++lib/user/stdio.h,50
++#define __LIB_USER_STDIO_H2,27
++int hprintf 4,55
++
++lib/user/syscall.c,416
++#define syscall0(6,146
++#define syscall1(19,850
++#define syscall2(33,1720
++#define syscall3(49,2639
++halt 65,3514
++exit 72,3578
++exec 79,3656
++wait 85,3733
++create 91,3795
++remove 97,3906
++open 103,3979
++filesize 109,4048
++read 115,4114
++write 121,4214
++seek 127,4323
++tell 133,4408
++close 139,4467
++mmap 145,4523
++munmap 151,4599
++chdir 157,4664
++mkdir 163,4734
++readdir 169,4804
++isdir 175,4907
++inumber 181,4967
++
++lib/user/syscall.h,247
++#define __LIB_USER_SYSCALL_H2,29
++typedef int pid_t;8,126
++#define PID_ERROR 9,145
++typedef int mapid_t;12,206
++#define MAP_FAILED 13,227
++#define READDIR_MAX_LEN 16,323
++#define EXIT_SUCCESS 19,416
++#define EXIT_FAILURE 20,476
++void halt 23,567
++
++lib/arithmetic.c,172
++divl 26,1080
++nlz 42,1364
++udiv64 78,2084
++umod64 132,3870
++sdiv64 140,4032
++smod64 151,4385
++__divdi3 165,4784
++__moddi3 172,4891
++__udivdi3 179,5008
++__umoddi3 186,5145
++
++lib/ctype.h,533
++#define __LIB_CTYPE_H2,22
++static inline int islower 4,45
++static inline int isupper 5,112
++static inline int isalpha 6,179
++static inline int isdigit 7,252
++static inline int isalnum 8,319
++static inline int isxdigit 9,392
++static inline int isspace 12,505
++static inline int isblank 16,639
++static inline int isgraph 17,707
++static inline int isprint 18,771
++static inline int iscntrl 19,836
++static inline int isascii 20,913
++static inline int ispunct 21,977
++static inline int tolower 25,1070
++static inline int toupper 26,1148
++
++lib/debug.c,24
++debug_backtrace 13,360
++
++lib/debug.h,328
++#define __LIB_DEBUG_H2,22
++#define UNUSED 7,188
++#define NO_RETURN 8,228
++#define NO_INLINE 9,273
++#define PRINTF_FORMAT(10,318
++#define PANIC(14,515
++void debug_panic 16,591
++#undef ASSERT26,899
++#undef NOT_REACHED27,913
++#define ASSERT(30,948
++#define NOT_REACHED(34,1156
++#define ASSERT(36,1229
++#define NOT_REACHED(37,1266
++
++lib/inttypes.h,858
++#define __LIB_INTTYPES_H2,25
++#define PRId8 6,72
++#define PRIi8 7,92
++#define PRIo8 8,112
++#define PRIu8 9,132
++#define PRIx8 10,152
++#define PRIX8 11,172
++#define PRId16 13,193
++#define PRIi16 14,213
++#define PRIo16 15,233
++#define PRIu16 16,253
++#define PRIx16 17,273
++#define PRIX16 18,293
++#define PRId32 20,314
++#define PRIi32 21,333
++#define PRIo32 22,352
++#define PRIu32 23,371
++#define PRIx32 24,390
++#define PRIX32 25,409
++#define PRId64 27,429
++#define PRIi64 28,450
++#define PRIo64 29,471
++#define PRIu64 30,492
++#define PRIx64 31,513
++#define PRIX64 32,534
++#define PRIdMAX 34,556
++#define PRIiMAX 35,577
++#define PRIoMAX 36,598
++#define PRIuMAX 37,619
++#define PRIxMAX 38,640
++#define PRIXMAX 39,661
++#define PRIdPTR 41,683
++#define PRIiPTR 42,704
++#define PRIoPTR 43,725
++#define PRIuPTR 44,746
++#define PRIxPTR 45,767
++#define PRIXPTR 46,788
++
++lib/limits.h,528
++#define __LIB_LIMITS_H2,23
++#define CHAR_BIT 4,47
++#define SCHAR_MAX 6,67
++#define SCHAR_MIN 7,89
++#define UCHAR_MAX 8,124
++#define CHAR_MIN 11,172
++#define CHAR_MAX 12,191
++#define CHAR_MIN 14,224
++#define CHAR_MAX 15,251
++#define SHRT_MAX 18,286
++#define SHRT_MIN 19,309
++#define USHRT_MAX 20,342
++#define INT_MAX 22,367
++#define INT_MIN 23,394
++#define UINT_MAX 24,425
++#define LONG_MAX 26,455
++#define LONG_MIN 27,484
++#define ULONG_MAX 28,517
++#define LLONG_MAX 30,549
++#define LLONG_MIN 31,589
++#define ULLONG_MAX 32,624
++
++lib/random.c,195
++static uint8_t s[s17,426
++static uint8_t s_i,18,469
++static uint8_t s_i, s_j;18,469
++static bool inited;21,541
++swap_byte 25,631
++random_init 34,781
++random_bytes 54,1118
++random_ulong 78,1560
++
++lib/random.h,28
++#define __LIB_RANDOM_H2,23
++
++lib/round.h,107
++#define __LIB_ROUND_H2,22
++#define ROUND_UP(6,135
++#define DIV_ROUND_UP(10,276
++#define ROUND_DOWN(14,429
++
++lib/stdarg.h,163
++#define __LIB_STDARG_H2,23
++typedef __builtin_va_list va_list;7,133
++#define va_start(9,169
++#define va_end(10,228
++#define va_arg(11,284
++#define va_copy(12,341
++
++lib/stdbool.h,131
++#define __LIB_STDBOOL_H2,24
++#define bool	4,49
++#define true	5,68
++#define false	6,83
++#define __bool_true_false_are_defined	7,99
++
++lib/stddef.h,149
++#define __LIB_STDDEF_H2,23
++#define NULL 4,47
++#define offsetof(5,73
++typedef __PTRDIFF_TYPE__ ptrdiff_t;9,238
++typedef __SIZE_TYPE__ size_t;10,274
++
++lib/stdint.h,1040
++#define __LIB_STDINT_H2,23
++typedef signed char int8_t;4,47
++#define INT8_MAX 5,75
++#define INT8_MIN 6,96
++typedef signed short int int16_t;8,130
++#define INT16_MAX 9,164
++#define INT16_MIN 10,188
++typedef signed int int32_t;12,224
++#define INT32_MAX 13,252
++#define INT32_MIN 14,281
++typedef signed long long int int64_t;16,317
++#define INT64_MAX 17,355
++#define INT64_MIN 18,395
++typedef unsigned char uint8_t;20,431
++#define UINT8_MAX 21,462
++typedef unsigned short int uint16_t;23,485
++#define UINT16_MAX 24,522
++typedef unsigned int uint32_t;26,548
++#define UINT32_MAX 27,579
++typedef unsigned long long int uint64_t;29,611
++#define UINT64_MAX 30,652
++typedef int32_t intptr_t;32,696
++#define INTPTR_MIN 33,722
++#define INTPTR_MAX 34,751
++typedef uint32_t uintptr_t;36,781
++#define UINTPTR_MAX 37,809
++typedef int64_t intmax_t;39,841
++#define INTMAX_MIN 40,867
++#define INTMAX_MAX 41,896
++typedef uint64_t uintmax_t;43,926
++#define UINTMAX_MAX 44,954
++#define PTRDIFF_MIN 46,986
++#define PTRDIFF_MAX 47,1016
++#define SIZE_MAX 49,1047
++
++lib/stdio.c,1097
++struct vsnprintf_aux 9,165
++    char *p;p11,191
++    int length;12,246
++    int max_length;13,301
++vsnprintf 26,826
++vsnprintf_helper 46,1296
++snprintf 62,1849
++printf 79,2252
++struct printf_conversion 94,2487
++        MINUS 99,2552
++        PLUS 100,2594
++        SPACE 101,2636
++        POUND 102,2678
++        ZERO 103,2720
++        GROUP 104,2762
++    int width;109,2856
++    int precision;113,2949
++        CHAR 118,3025
++        SHORT 119,3066
++        INT 120,3106
++        INTMAX 121,3151
++        LONG 122,3191
++        LONGLONG 123,3231
++        PTRDIFFT 124,3272
++        SIZET 125,3312
++struct integer_base 130,3376
++    int base;132,3401
++    const char *digits;digits133,3445
++    int x;134,3505
++    int group;135,3583
++static const struct integer_base base_d 138,3666
++static const struct integer_base base_o 139,3734
++static const struct integer_base base_x 140,3799
++static const struct integer_base base_X 141,3875
++__vprintf 157,4692
++parse_conversion 340,9965
++format_integer 470,12581
++output_dup 551,15275
++format_string 561,15565
++__printf 577,16076
++hex_dump 593,16539
++
++lib/stdio.h,156
++#define __LIB_STDIO_H2,22
++#define STDIN_FILENO 15,275
++#define STDOUT_FILENO 16,298
++int printf 19,349
++#define sprintf 36,1011
++#define vsprintf 37,1057
++
++lib/stdlib.c,161
++atoi 10,213
++compare_thunk 45,914
++qsort 58,1386
++do_swap 67,1657
++do_compare 86,2177
++heapify 97,2610
++sort 132,3780
++bsearch 166,4773
++binary_search 185,5516
++
++lib/stdlib.h,28
++#define __LIB_STDLIB_H2,23
++
++lib/string.c,290
++memcpy 7,128
++memmove 24,478
++memcmp 53,1110
++strcmp 73,1667
++memchr 94,2136
++strchr 113,2604
++strcspn 131,2948
++strpbrk 145,3304
++strrchr 156,3605
++strspn 170,3892
++strstr 184,4248
++strtok_r 235,5754
++memset 279,6704
++strlen 293,6924
++strnlen 307,7198
++strlcpy 326,7810
++strlcat 356,8659
++
++lib/string.h,147
++#define __LIB_STRING_H2,23
++#define strcpy 29,890
++#define strncpy 30,933
++#define strcat 31,978
++#define strncat 32,1021
++#define strtok 33,1066
++
++lib/syscall-nr.h,477
++#define __LIB_SYSCALL_NR_H2,27
++    SYS_HALT,8,124
++    SYS_EXIT,9,189
++    SYS_EXEC,10,251
++    SYS_WAIT,11,312
++    SYS_CREATE,12,383
++    SYS_REMOVE,13,436
++    SYS_OPEN,14,489
++    SYS_FILESIZE,15,540
++    SYS_READ,16,600
++    SYS_WRITE,17,656
++    SYS_SEEK,18,711
++    SYS_TELL,19,776
++    SYS_CLOSE,20,849
++    SYS_MMAP,23,948
++    SYS_MUNMAP,24,1010
++    SYS_CHDIR,27,1100
++    SYS_MKDIR,28,1168
++    SYS_READDIR,29,1226
++    SYS_ISDIR,30,1289
++    SYS_INUMBER 31,1365
++
++threads/kernel.lds.S,0
+diff --git a/pintos/src/devices/timer.c b/pintos/src/devices/timer.c
+index 57ba330..a5a784e 100644
+--- a/pintos/src/devices/timer.c
++++ b/pintos/src/devices/timer.c
+@@ -5,8 +5,9 @@
+ #include <stdio.h>
+ #include "threads/interrupt.h"
+ #include "threads/io.h"
+-#include "threads/synch.h"
++//#include "threads/synch.h"
+ #include "threads/thread.h"
++#include "threads/malloc.h"
+   
+ /* See [8254] for hardware details of the 8254 timer chip. */
+ 
+@@ -24,10 +25,16 @@ static int64_t ticks;
+    Initialized by timer_calibrate(). */
+ static unsigned loops_per_tick;
+ 
++/* List for sleeping processes */
++struct list sleep_queue;
++
++
+ static intr_handler_func timer_interrupt;
+ static bool too_many_loops (unsigned loops);
+ static void busy_wait (int64_t loops);
+ static void real_time_sleep (int64_t num, int32_t denom);
++static void check_sleep_time(void);
++
+ 
+ /* Sets up the 8254 Programmable Interval Timer (PIT) to
+    interrupt PIT_FREQ times per second, and registers the
+@@ -46,9 +53,7 @@ timer_init (void)
+ 
+   intr_register_ext (0x20, timer_interrupt, "8254 Timer");
+ 
+-  struct list* tick_list = (struct list*)malloc(sizeof(struct list));
+-  list_init(tick_list);
+-  
++  list_init(&sleep_queue);
+ }
+ 
+ /* Calibrates loops_per_tick, used to implement brief delays. */
+@@ -101,19 +106,27 @@ timer_elapsed (int64_t then)
+ void
+ timer_sleep (int64_t ticks) 
+ {
+-  /*int64_t start = timer_ticks ();
+-
+   ASSERT (intr_get_level () == INTR_ON);
+-  while (timer_elapsed (start) < ticks) 
+-  thread_yield ();*/
+-  struct semaphore* sleep_sema = get_sleep_sema();
+-  struct p_sleep_time* p_s_t =(struct p_sleep_time*) malloc(sizeof(struct p_sleep_time));
+-  p_s_t->tid = (int)thread_current()->tid;
+-  p_s_t->init_ticks = ticks;
+-  p_s_t->start = timer_ticks ();
+-  //list_insert_sorted(tick_list,&(p_s_t->elem),time_left, void); 
+-  sema_down(sleep_sema);  
+-  
++
++  // Return immediately if sleep time is 0 or below
++  if(ticks <= 0) return;
++
++  // Allocate and init p_sleep_time struct
++  struct p_sleep_time* pst =(struct p_sleep_time*) malloc(sizeof(struct p_sleep_time));
++  sema_init(&pst->sema, 0);
++  pst->sleep_ticks = ticks;
++  pst->start = timer_ticks ();
++
++  void* aux = NULL;
++  // Protect modification of sleep_queue by disabling interrupts
++  enum intr_level old_level = intr_disable ();
++  list_insert_ordered(&sleep_queue, &(pst->elem), &time_left_sleep, aux);
++  intr_set_level (old_level);
++
++  // Block until awoken by timer_interrupt when sleep time has run out
++  sema_down(&pst->sema);
++
++  free(pst);
+ }
+ 
+ /* Suspends execution for approximately MS milliseconds. */
+@@ -150,6 +163,30 @@ timer_interrupt (struct intr_frame *args UNUSED)
+ {
+   ticks++;
+   thread_tick ();
++
++  // Protect reading and modifying of sleep list by disabling interrupts ? 
++  enum intr_level old_level = intr_disable ();
++
++  check_sleep_time();
++      
++  intr_set_level (old_level);
++}
++
++/* Recursively checks whether the sleep time has ran out for items in the 
++  sleep_queue. Expects queue to be sorted so the item which time will ran out first, 
++  is placed at first in the queue. 
++    Return immediately if sleep_queue is empty.*/
++static void check_sleep_time(void)
++{
++  if(list_empty(&sleep_queue)) return;
++  struct p_sleep_time* first = list_entry(list_front(&sleep_queue), struct p_sleep_time, elem);
++      
++  if( timer_elapsed(first->start) >= first->sleep_ticks )
++  {	
++    sema_up(&list_entry(list_front(&sleep_queue), struct p_sleep_time, elem)->sema);
++    list_pop_front(&sleep_queue);
++    check_sleep_time();
++  }
+ }
+ 
+ /* Returns true if LOOPS iterations waits for more than one timer
+@@ -215,7 +252,12 @@ real_time_sleep (int64_t num, int32_t denom)
+     }
+ }
+ 
+-/*bool time_left(struct list_elem new_elem,struct list_elem element,void)
++/* Used to calculate time left for p_sleep_time structs stored in the sleep_queue.
++  Returns true if the new item's time left is less then the cmp item's.*/
++bool time_left_sleep(const struct list_elem* new_e, const struct list_elem* cmp_e, void* aux UNUSED)
+ {
+-  list_entry
+-}*/
++  struct p_sleep_time* cmp = list_entry(cmp_e, struct p_sleep_time, elem);
++  struct p_sleep_time* new = list_entry(new_e, struct p_sleep_time, elem);
++ 
++  return (cmp->sleep_ticks - timer_elapsed(cmp->start)) > (new->sleep_ticks - timer_elapsed(new->start));
++}
+diff --git a/pintos/src/devices/timer.h b/pintos/src/devices/timer.h
+index bd061d8..ac2b7b9 100644
+--- a/pintos/src/devices/timer.h
++++ b/pintos/src/devices/timer.h
+@@ -3,17 +3,21 @@
+ 
+ #include <round.h>
+ #include <stdint.h>
++#include <stdbool.h>
+ #include "lib/kernel/list.h"
++#include "threads/synch.h"
+ 
+ /* Number of timer interrupts per second. */
+ #define TIMER_FREQ 100
+ 
+-/*Struct to be placed in the tick list to map the time of sleep(in ticks) of each thread*/
++/*Struct to be placed in the sleep_queue. The struct contains the
++starting time and desired time of sleep. It also contains a semaphore to be used for 
++the sleeping process. */
+ struct p_sleep_time 
+ {
+-  int64_t init_ticks;
+-  int tid;
++  int64_t sleep_ticks;
+   int64_t start;
++  struct semaphore sema;
+   struct list_elem elem;
+   };
+ void timer_init (void);
+@@ -29,4 +33,6 @@ void timer_nsleep (int64_t nanoseconds);
+ 
+ void timer_print_stats (void);
+ 
++bool time_left_sleep(const struct list_elem* new_e, const struct list_elem* cmp_e, void* aux);
++
+ #endif /* devices/timer.h */
+diff --git a/pintos/src/examples/bubsort b/pintos/src/examples/bubsort
+new file mode 100755
+index 0000000..39a548b
+Binary files /dev/null and b/pintos/src/examples/bubsort differ
+diff --git a/pintos/src/examples/cat b/pintos/src/examples/cat
+new file mode 100755
+index 0000000..2f41f62
+Binary files /dev/null and b/pintos/src/examples/cat differ
+diff --git a/pintos/src/examples/child b/pintos/src/examples/child
+new file mode 100755
+index 0000000..e4b65dc
+Binary files /dev/null and b/pintos/src/examples/child differ
+diff --git a/pintos/src/examples/cmp b/pintos/src/examples/cmp
+new file mode 100755
+index 0000000..305a7e4
+Binary files /dev/null and b/pintos/src/examples/cmp differ
+diff --git a/pintos/src/examples/cp b/pintos/src/examples/cp
+new file mode 100755
+index 0000000..269dc11
+Binary files /dev/null and b/pintos/src/examples/cp differ
+diff --git a/pintos/src/examples/create-bad b/pintos/src/examples/create-bad
+new file mode 100755
+index 0000000..6f1ef08
+Binary files /dev/null and b/pintos/src/examples/create-bad differ
+diff --git a/pintos/src/examples/custom_lab1 b/pintos/src/examples/custom_lab1
+new file mode 100755
+index 0000000..bf0b516
+Binary files /dev/null and b/pintos/src/examples/custom_lab1 differ
+diff --git a/pintos/src/examples/custom_lab1.c~ b/pintos/src/examples/custom_lab1.c~
+new file mode 100644
+index 0000000..1724044
+--- /dev/null
++++ b/pintos/src/examples/custom_lab1.c~
+@@ -0,0 +1,9 @@
++#include <syscall.h>
++
++int
++main (void)
++{
++  char* filename[6] = {'t','1','.','t','x','t'};
++  create(filename,20);
++  
++}
+diff --git a/pintos/src/examples/dummy b/pintos/src/examples/dummy
+new file mode 100755
+index 0000000..057eb25
+Binary files /dev/null and b/pintos/src/examples/dummy differ
+diff --git a/pintos/src/examples/echo b/pintos/src/examples/echo
+new file mode 100755
+index 0000000..e668a94
+Binary files /dev/null and b/pintos/src/examples/echo differ
+diff --git a/pintos/src/examples/halt b/pintos/src/examples/halt
+new file mode 100755
+index 0000000..7cfd94e
+Binary files /dev/null and b/pintos/src/examples/halt differ
+diff --git a/pintos/src/examples/hex-dump b/pintos/src/examples/hex-dump
+new file mode 100755
+index 0000000..0c7c313
+Binary files /dev/null and b/pintos/src/examples/hex-dump differ
+diff --git a/pintos/src/examples/insult b/pintos/src/examples/insult
+new file mode 100755
+index 0000000..80f39fa
+Binary files /dev/null and b/pintos/src/examples/insult differ
+diff --git a/pintos/src/examples/lab1test b/pintos/src/examples/lab1test
+new file mode 100755
+index 0000000..853944e
+Binary files /dev/null and b/pintos/src/examples/lab1test differ
+diff --git a/pintos/src/examples/lab1test2 b/pintos/src/examples/lab1test2
+new file mode 100755
+index 0000000..3f6ffa4
+Binary files /dev/null and b/pintos/src/examples/lab1test2 differ
+diff --git a/pintos/src/examples/lab1test2.c b/pintos/src/examples/lab1test2.c
+new file mode 100644
+index 0000000..4438025
+--- /dev/null
++++ b/pintos/src/examples/lab1test2.c
+@@ -0,0 +1,208 @@
++/*
++  Complete test suite for most system calls implemented in lab 1.
++
++   This program tests the minimum file limit and verifies all
++   returned data.
++
++   Tested requirements:
++     - write must return number of bytes written
++     - create must return whether the file was created
++     - a user program must be able to have 128 files open
++       at the same time
++     - opening a file must return a valid file descriptor
++     - opening a file mulitiple times must return unique
++       file descriptors
++     - reading from a closed file must fail
++     - reading from an invalid file descriptor must fail
++     - attempting to open missing files must fail
++     - read must return number of bytes read
++     - read after write must return written data
++     - reading from console be implemented
++     - exit must terminate the user program
++
++   Untested requirements:
++     - halt must shut down the system
++     - file descriptors must be closed on process exit
++*/
++#include <stdio.h>
++#include <string.h>
++#include <syscall.h>
++#include <stdarg.h>
++
++#define FD_TEST_COUNT 128
++#define READ_SIZE 50
++#define READ_CONSOLE_COUNT 10
++
++#define RED   "\x1B[31m"
++#define GRN   "\x1B[32m"
++#define YEL   "\x1B[33m"
++#define BLU   "\x1B[34m"
++#define MAG   "\x1B[35m"
++#define CYN   "\x1B[36m"
++#define WHT   "\x1B[37m"
++#define RESET "\x1B[0m"
++
++#define TITLE(x) printf(WHT x RESET)
++#define ERROR(x, ...) printf(RED "ERR: " x RESET, ##__VA_ARGS__); halt()
++#define SUCCESS(x) printf(GRN x RESET)
++
++int main(void)
++{
++  char *dummyprint = "Hello, world!\n";
++  char *testdata = "sample file content";
++  bool created;
++  int fd;
++  int bytes_written;
++  int bytes_read;
++  char sbuf[READ_SIZE];
++
++
++
++  TITLE("TEST 1: Printing text\n");
++  bytes_written = write(STDOUT_FILENO, dummyprint, strlen(dummyprint));
++  if (bytes_written < 0 || (size_t)bytes_written != strlen(dummyprint))
++  {
++    ERROR("Incorrect number of written bytes returned from SYS_WRITE.\n");
++  }
++  else
++  {
++    SUCCESS("TEST 1: Passed\n");
++  }
++
++
++
++  TITLE("TEST 2: Creating file\n");
++  created = create("test0", strlen(testdata));
++  if (!created)
++  {
++    ERROR("Could not create file \"test0\", does it already exist?\n");
++  }
++
++  created = create("test0", strlen(testdata));
++  if (created)
++  {
++    ERROR("Succeeded in creating already existing file.\n");
++  }
++
++  SUCCESS("TEST 2: Passed\n");
++
++
++
++  TITLE("TEST 3: Opening files\n");
++  int file_descriptors[FD_TEST_COUNT];
++  int i;
++
++  printf("Opening %d files", FD_TEST_COUNT);
++  for (i = 0; i < FD_TEST_COUNT; ++i)
++  {
++    fd = open("test0");
++    if (fd == -1)
++    {
++      printf("\n");
++      ERROR("Failed to open file, iteration %d.\n", i + 1);
++    }
++
++    if (fd == STDIN_FILENO || fd == STDOUT_FILENO)
++    {
++      printf("\n");
++      ERROR("Opened file with invalid file descriptor.\n");
++    }
++
++    int j;
++    for (j = 0; j < i; ++j)
++    {
++      if (file_descriptors[j] == fd)
++      {
++	printf("\n");
++        ERROR("Opened file with reoccuring file descriptor.\n");
++      }
++    }
++
++    file_descriptors[i] = fd;
++    printf(".");
++  }
++
++  printf("\nDone!\n");
++  printf("Closing files");
++
++  for (i = 0; i < FD_TEST_COUNT; ++i)
++  {
++    close(file_descriptors[i]);
++    bytes_read = read(file_descriptors[i], sbuf, READ_SIZE);
++    if (bytes_read != -1)
++    {
++      printf("\n");
++      ERROR("Successfully read from closed file.\n");
++    }
++
++    printf(".");
++  }
++
++  printf("\nDone!\n");
++
++  bytes_read = read(STDOUT_FILENO, sbuf, READ_SIZE);
++  if (bytes_read != -1)
++  {
++    ERROR("Successfully read from missing file descriptor.\n");
++  }
++
++  fd = open("foobar");
++  if (fd != -1)
++  {
++    ERROR("Successfully opened missing file.\n");
++  }
++
++  SUCCESS("TEST 3: Passed\n");
++
++
++
++  TITLE("TEST 4: Writing to file\n");
++  fd = open("test0");
++  bytes_written = write(fd, testdata, strlen(testdata));
++  if (bytes_written < 0 || (size_t)bytes_written != strlen(testdata))
++  {
++    ERROR("Failed to write %d bytes to file, wrote %d.\n", strlen(testdata), bytes_written);
++  }
++  close(fd);
++
++  SUCCESS("TEST 4: Passed\n");
++
++
++
++  TITLE("TEST 5: Reading from file\n");
++  fd = open("test0");
++  bytes_read = read(fd, sbuf, READ_SIZE);
++  if (bytes_read < 0 || (size_t)bytes_read != strlen(testdata))
++  {
++    ERROR("Failed to read %d bytes from file, read %d.\n", strlen(testdata), bytes_read);
++  }
++
++  if (memcmp(sbuf, testdata, strlen(testdata)) != 0)
++  {
++    ERROR("Read content does not match what was written to file.\n");
++  }
++  close(fd);
++
++  SUCCESS("TEST 5: Passed\n");
++
++
++
++  TITLE("TEST 6: Reading from console\n");
++  printf("Type 10 characters: ");
++  bytes_read = read(STDIN_FILENO, sbuf, READ_CONSOLE_COUNT);
++  printf("\n");
++  if (bytes_read != READ_CONSOLE_COUNT)
++  {
++    ERROR("Failed to read %d characters from console, read %d.\n", READ_CONSOLE_COUNT, bytes_read);
++  }
++
++  SUCCESS("TEST 6: Passed\n");
++
++
++
++  TITLE("The test suite should now exit. Since SYS_WAIT is not implemented yet, the program should hang. ");
++  TITLE("If it does, it means that all tests were successful.\n");
++  exit(0);
++
++  ERROR("ERR: Thread did not exit.\n");
++}
+diff --git a/pintos/src/examples/lab2test b/pintos/src/examples/lab2test
+new file mode 100755
+index 0000000..ca60b96
+Binary files /dev/null and b/pintos/src/examples/lab2test differ
+diff --git a/pintos/src/examples/libc.a b/pintos/src/examples/libc.a
+new file mode 100644
+index 0000000..36ad217
+Binary files /dev/null and b/pintos/src/examples/libc.a differ
+diff --git a/pintos/src/examples/lineup b/pintos/src/examples/lineup
+new file mode 100755
+index 0000000..c816c56
+Binary files /dev/null and b/pintos/src/examples/lineup differ
+diff --git a/pintos/src/examples/longrun b/pintos/src/examples/longrun
+new file mode 100755
+index 0000000..79bc878
+Binary files /dev/null and b/pintos/src/examples/longrun differ
+diff --git a/pintos/src/examples/ls b/pintos/src/examples/ls
+new file mode 100755
+index 0000000..64e7e8c
+Binary files /dev/null and b/pintos/src/examples/ls differ
+diff --git a/pintos/src/examples/matmult b/pintos/src/examples/matmult
+new file mode 100755
+index 0000000..0664728
+Binary files /dev/null and b/pintos/src/examples/matmult differ
+diff --git a/pintos/src/examples/mcat b/pintos/src/examples/mcat
+new file mode 100755
+index 0000000..9af5e32
+Binary files /dev/null and b/pintos/src/examples/mcat differ
+diff --git a/pintos/src/examples/mcp b/pintos/src/examples/mcp
+new file mode 100755
+index 0000000..bdb56ce
+Binary files /dev/null and b/pintos/src/examples/mcp differ
+diff --git a/pintos/src/examples/mkdir b/pintos/src/examples/mkdir
+new file mode 100755
+index 0000000..8bcc1b9
+Binary files /dev/null and b/pintos/src/examples/mkdir differ
+diff --git a/pintos/src/examples/parent b/pintos/src/examples/parent
+new file mode 100755
+index 0000000..546555c
+Binary files /dev/null and b/pintos/src/examples/parent differ
+diff --git a/pintos/src/examples/pfs b/pintos/src/examples/pfs
+new file mode 100755
+index 0000000..3428ccd
+Binary files /dev/null and b/pintos/src/examples/pfs differ
+diff --git a/pintos/src/examples/pfs_reader b/pintos/src/examples/pfs_reader
+new file mode 100755
+index 0000000..20b964d
+Binary files /dev/null and b/pintos/src/examples/pfs_reader differ
+diff --git a/pintos/src/examples/pfs_writer b/pintos/src/examples/pfs_writer
+new file mode 100755
+index 0000000..e1e5d4d
+Binary files /dev/null and b/pintos/src/examples/pfs_writer differ
+diff --git a/pintos/src/examples/pwd b/pintos/src/examples/pwd
+new file mode 100755
+index 0000000..7dba2cf
+Binary files /dev/null and b/pintos/src/examples/pwd differ
+diff --git a/pintos/src/examples/recursor b/pintos/src/examples/recursor
+new file mode 100755
+index 0000000..a1df35a
+Binary files /dev/null and b/pintos/src/examples/recursor differ
+diff --git a/pintos/src/examples/rm b/pintos/src/examples/rm
+new file mode 100755
+index 0000000..be4b7f5
+Binary files /dev/null and b/pintos/src/examples/rm differ
+diff --git a/pintos/src/examples/shell b/pintos/src/examples/shell
+new file mode 100755
+index 0000000..69a4286
+Binary files /dev/null and b/pintos/src/examples/shell differ
+diff --git a/pintos/src/examples/sumargv b/pintos/src/examples/sumargv
+new file mode 100755
+index 0000000..c54c0d1
+Binary files /dev/null and b/pintos/src/examples/sumargv differ
+diff --git a/pintos/src/threads/#interrupt.c# b/pintos/src/threads/#interrupt.c#
+new file mode 100644
+index 0000000..075962f
+--- /dev/null
++++ b/pintos/src/threads/#interrupt.c#
+@@ -0,0 +1,419 @@
++#include "threads/interrupt.h"
++#include <debug.h>
++#include <inttypes.h>
++#include <stdint.h>
++#include <stdio.h>
++#include "threads/flags.h"
++#include "threads/intr-stubs.h"
++#include "threads/io.h"
++#include "threads/thread.h"
++#include "threads/vaddr.h"
++#include "devices/timer.h"
++
++/* Number of x86 interrupts. */
++#define INTR_CNT 256
++
++/* The Interrupt Descriptor Table (IDT).  The format is fixed by
++   the CPU.  See [IA32-v3a] sections 5.10 "Interrupt Descriptor
++   Table (IDT)", 5.11 "IDT Descriptors", 5.12.1.2 "Flag Usage By
++   Exception- or Interrupt-Handler Procedure". */
++static uint64_t idt[INTR_CNT];
++
++/* Interrupt handler functions for each interrupt. */
++static intr_handler_func *intr_handlers[INTR_CNT];
++
++/* Names for each interrupt, for debugging purposes. */
++static const char *intr_names[INTR_CNT];
++
++/* External interrupts are those generated by devices outside the
++   CPU, such as the timer.  External interrupts run with
++   interrupts turned off, so they never nest, nor are they ever
++   pre-empted.  Handlers for external interrupts also may not
++   sleep, although they may invoke intr_yield_on_return() to
++   request that a new process be scheduled just before the
++   interrupt returns. */
++static bool in_external_intr;   /* Are we processing an external interrupt? */
++static bool yield_on_return;    /* Should we yield on interrupt return? */
++
++/* Programmable Interrupt Controller helpers. */
++static void pic_init (void);
++static void pic_end_of_interrupt (int irq);
++
++/* Interrupt Descriptor Table helpers. */
++static uint64_t make_intr_gate (void (*) (void), int dpl);
++static uint64_t make_trap_gate (void (*) (void), int dpl);
++static inline uint64_t make_idtr_operand (uint16_t limit, void *base);
++
++/* Interrupt handlers. */
++void intr_handler (struct intr_frame *args);
++
++/* Returns the current interrupt status. */
++enum intr_level
++intr_get_level (void) 
++{
++  uint32_t flags;
++
++  /* Push the flags register on the processor stack, then pop the
++     value off the stack into `flags'.  See [IA32-v2b] "PUSHF"
++     and "POP" and [IA32-v3a] 5.8.1 "Masking Maskable Hardware
++     Interrupts". */
++  asm volatile ("pushfl; popl %0" : "=g" (flags));
++
++  return flags & FLAG_IF ? INTR_ON : INTR_OFF;
++}
++
++/* Enables or disables interrupts as specified by LEVEL and
++   returns the previous interrupt status. */
++enum intr_level
++intr_set_level (enum intr_level level) 
++{
++  return level == INTR_ON ? intr_enable () : intr_disable ();
++}
++
++/* Enables interrupts and returns the previous interrupt status. */
++enum intr_level
++intr_enable (void) 
++{
++  enum intr_level old_level = intr_get_level ();
++  ASSERT (!intr_context ());
++
++  /* Enable interrupts by setting the interrupt flag.
++
++     See [IA32-v2b] "STI" and [IA32-v3a] 5.8.1 "Masking Maskable
++     Hardware Interrupts". */
++  asm volatile ("sti");
++
++  return old_level;
++}
++
++/* Disables interrupts and returns the previous interrupt status. */
++enum intr_level
++intr_disable (void) 
++{
++  enum intr_level old_level = intr_get_level ();
++
++  /* Disable interrupts by clearing the interrupt flag.
++     See [IA32-v2b] "CLI" and [IA32-v3a] 5.8.1 "Masking Maskable
++     Hardware Interrupts". */
++  asm volatile ("cli" : : : "memory");
++
++  return old_level;
++}
++
++/* Initializes the interrupt system. */
++void
++intr_init (void)
++{
++  uint64_t idtr_operand;
++  int i;
++
++  /* Initialize interrupt controller. */
++  pic_init ();
++
++  /* Initialize IDT. */
++  for (i = 0; i < INTR_CNT; i++)
++    idt[i] = make_intr_gate (intr_stubs[i], 0);
++
++  /* Load IDT register.
++     See [IA32-v2a] "LIDT" and [IA32-v3a] 5.10 "Interrupt
++     Descriptor Table (IDT)". */
++  idtr_operand = make_idtr_operand (sizeof idt - 1, idt);
++  asm volatile ("lidt %0" : : "m" (idtr_operand));
++
++  /* Initialize intr_names. */
++  for (i = 0; i < INTR_CNT; i++)
++    intr_names[i] = "unknown";
++  intr_names[0] = "#DE Divide Error";
++  intr_names[1] = "#DB Debug Exception";
++  intr_names[2] = "NMI Interrupt";
++  intr_names[3] = "#BP Breakpoint Exception";
++  intr_names[4] = "#OF Overflow Exception";
++  intr_names[5] = "#BR BOUND Range Exceeded Exception";
++  intr_names[6] = "#UD Invalid Opcode Exception";
++  intr_names[7] = "#NM Device Not Available Exception";
++  intr_names[8] = "#DF Double Fault Exception";
++  intr_names[9] = "Coprocessor Segment Overrun";
++  intr_names[10] = "#TS Invalid TSS Exception";
++  intr_names[11] = "#NP Segment Not Present";
++  intr_names[12] = "#SS Stack Fault Exception";
++  intr_names[13] = "#GP General Protection Exception";
++  intr_names[14] = "#PF Page-Fault Exception";
++  intr_names[16] = "#MF x87 FPU Floating-Point Error";
++  intr_names[17] = "#AC Alignment Check Exception";
++  intr_names[18] = "#MC Machine-Check Exception";
++  intr_names[19] = "#XF SIMD Floating-Point Exception";
++}
++
++/* Registers interrupt VEC_NO to invoke HANDLER with descriptor
++   privilege level DPL.  Names the interrupt NAME for debugging
++   purposes.  The interrupt handler will be invoked with
++   interrupt status set to LEVEL. */
++static void
++register_handler (uint8_t vec_no, int dpl, enum intr_level level,
++                  intr_handler_func *handler, const char *name)
++{
++  ASSERT (intr_handlers[vec_no] == NULL);
++  if (level == INTR_ON)
++    idt[vec_no] = make_trap_gate (intr_stubs[vec_no], dpl);
++  else
++    idt[vec_no] = make_intr_gate (intr_stubs[vec_no], dpl);
++  intr_handlers[vec_no] = handler;
++  intr_names[vec_no] = name;
++}
++
++/* Registers external interrupt VEC_NO to invoke HANDLER, which
++   is named NAME for debugging purposes.  The handler will
++   execute with interrupts disabled. */
++void
++intr_register_ext (uint8_t vec_no, intr_handler_func *handler,
++                   const char *name) 
++{
++  ASSERT (vec_no >= 0x20 && vec_no <= 0x2f);
++  register_handler (vec_no, 0, INTR_OFF, handler, name);
++}
++
++/* Registers internal interrupt VEC_NO to invoke HANDLER, which
++   is named NAME for debugging purposes.  The interrupt handler
++   will be invoked with interrupt status LEVEL.
++
++   The handler will have descriptor privilege level DPL, meaning
++   that it can be invoked intentionally when the processor is in
++   the DPL or lower-numbered ring.  In practice, DPL==3 allows
++   user mode to invoke the interrupts and DPL==0 prevents such
++   invocation.  Faults and exceptions that occur in user mode
++   still cause interrupts with DPL==0 to be invoked.  See
++   [IA32-v3a] sections 4.5 "Privilege Levels" and 4.8.1.1
++   "Accessing Nonconforming Code Segments" for further
++   discussion. */
++void
++intr_register_int (uint8_t vec_no, int dpl, enum intr_level level,
++                   intr_handler_func *handler, const char *name)
++{
++  ASSERT (vec_no < 0x20 || vec_no > 0x2f);
++  register_handler (vec_no, dpl, level, handler, name);
++}
++
++/* Returns true during processing of an external interrupt
++   and false at all other times. */
++bool
++intr_context (void) 
++{
++  return in_external_intr;
++}
++
++/* During processing of an external interrupt, directs the
++   interrupt handler to yield to a new process just before
++   returning from the interrupt.  May not be called at any other
++   time. */
++void
++intr_yield_on_return (void) 
++{
++  ASSERT (intr_context ());
++  yield_on_return = true;
++}
++
++/* 8259A Programmable Interrupt Controller. */
++
++/* Every PC has two 8259A Programmable Interrupt Controller (PIC)
++   chips.  One is a "master" accessible at ports 0x20 and 0x21.
++   The other is a "slave" cascaded onto the master's IRQ 2 line
++   and accessible at ports 0xa0 and 0xa1.  Accesses to port 0x20
++   set the A0 line to 0 and accesses to 0x21 set the A1 line to
++   1.  The situation is similar for the slave PIC.
++
++   By default, interrupts 0...15 delivered by the PICs will go to
++   interrupt vectors 0...15.  Unfortunately, those vectors are
++   also used for CPU traps and exceptions.  We reprogram the PICs
++   so that interrupts 0...15 are delivered to interrupt vectors
++   32...47 (0x20...0x2f) instead. */
++
++/* Initializes the PICs.  Refer to [8259A] for details. */
++static void
++pic_init (void)
++{
++  /* Mask all interrupts on both PICs. */
++  outb (0x21, 0xff);
++  outb (0xa1, 0xff);
++
++  /* Initialize master. */
++  outb (0x20, 0x11); /* ICW1: single mode, edge triggered, expect ICW4. */
++  outb (0x21, 0x20); /* ICW2: line IR0...7 -> irq 0x20...0x27. */
++  outb (0x21, 0x04); /* ICW3: slave PIC on line IR2. */
++  outb (0x21, 0x01); /* ICW4: 8086 mode, normal EOI, non-buffered. */
++
++  /* Initialize slave. */
++  outb (0xa0, 0x11); /* ICW1: single mode, edge triggered, expect ICW4. */
++  outb (0xa1, 0x28); /* ICW2: line IR0...7 -> irq 0x28...0x2f. */
++  outb (0xa1, 0x02); /* ICW3: slave ID is 2. */
++  outb (0xa1, 0x01); /* ICW4: 8086 mode, normal EOI, non-buffered. */
++
++  /* Unmask all interrupts. */
++  outb (0x21, 0x00);
++  outb (0xa1, 0x00);
++}
++
++/* Sends an end-of-interrupt signal to the PIC for the given IRQ.
++   If we don't acknowledge the IRQ, it will never be delivered to
++   us again, so this is important.  */
++static void
++pic_end_of_interrupt (int irq) 
++{
++  ASSERT (irq >= 0x20 && irq < 0x30);
++
++  /* Acknowledge master PIC. */
++  outb (0x20, 0x20);
++
++  /* Acknowledge slave PIC if this is a slave interrupt. */
++  if (irq >= 0x28)
++    outb (0xa0, 0x20);
++}
++
++/* Creates an gate that invokes FUNCTION.
++
++   The gate has descriptor privilege level DPL, meaning that it
++   can be invoked intentionally when the processor is in the DPL
++   or lower-numbered ring.  In practice, DPL==3 allows user mode
++   to call into the gate and DPL==0 prevents such calls.  Faults
++   and exceptions that occur in user mode still cause gates with
++   DPL==0 to be invoked.  See [IA32-v3a] sections 4.5 "Privilege
++   Levels" and 4.8.1.1 "Accessing Nonconforming Code Segments"
++   for further discussion.
++
++   TYPE must be either 14 (for an interrupt gate) or 15 (for a
++   trap gate).  The difference is that entering an interrupt gate
++   disables interrupts, but entering a trap gate does not.  See
++   [IA32-v3a] section 5.12.1.2 "Flag Usage By Exception- or
++   Interrupt-Handler Procedure" for discussion. */
++static uint64_t
++make_gate (void (*function) (void), int dpl, int type)
++{
++  uint32_t e0, e1;
++
++  ASSERT (function != NULL);
++  ASSERT (dpl >= 0 && dpl <= 3);
++  ASSERT (type >= 0 && type <= 15);
++
++  e0 = (((uint32_t) function & 0xffff)     /* Offset 15:0. */
++        | (SEL_KCSEG << 16));              /* Target code segment. */
++
++  e1 = (((uint32_t) function & 0xffff0000) /* Offset 31:16. */
++        | (1 << 15)                        /* Present. */
++        | ((uint32_t) dpl << 13)           /* Descriptor privilege level. */
++        | (0 << 12)                        /* System. */
++        | ((uint32_t) type << 8));         /* Gate type. */
++
++  return e0 | ((uint64_t) e1 << 32);
++}
++
++/* Creates an interrupt gate that invokes FUNCTION with the given
++   DPL. */
++static uint64_t
++make_intr_gate (void (*function) (void), int dpl)
++{
++  return make_gate (function, dpl, 14);
++}
++
++/* Creates a trap gate that invokes FUNCTION with the given
++   DPL. */
++static uint64_t
++make_trap_gate (void (*function) (void), int dpl)
++{
++  return make_gate (function, dpl, 15);
++}
++
++/* Returns a descriptor that yields the given LIMIT and BASE when
++   used as an operand for the LIDT instruction. */
++static inline uint64_t
++make_idtr_operand (uint16_t limit, void *base)
++{
++  return limit | ((uint64_t) (uint32_t) base << 16);
++}
++
++/* Interrupt handlers. */
++
++/* Handler for all interrupts, faults, and exceptions.  This
++   function is called by the assembly language interrupt stubs in
++   intr-stubs.S.  FRAME describes the interrupt and the
++   interrupted thread's registers. */
++void
++intr_handler (struct intr_frame *frame) 
++{
++  bool external;
++  intr_handler_func *handler;
++
++  /* External interrupts are special.
++     We only handle one at a time (so interrupts must be off)
++     and they need to be acknowledged on the PIC (see below).
++     An external interrupt handler cannot sleep. */
++  external = frame->vec_no >= 0x20 && frame->vec_no < 0x30;
++  if (external) 
++    {
++      ASSERT (intr_get_level () == INTR_OFF);
++      ASSERT (!intr_context ());
++
++      in_external_intr = true;
++      yield_on_return = false;
++    }
++
++  /* Invoke the interrupt's handler. */
++  handler = intr_handlers[frame->vec_no];
++  if (handler != NULL)
++    handler (frame);
++  else if (frame->vec_no == 0x27 || frame->vec_no == 0x2f)
++    {
++      /* There is no handler, but this interrupt can trigger
++         spuriously due to a hardware fault or hardware race
++         condition.  Ignore it. */
++    }
++  else 
++    {
++      /* No handler and not spurious.  Invoke the unexpected
++         interrupt handler. */
++      intr_dump_frame (frame);
++      PANIC ("Unexpected interrupt"); 
++    }
++
++  /* Complete the processing of an external interrupt. */
++  if (external) 
++    {
++      ASSERT (intr_get_level () == INTR_OFF);
++      ASSERT (intr_context ());
++
++      in_external_intr = false;
++      pic_end_of_interrupt (frame->vec_no); 
++
++      if (yield_on_return) 
++        thread_yield (); 
++    }
++}
++
++/* Dumps interrupt frame F to the console, for debugging. */
++void
++intr_dump_frame (const struct intr_frame *f) 
++{
++  uint32_t cr2;
++
++  /* Store current value of CR2 into `cr2'.
++     CR2 is the linear address of the last page fault.
++     See [IA32-v2a] "MOV--Move to/from Control Registers" and
++     [IA32-v3a] 5.14 "Interrupt 14--Page Fault Exception
++     (#PF)". */
++  asm ("movl %%cr2, %0" : "=r" (cr2));
++
++  printf ("Interrupt %#04x (%s) at eip=%p\n",
++          f->vec_no, intr_names[f->vec_no], f->eip);
++  printf (" cr2=%08"PRIx32" error=%08"PRIx32"\n", cr2, f->error_code);
++  printf (" eax=%08"PRIx32" ebx=%08"PRIx32" ecx=%08"PRIx32" edx=%08"PRIx32"\n",
++          f->eax, f->ebx, f->ecx, f->edx);
++  printf (" esi=%08"PRIx32" edi=%08"PRIx32" esp=%08"PRIx32" ebp=%08"PRIx32"\n",
++          f->esi, f->edi, (uint32_t) f->esp, f->ebp);
++  printf (" cs=%04"PRIx16" ds=%04"PRIx16" es=%04"PRIx16" ss=%04"PRIx16"\n",
++          f->cs, f->ds, f->es, f->ss);
++}
++
++/* Returns the name of interrupt VEC. */
++const char *
++intr_name (uint8_t vec) 
++{
++  return intr_names[vec];
++}
+diff --git a/pintos/src/threads/_build/Makefile b/pintos/src/threads/_build/Makefile
+new file mode 100644
+index 0000000..1fbf29b
+--- /dev/null
++++ b/pintos/src/threads/_build/Makefile
+@@ -0,0 +1,106 @@
++# -*- makefile -*-
++
++SRCDIR = ../..
++
++all: os.dsk
++
++include ../../Make.config
++include ../Make.vars
++include ../../tests/Make.tests
++
++# Compiler and assembler options.
++os.dsk: CPPFLAGS += -I$(SRCDIR)/lib/kernel
++
++# Core kernel.
++threads_SRC  = threads/init.c		# Main program.
++threads_SRC += threads/thread.c		# Thread management core.
++threads_SRC += threads/switch.S		# Thread switch routine.
++threads_SRC += threads/interrupt.c	# Interrupt core.
++threads_SRC += threads/intr-stubs.S	# Interrupt stubs.
++threads_SRC += threads/synch.c		# Synchronization.
++threads_SRC += threads/palloc.c		# Page allocator.
++threads_SRC += threads/malloc.c		# Subpage allocator.
++threads_SRC += threads/start.S		# Startup code.
++threads_SRC += threads/boundedbuffer.c	# bounded buffer code
++threads_SRC += threads/synchlist.c	# synchronized list code
++
++# Device driver code.
++devices_SRC  = devices/timer.c		# Timer device.
++devices_SRC += devices/kbd.c		# Keyboard device.
++devices_SRC += devices/vga.c		# Video device.
++devices_SRC += devices/serial.c		# Serial port device.
++devices_SRC += devices/disk.c		# IDE disk device.
++devices_SRC += devices/input.c		# Serial and keyboard input.
++devices_SRC += devices/intq.c		# Interrupt queue.
++
++# Library code shared between kernel and user programs.
++lib_SRC  = lib/debug.c			# Debug helpers.
++lib_SRC += lib/random.c			# Pseudo-random numbers.
++lib_SRC += lib/stdio.c			# I/O library.
++lib_SRC += lib/stdlib.c			# Utility functions.
++lib_SRC += lib/string.c			# String functions.
++lib_SRC += lib/arithmetic.c
++
++# Kernel-specific library code.
++lib/kernel_SRC  = lib/kernel/debug.c	# Debug helpers.
++lib/kernel_SRC += lib/kernel/list.c	# Doubly-linked lists.
++lib/kernel_SRC += lib/kernel/bitmap.c	# Bitmaps.
++lib/kernel_SRC += lib/kernel/hash.c	# Hash tables.
++lib/kernel_SRC += lib/kernel/console.c	# printf(), putchar().
++lib/kernel_SRC += lib/kernel/slist.c    # simple list
++
++# User process code.
++userprog_SRC  = userprog/process.c	# Process loading.
++userprog_SRC += userprog/pagedir.c	# Page directories.
++userprog_SRC += userprog/exception.c	# User exception handler.
++userprog_SRC += userprog/syscall.c	# System call handler.
++userprog_SRC += userprog/gdt.c		# GDT initialization.
++userprog_SRC += userprog/tss.c		# TSS management.
++
++# No virtual memory code yet.
++#vm_SRC = vm/file.c			# Some file.
++
++# Filesystem code.
++filesys_SRC  = filesys/filesys.c	# Filesystem core.
++filesys_SRC += filesys/free-map.c	# Free sector bitmap.
++filesys_SRC += filesys/file.c		# Files.
++filesys_SRC += filesys/directory.c	# Directories.
++filesys_SRC += filesys/inode.c		# File headers.
++filesys_SRC += filesys/fsutil.c		# Utilities.
++
++SOURCES = $(foreach dir,$(KERNEL_SUBDIRS),$($(dir)_SRC))
++OBJECTS = $(patsubst %.c,%.o,$(patsubst %.S,%.o,$(SOURCES)))
++DEPENDS = $(patsubst %.o,%.d,$(OBJECTS))
++
++threads/kernel.lds.s: CPPFLAGS += -P
++threads/kernel.lds.s: threads/kernel.lds.S threads/loader.h
++
++kernel.o: threads/kernel.lds.s $(OBJECTS) 
++	$(LD) -T $< -o $@ $(OBJECTS)
++
++kernel.bin: kernel.o
++	$(OBJCOPY) -O binary -R .note -R .comment -S $< $@.tmp
++	dd if=$@.tmp of=$@ bs=4096 conv=sync
++	rm $@.tmp
++
++threads/loader.o: threads/loader.S kernel.bin
++	$(CC) -c $< -o $@ $(ASFLAGS) $(CPPFLAGS) $(DEFINES) -DKERNEL_LOAD_PAGES=`perl -e 'print +(-s "kernel.bin") / 4096;'`
++
++loader.bin: threads/loader.o
++	$(LD) -N -e start -Ttext 0x7c00 --oformat binary -o $@ $<
++
++os.dsk: loader.bin kernel.bin
++	cat $^ > $@
++
++clean::
++	rm -f $(OBJECTS) $(DEPENDS) 
++	rm -f threads/loader.o threads/kernel.lds.s threads/loader.d
++	rm -f kernel.o kernel.lds.s
++	rm -f kernel.bin loader.bin os.dsk
++	rm -f bochsout.txt bochsrc.txt
++	rm -f results grade
++
++Makefile: $(SRCDIR)/Makefile.build
++	cp $< $@
++
++-include $(DEPENDS)
+diff --git a/pintos/src/threads/_build/bochsrc.txt b/pintos/src/threads/_build/bochsrc.txt
+new file mode 100644
+index 0000000..57ee394
+--- /dev/null
++++ b/pintos/src/threads/_build/bochsrc.txt
+@@ -0,0 +1,10 @@
++romimage: file=$BXSHARE/BIOS-bochs-latest, address=0xf0000
++vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest
++boot: disk
++cpu: ips=1000000
++megs: 4
++log: bochsout.txt
++panic: action=fatal
++clock: sync=none, time0=0
++ata0-master: type=disk, path=/tmp/FUf8GrCQ8P.dsk, mode=flat, cylinders=1, heads=16, spt=63, translation=none
++com1: enabled=1, mode=term, dev=/dev/stdout
+diff --git a/pintos/src/threads/_build/kernel.bin b/pintos/src/threads/_build/kernel.bin
+new file mode 100644
+index 0000000..3918fb4
+Binary files /dev/null and b/pintos/src/threads/_build/kernel.bin differ
+diff --git a/pintos/src/threads/_build/loader.bin b/pintos/src/threads/_build/loader.bin
+new file mode 100755
+index 0000000..487c2de
+Binary files /dev/null and b/pintos/src/threads/_build/loader.bin differ
+diff --git a/pintos/src/threads/_build/os.dsk b/pintos/src/threads/_build/os.dsk
+new file mode 100644
+index 0000000..cb3a3c4
+Binary files /dev/null and b/pintos/src/threads/_build/os.dsk differ
+diff --git a/pintos/src/threads/_build/tests/threads/alarm-multiple.errors b/pintos/src/threads/_build/tests/threads/alarm-multiple.errors
+new file mode 100644
+index 0000000..e69de29
+diff --git a/pintos/src/threads/_build/tests/threads/alarm-multiple.output b/pintos/src/threads/_build/tests/threads/alarm-multiple.output
+new file mode 100644
+index 0000000..400d2a1
+--- /dev/null
++++ b/pintos/src/threads/_build/tests/threads/alarm-multiple.output
+@@ -0,0 +1,308 @@
++Writing command line to /tmp/UAA3ler9AQ.dsk...
++qemu -hda /tmp/UAA3ler9AQ.dsk -m 4 -net none -nographic -monitor null
++Kernel command line: -q run alarm-multiple
++Pintos booting with 4,088 kB RAM...
++371 pages available in kernel pool.
++371 pages available in user pool.
++Before init sleep_queue
++Calibrating timer...  405,913,600 loops/s.
++Boot complete.
++Executing 'alarm-multiple':
++(alarm-multiple) begin
++(alarm-multiple) Creating 5 threads to sleep 7 times each.
++(alarm-multiple) Thread 0 sleeps 10 ticks each time,
++(alarm-multiple) thread 1 sleeps 20 ticks each time, and so on.
++(alarm-multiple) If successful, product of iteration count and
++(alarm-multiple) sleep duration will appear in nondescending order.
++Start of timer_sleep
++Arg ticks 550 
++Start of timer_sleep
++Arg ticks 110 
++Process passed in comparator with sleep_ticks 550 has 550 ticks remaining. 
++Start of timer_sleep
++Arg ticks 120 
++Process passed in comparator with sleep_ticks 110 has 110 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 550 ticks remaining. 
++Start of timer_sleep
++Arg ticks 130 
++Process passed in comparator with sleep_ticks 110 has 110 ticks remaining. 
++Process passed in comparator with sleep_ticks 120 has 120 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 550 ticks remaining. 
++Start of timer_sleep
++Time of a sleeping process (with sleep_ticks 110) ran out! 
++Arg ticks 140 
++Process passed in comparator with sleep_ticks 110 has 109 ticks remaining. 
++Process passed in comparator with sleep_ticks 120 has 119 ticks remaining. 
++Process passed in comparator with sleep_ticks 130 has 129 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 549 ticks remaining. 
++Start of timer_sleep
++Arg ticks 149 
++Process passed in comparator with sleep_ticks 110 has 109 ticks remaining. 
++Process passed in comparator with sleep_ticks 120 has 119 ticks remaining. 
++Process passed in comparator with sleep_ticks 130 has 129 ticks remaining. 
++Process passed in comparator with sleep_ticks 140 has 140 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 549 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 110) ran out! 
++Process with 110 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 118 
++Process passed in comparator with sleep_ticks 120 has 118 ticks remaining. 
++Process passed in comparator with sleep_ticks 130 has 128 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 120) ran out! 
++Process with 120 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 137 
++Process passed in comparator with sleep_ticks 118 has 117 ticks remaining. 
++Process passed in comparator with sleep_ticks 130 has 127 ticks remaining. 
++Process passed in comparator with sleep_ticks 140 has 138 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 118) ran out! 
++Process with 118 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 126 
++Process passed in comparator with sleep_ticks 130 has 126 ticks remaining. 
++Process passed in comparator with sleep_ticks 137 has 136 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 130) ran out! 
++Process with 130 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 155 
++Process passed in comparator with sleep_ticks 126 has 125 ticks remaining. 
++Process passed in comparator with sleep_ticks 137 has 135 ticks remaining. 
++Process passed in comparator with sleep_ticks 140 has 136 ticks remaining. 
++Process passed in comparator with sleep_ticks 149 has 145 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 545 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 126) ran out! 
++Process with 126 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 134 
++Process passed in comparator with sleep_ticks 137 has 134 ticks remaining. 
++Process passed in comparator with sleep_ticks 140 has 135 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 137) ran out! 
++Process with 137 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 153 
++Process passed in comparator with sleep_ticks 134 has 133 ticks remaining. 
++Process passed in comparator with sleep_ticks 140 has 134 ticks remaining. 
++Process passed in comparator with sleep_ticks 149 has 143 ticks remaining. 
++Process passed in comparator with sleep_ticks 155 has 153 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 543 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 134) ran out! 
++Process with 134 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 142 
++Process passed in comparator with sleep_ticks 140 has 133 ticks remaining. 
++Process passed in comparator with sleep_ticks 149 has 142 ticks remaining. 
++Process passed in comparator with sleep_ticks 155 has 152 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 140) ran out! 
++Process with 140 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 171 
++Process passed in comparator with sleep_ticks 149 has 141 ticks remaining. 
++Process passed in comparator with sleep_ticks 142 has 141 ticks remaining. 
++Process passed in comparator with sleep_ticks 155 has 151 ticks remaining. 
++Process passed in comparator with sleep_ticks 153 has 151 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 541 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 149) ran out! 
++Process with 149 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 190 
++Process passed in comparator with sleep_ticks 142 has 140 ticks remaining. 
++Process passed in comparator with sleep_ticks 155 has 150 ticks remaining. 
++Process passed in comparator with sleep_ticks 153 has 150 ticks remaining. 
++Process passed in comparator with sleep_ticks 171 has 170 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 540 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 142) ran out! 
++Process with 142 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 149 
++Process passed in comparator with sleep_ticks 155 has 149 ticks remaining. 
++Process passed in comparator with sleep_ticks 153 has 149 ticks remaining. 
++Process passed in comparator with sleep_ticks 171 has 169 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 155) ran out! 
++Process with 155 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 178 
++Process passed in comparator with sleep_ticks 153 has 148 ticks remaining. 
++Process passed in comparator with sleep_ticks 149 has 148 ticks remaining. 
++Process passed in comparator with sleep_ticks 171 has 168 ticks remaining. 
++Process passed in comparator with sleep_ticks 190 has 188 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 153) ran out! 
++Process with 153 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 167 
++Process passed in comparator with sleep_ticks 149 has 147 ticks remaining. 
++Process passed in comparator with sleep_ticks 171 has 167 ticks remaining. 
++Process passed in comparator with sleep_ticks 178 has 177 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 149) ran out! 
++Process with 149 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 156 
++Process passed in comparator with sleep_ticks 171 has 166 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 156) ran out! 
++Process with 156 sleep ticks has awaken 
++Time of a sleeping process (with sleep_ticks 171) ran out! 
++Process with 171 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 204 
++Process passed in comparator with sleep_ticks 167 has 164 ticks remaining. 
++Process passed in comparator with sleep_ticks 178 has 174 ticks remaining. 
++Process passed in comparator with sleep_ticks 190 has 184 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 534 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 167) ran out! 
++Process with 167 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 183 
++Process passed in comparator with sleep_ticks 178 has 173 ticks remaining. 
++Process passed in comparator with sleep_ticks 190 has 183 ticks remaining. 
++Process passed in comparator with sleep_ticks 204 has 203 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 178) ran out! 
++Process with 178 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 202 
++Process passed in comparator with sleep_ticks 190 has 182 ticks remaining. 
++Process passed in comparator with sleep_ticks 183 has 182 ticks remaining. 
++Process passed in comparator with sleep_ticks 204 has 202 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 532 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 190) ran out! 
++Process with 190 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 231 
++Process passed in comparator with sleep_ticks 183 has 181 ticks remaining. 
++Process passed in comparator with sleep_ticks 204 has 201 ticks remaining. 
++Process passed in comparator with sleep_ticks 202 has 201 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 531 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 183) ran out! 
++Process with 183 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 200 
++Process passed in comparator with sleep_ticks 204 has 200 ticks remaining. 
++Process passed in comparator with sleep_ticks 202 has 200 ticks remaining. 
++Process passed in comparator with sleep_ticks 231 has 230 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 204) ran out! 
++Process with 204 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 239 
++Process passed in comparator with sleep_ticks 202 has 199 ticks remaining. 
++Process passed in comparator with sleep_ticks 200 has 199 ticks remaining. 
++Process passed in comparator with sleep_ticks 231 has 229 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 529 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 202) ran out! 
++Process with 202 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 228 
++Process passed in comparator with sleep_ticks 200 has 198 ticks remaining. 
++Process passed in comparator with sleep_ticks 231 has 228 ticks remaining. 
++Process passed in comparator with sleep_ticks 239 has 238 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 200) ran out! 
++Process with 200 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 217 
++Process passed in comparator with sleep_ticks 231 has 227 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 217) ran out! 
++Process with 217 sleep ticks has awaken 
++Time of a sleeping process (with sleep_ticks 231) ran out! 
++Process with 231 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 275 
++Process passed in comparator with sleep_ticks 228 has 225 ticks remaining. 
++Process passed in comparator with sleep_ticks 239 has 235 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 525 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 228) ran out! 
++Process with 228 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 254 
++Process passed in comparator with sleep_ticks 239 has 234 ticks remaining. 
++Process passed in comparator with sleep_ticks 275 has 274 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 239) ran out! 
++Process with 239 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 273 
++Process passed in comparator with sleep_ticks 254 has 253 ticks remaining. 
++Process passed in comparator with sleep_ticks 275 has 273 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 523 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 254) ran out! 
++Process with 254 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 282 
++Process passed in comparator with sleep_ticks 275 has 272 ticks remaining. 
++Process passed in comparator with sleep_ticks 273 has 272 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 522 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 275) ran out! 
++Process with 275 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 321 
++Process passed in comparator with sleep_ticks 273 has 271 ticks remaining. 
++Process passed in comparator with sleep_ticks 282 has 281 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 521 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 273) ran out! 
++Process with 273 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 310 
++Process passed in comparator with sleep_ticks 282 has 280 ticks remaining. 
++Process passed in comparator with sleep_ticks 321 has 320 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 282) ran out! 
++Process with 282 sleep ticks has awaken 
++Time of a sleeping process (with sleep_ticks 310) ran out! 
++Process with 310 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 348 
++Process passed in comparator with sleep_ticks 321 has 318 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 518 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 321) ran out! 
++Process with 321 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 367 
++Process passed in comparator with sleep_ticks 348 has 347 ticks remaining. 
++Process passed in comparator with sleep_ticks 550 has 517 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 348) ran out! 
++Process with 348 sleep ticks has awaken 
++Time of a sleeping process (with sleep_ticks 367) ran out! 
++Process with 367 sleep ticks has awaken 
++Start of timer_sleep
++Arg ticks 415 
++Process passed in comparator with sleep_ticks 550 has 515 ticks remaining. 
++Time of a sleeping process (with sleep_ticks 415) ran out! 
++Process with 415 sleep ticks has awaken 
++Time of a sleeping process (with sleep_ticks 550) ran out! 
++Process with 550 sleep ticks has awaken 
++(alarm-multiple) thread 0: duration=10, iteration=1, product=10
++(alarm-multiple) thread 1: duration=20, iteration=1, product=20
++(alarm-multiple) thread 0: duration=10, iteration=2, product=20
++(alarm-multiple) thread 2: duration=30, iteration=1, product=30
++(alarm-multiple) thread 0: duration=10, iteration=3, product=30
++(alarm-multiple) thread 1: duration=20, iteration=2, product=40
++(alarm-multiple) thread 0: duration=10, iteration=4, product=40
++(alarm-multiple) thread 3: duration=40, iteration=1, product=40
++(alarm-multiple) thread 4: duration=50, iteration=1, product=50
++(alarm-multiple) thread 0: duration=10, iteration=5, product=50
++(alarm-multiple) thread 2: duration=30, iteration=2, product=60
++(alarm-multiple) thread 1: duration=20, iteration=3, product=60
++(alarm-multiple) thread 0: duration=10, iteration=6, product=60
++(alarm-multiple) thread 0: duration=10, iteration=7, product=70
++(alarm-multiple) thread 3: duration=40, iteration=2, product=80
++(alarm-multiple) thread 1: duration=20, iteration=4, product=80
++(alarm-multiple) thread 2: duration=30, iteration=3, product=90
++(alarm-multiple) thread 4: duration=50, iteration=2, product=100
++(alarm-multiple) thread 1: duration=20, iteration=5, product=100
++(alarm-multiple) thread 3: duration=40, iteration=3, product=120
++(alarm-multiple) thread 2: duration=30, iteration=4, product=120
++(alarm-multiple) thread 1: duration=20, iteration=6, product=120
++(alarm-multiple) thread 1: duration=20, iteration=7, product=140
++(alarm-multiple) thread 4: duration=50, iteration=3, product=150
++(alarm-multiple) thread 2: duration=30, iteration=5, product=150
++(alarm-multiple) thread 3: duration=40, iteration=4, product=160
++(alarm-multiple) thread 2: duration=30, iteration=6, product=180
++(alarm-multiple) thread 4: duration=50, iteration=4, product=200
++(alarm-multiple) thread 3: duration=40, iteration=5, product=200
++(alarm-multiple) thread 2: duration=30, iteration=7, product=210
++(alarm-multiple) thread 3: duration=40, iteration=6, product=240
++(alarm-multiple) thread 4: duration=50, iteration=5, product=250
++(alarm-multiple) thread 3: duration=40, iteration=7, product=280
++(alarm-multiple) thread 4: duration=50, iteration=6, product=300
++(alarm-multiple) thread 4: duration=50, iteration=7, product=350
++(alarm-multiple) end
++Execution of 'alarm-multiple' complete.
++Timer: 67 ticks
++Thread: 35 idle ticks, 32 kernel ticks, 0 user ticks
++Console: 15949 characters output
++Keyboard: 0 keys pressed
++Powering off...
+diff --git a/pintos/src/threads/_build/tests/threads/alarm-multiple.result b/pintos/src/threads/_build/tests/threads/alarm-multiple.result
+new file mode 100644
+index 0000000..7ef22e9
+--- /dev/null
++++ b/pintos/src/threads/_build/tests/threads/alarm-multiple.result
+@@ -0,0 +1 @@
++PASS
+diff --git a/pintos/src/threads/_build/tests/threads/alarm-simultaneous.errors b/pintos/src/threads/_build/tests/threads/alarm-simultaneous.errors
+new file mode 100644
+index 0000000..3062dd4
+--- /dev/null
++++ b/pintos/src/threads/_build/tests/threads/alarm-simultaneous.errors
+@@ -0,0 +1,2 @@
++qemu: terminating on signal 2
++Use of uninitialized value in numeric le (<=) at /home/matsj696/git-pintos/pintos/src/utils//pintos line 767.
+diff --git a/pintos/src/threads/_build/tests/threads/alarm-single.errors b/pintos/src/threads/_build/tests/threads/alarm-single.errors
+new file mode 100644
+index 0000000..b05c728
+--- /dev/null
++++ b/pintos/src/threads/_build/tests/threads/alarm-single.errors
+@@ -0,0 +1 @@
++/bin/sh: 1: pintos: not found
+diff --git a/pintos/src/threads/_build/tests/threads/alarm-single.output b/pintos/src/threads/_build/tests/threads/alarm-single.output
+new file mode 100644
+index 0000000..e69de29
+diff --git a/pintos/src/threads/_build/tests/threads/alarm-single.result b/pintos/src/threads/_build/tests/threads/alarm-single.result
+new file mode 100644
+index 0000000..15291d2
+--- /dev/null
++++ b/pintos/src/threads/_build/tests/threads/alarm-single.result
+@@ -0,0 +1,2 @@
++FAIL
++Run produced no output at all
+diff --git a/pintos/src/threads/_build/threads/kernel.lds.s b/pintos/src/threads/_build/threads/kernel.lds.s
+new file mode 100644
+index 0000000..0f841da
+--- /dev/null
++++ b/pintos/src/threads/_build/threads/kernel.lds.s
+@@ -0,0 +1,17 @@
++OUTPUT_FORMAT("elf32-i386")
++OUTPUT_ARCH("i386")
++ENTRY(start)
++SECTIONS
++{
++  . = 0xc0000000 + 0x100000;
++  _start = .;
++  .text : { *(.start) *(.text) } = 0x90
++  .rodata : { *(.rodata) *(.rodata.*)
++       . = ALIGN(0x1000);
++       _end_kernel_text = .; }
++  .data : { *(.data) }
++  _start_bss = .;
++  .bss : { *(.bss) }
++  _end_bss = .;
++  _end = .;
++}
+diff --git a/pintos/src/threads/bochsrc.txt b/pintos/src/threads/bochsrc.txt
+index 2ac8738..9f6e7ad 100644
+--- a/pintos/src/threads/bochsrc.txt
++++ b/pintos/src/threads/bochsrc.txt
+@@ -6,5 +6,5 @@ megs: 4
+ log: bochsout.txt
+ panic: action=fatal
+ clock: sync=none, time0=0
+-ata0-master: type=disk, path=/tmp/c9HlBlQTJq.dsk, mode=flat, cylinders=1, heads=16, spt=63, translation=none
++ata0-master: type=disk, path=/tmp/1gzLJtw4UC.dsk, mode=flat, cylinders=1, heads=16, spt=63, translation=none
+ com1: enabled=1, mode=term, dev=/dev/stdout
+diff --git a/pintos/src/threads/build/Makefile b/pintos/src/threads/build/Makefile
+new file mode 100644
+index 0000000..1fbf29b
+--- /dev/null
++++ b/pintos/src/threads/build/Makefile
+@@ -0,0 +1,106 @@
++# -*- makefile -*-
++
++SRCDIR = ../..
++
++all: os.dsk
++
++include ../../Make.config
++include ../Make.vars
++include ../../tests/Make.tests
++
++# Compiler and assembler options.
++os.dsk: CPPFLAGS += -I$(SRCDIR)/lib/kernel
++
++# Core kernel.
++threads_SRC  = threads/init.c		# Main program.
++threads_SRC += threads/thread.c		# Thread management core.
++threads_SRC += threads/switch.S		# Thread switch routine.
++threads_SRC += threads/interrupt.c	# Interrupt core.
++threads_SRC += threads/intr-stubs.S	# Interrupt stubs.
++threads_SRC += threads/synch.c		# Synchronization.
++threads_SRC += threads/palloc.c		# Page allocator.
++threads_SRC += threads/malloc.c		# Subpage allocator.
++threads_SRC += threads/start.S		# Startup code.
++threads_SRC += threads/boundedbuffer.c	# bounded buffer code
++threads_SRC += threads/synchlist.c	# synchronized list code
++
++# Device driver code.
++devices_SRC  = devices/timer.c		# Timer device.
++devices_SRC += devices/kbd.c		# Keyboard device.
++devices_SRC += devices/vga.c		# Video device.
++devices_SRC += devices/serial.c		# Serial port device.
++devices_SRC += devices/disk.c		# IDE disk device.
++devices_SRC += devices/input.c		# Serial and keyboard input.
++devices_SRC += devices/intq.c		# Interrupt queue.
++
++# Library code shared between kernel and user programs.
++lib_SRC  = lib/debug.c			# Debug helpers.
++lib_SRC += lib/random.c			# Pseudo-random numbers.
++lib_SRC += lib/stdio.c			# I/O library.
++lib_SRC += lib/stdlib.c			# Utility functions.
++lib_SRC += lib/string.c			# String functions.
++lib_SRC += lib/arithmetic.c
++
++# Kernel-specific library code.
++lib/kernel_SRC  = lib/kernel/debug.c	# Debug helpers.
++lib/kernel_SRC += lib/kernel/list.c	# Doubly-linked lists.
++lib/kernel_SRC += lib/kernel/bitmap.c	# Bitmaps.
++lib/kernel_SRC += lib/kernel/hash.c	# Hash tables.
++lib/kernel_SRC += lib/kernel/console.c	# printf(), putchar().
++lib/kernel_SRC += lib/kernel/slist.c    # simple list
++
++# User process code.
++userprog_SRC  = userprog/process.c	# Process loading.
++userprog_SRC += userprog/pagedir.c	# Page directories.
++userprog_SRC += userprog/exception.c	# User exception handler.
++userprog_SRC += userprog/syscall.c	# System call handler.
++userprog_SRC += userprog/gdt.c		# GDT initialization.
++userprog_SRC += userprog/tss.c		# TSS management.
++
++# No virtual memory code yet.
++#vm_SRC = vm/file.c			# Some file.
++
++# Filesystem code.
++filesys_SRC  = filesys/filesys.c	# Filesystem core.
++filesys_SRC += filesys/free-map.c	# Free sector bitmap.
++filesys_SRC += filesys/file.c		# Files.
++filesys_SRC += filesys/directory.c	# Directories.
++filesys_SRC += filesys/inode.c		# File headers.
++filesys_SRC += filesys/fsutil.c		# Utilities.
++
++SOURCES = $(foreach dir,$(KERNEL_SUBDIRS),$($(dir)_SRC))
++OBJECTS = $(patsubst %.c,%.o,$(patsubst %.S,%.o,$(SOURCES)))
++DEPENDS = $(patsubst %.o,%.d,$(OBJECTS))
++
++threads/kernel.lds.s: CPPFLAGS += -P
++threads/kernel.lds.s: threads/kernel.lds.S threads/loader.h
++
++kernel.o: threads/kernel.lds.s $(OBJECTS) 
++	$(LD) -T $< -o $@ $(OBJECTS)
++
++kernel.bin: kernel.o
++	$(OBJCOPY) -O binary -R .note -R .comment -S $< $@.tmp
++	dd if=$@.tmp of=$@ bs=4096 conv=sync
++	rm $@.tmp
++
++threads/loader.o: threads/loader.S kernel.bin
++	$(CC) -c $< -o $@ $(ASFLAGS) $(CPPFLAGS) $(DEFINES) -DKERNEL_LOAD_PAGES=`perl -e 'print +(-s "kernel.bin") / 4096;'`
++
++loader.bin: threads/loader.o
++	$(LD) -N -e start -Ttext 0x7c00 --oformat binary -o $@ $<
++
++os.dsk: loader.bin kernel.bin
++	cat $^ > $@
++
++clean::
++	rm -f $(OBJECTS) $(DEPENDS) 
++	rm -f threads/loader.o threads/kernel.lds.s threads/loader.d
++	rm -f kernel.o kernel.lds.s
++	rm -f kernel.bin loader.bin os.dsk
++	rm -f bochsout.txt bochsrc.txt
++	rm -f results grade
++
++Makefile: $(SRCDIR)/Makefile.build
++	cp $< $@
++
++-include $(DEPENDS)
+diff --git a/pintos/src/threads/build/bochsrc.txt b/pintos/src/threads/build/bochsrc.txt
+new file mode 100644
+index 0000000..8a652e8
+--- /dev/null
++++ b/pintos/src/threads/build/bochsrc.txt
+@@ -0,0 +1,10 @@
++romimage: file=$BXSHARE/BIOS-bochs-latest, address=0xf0000
++vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest
++boot: disk
++cpu: ips=1000000
++megs: 4
++log: bochsout.txt
++panic: action=fatal
++clock: sync=none, time0=0
++ata0-master: type=disk, path=/tmp/_KsaabIllL.dsk, mode=flat, cylinders=1, heads=16, spt=63, translation=none
++com1: enabled=1, mode=term, dev=/dev/stdout
+diff --git a/pintos/src/threads/build/kernel.bin b/pintos/src/threads/build/kernel.bin
+new file mode 100644
+index 0000000..79137d7
+Binary files /dev/null and b/pintos/src/threads/build/kernel.bin differ
+diff --git a/pintos/src/threads/build/loader.bin b/pintos/src/threads/build/loader.bin
+new file mode 100755
+index 0000000..487c2de
+Binary files /dev/null and b/pintos/src/threads/build/loader.bin differ
+diff --git a/pintos/src/threads/build/os.dsk b/pintos/src/threads/build/os.dsk
+new file mode 100644
+index 0000000..92da263
+Binary files /dev/null and b/pintos/src/threads/build/os.dsk differ
+diff --git a/pintos/src/threads/build/results b/pintos/src/threads/build/results
+new file mode 100644
+index 0000000..3b01559
+--- /dev/null
++++ b/pintos/src/threads/build/results
+@@ -0,0 +1,5 @@
++pass tests/threads/alarm-single
++pass tests/threads/alarm-multiple
++pass tests/threads/alarm-simultaneous
++pass tests/threads/alarm-zero
++pass tests/threads/alarm-negative
+diff --git a/pintos/src/threads/build/tests/threads/alarm-multiple.errors b/pintos/src/threads/build/tests/threads/alarm-multiple.errors
+new file mode 100644
+index 0000000..e69de29
+diff --git a/pintos/src/threads/build/tests/threads/alarm-multiple.output b/pintos/src/threads/build/tests/threads/alarm-multiple.output
+new file mode 100644
+index 0000000..b39f7f6
+--- /dev/null
++++ b/pintos/src/threads/build/tests/threads/alarm-multiple.output
+@@ -0,0 +1,57 @@
++Writing command line to /tmp/N7EtLFnyII.dsk...
++qemu -hda /tmp/N7EtLFnyII.dsk -m 4 -net none -nographic -monitor null
++Kernel command line: -q run alarm-multiple
++Pintos booting with 4,088 kB RAM...
++371 pages available in kernel pool.
++371 pages available in user pool.
++Calibrating timer...  419,020,800 loops/s.
++Boot complete.
++Executing 'alarm-multiple':
++(alarm-multiple) begin
++(alarm-multiple) Creating 5 threads to sleep 7 times each.
++(alarm-multiple) Thread 0 sleeps 10 ticks each time,
++(alarm-multiple) thread 1 sleeps 20 ticks each time, and so on.
++(alarm-multiple) If successful, product of iteration count and
++(alarm-multiple) sleep duration will appear in nondescending order.
++(alarm-multiple) thread 0: duration=10, iteration=1, product=10
++(alarm-multiple) thread 1: duration=20, iteration=1, product=20
++(alarm-multiple) thread 0: duration=10, iteration=2, product=20
++(alarm-multiple) thread 2: duration=30, iteration=1, product=30
++(alarm-multiple) thread 0: duration=10, iteration=3, product=30
++(alarm-multiple) thread 3: duration=40, iteration=1, product=40
++(alarm-multiple) thread 1: duration=20, iteration=2, product=40
++(alarm-multiple) thread 0: duration=10, iteration=4, product=40
++(alarm-multiple) thread 4: duration=50, iteration=1, product=50
++(alarm-multiple) thread 0: duration=10, iteration=5, product=50
++(alarm-multiple) thread 2: duration=30, iteration=2, product=60
++(alarm-multiple) thread 1: duration=20, iteration=3, product=60
++(alarm-multiple) thread 0: duration=10, iteration=6, product=60
++(alarm-multiple) thread 0: duration=10, iteration=7, product=70
++(alarm-multiple) thread 3: duration=40, iteration=2, product=80
++(alarm-multiple) thread 1: duration=20, iteration=4, product=80
++(alarm-multiple) thread 2: duration=30, iteration=3, product=90
++(alarm-multiple) thread 4: duration=50, iteration=2, product=100
++(alarm-multiple) thread 1: duration=20, iteration=5, product=100
++(alarm-multiple) thread 3: duration=40, iteration=3, product=120
++(alarm-multiple) thread 2: duration=30, iteration=4, product=120
++(alarm-multiple) thread 1: duration=20, iteration=6, product=120
++(alarm-multiple) thread 1: duration=20, iteration=7, product=140
++(alarm-multiple) thread 4: duration=50, iteration=3, product=150
++(alarm-multiple) thread 2: duration=30, iteration=5, product=150
++(alarm-multiple) thread 3: duration=40, iteration=4, product=160
++(alarm-multiple) thread 2: duration=30, iteration=6, product=180
++(alarm-multiple) thread 4: duration=50, iteration=4, product=200
++(alarm-multiple) thread 3: duration=40, iteration=5, product=200
++(alarm-multiple) thread 2: duration=30, iteration=7, product=210
++(alarm-multiple) thread 3: duration=40, iteration=6, product=240
++(alarm-multiple) thread 4: duration=50, iteration=5, product=250
++(alarm-multiple) thread 3: duration=40, iteration=7, product=280
++(alarm-multiple) thread 4: duration=50, iteration=6, product=300
++(alarm-multiple) thread 4: duration=50, iteration=7, product=350
++(alarm-multiple) end
++Execution of 'alarm-multiple' complete.
++Timer: 577 ticks
++Thread: 550 idle ticks, 27 kernel ticks, 0 user ticks
++Console: 2955 characters output
++Keyboard: 0 keys pressed
++Powering off...
+diff --git a/pintos/src/threads/build/tests/threads/alarm-multiple.result b/pintos/src/threads/build/tests/threads/alarm-multiple.result
+new file mode 100644
+index 0000000..7ef22e9
+--- /dev/null
++++ b/pintos/src/threads/build/tests/threads/alarm-multiple.result
+@@ -0,0 +1 @@
++PASS
+diff --git a/pintos/src/threads/build/tests/threads/alarm-negative.errors b/pintos/src/threads/build/tests/threads/alarm-negative.errors
+new file mode 100644
+index 0000000..e69de29
+diff --git a/pintos/src/threads/build/tests/threads/alarm-negative.output b/pintos/src/threads/build/tests/threads/alarm-negative.output
+new file mode 100644
+index 0000000..d90f40d
+--- /dev/null
++++ b/pintos/src/threads/build/tests/threads/alarm-negative.output
+@@ -0,0 +1,18 @@
++Writing command line to /tmp/nV5ij7C40V.dsk...
++qemu -hda /tmp/nV5ij7C40V.dsk -m 4 -net none -nographic -monitor null
++Kernel command line: -q run alarm-negative
++Pintos booting with 4,088 kB RAM...
++371 pages available in kernel pool.
++371 pages available in user pool.
++Calibrating timer...  419,020,800 loops/s.
++Boot complete.
++Executing 'alarm-negative':
++(alarm-negative) begin
++(alarm-negative) PASS
++(alarm-negative) end
++Execution of 'alarm-negative' complete.
++Timer: 22 ticks
++Thread: 0 idle ticks, 22 kernel ticks, 0 user ticks
++Console: 409 characters output
++Keyboard: 0 keys pressed
++Powering off...
+diff --git a/pintos/src/threads/build/tests/threads/alarm-negative.result b/pintos/src/threads/build/tests/threads/alarm-negative.result
+new file mode 100644
+index 0000000..7ef22e9
+--- /dev/null
++++ b/pintos/src/threads/build/tests/threads/alarm-negative.result
+@@ -0,0 +1 @@
++PASS
+diff --git a/pintos/src/threads/build/tests/threads/alarm-simultaneous.errors b/pintos/src/threads/build/tests/threads/alarm-simultaneous.errors
+new file mode 100644
+index 0000000..e69de29
+diff --git a/pintos/src/threads/build/tests/threads/alarm-simultaneous.output b/pintos/src/threads/build/tests/threads/alarm-simultaneous.output
+new file mode 100644
+index 0000000..e43c235
+--- /dev/null
++++ b/pintos/src/threads/build/tests/threads/alarm-simultaneous.output
+@@ -0,0 +1,35 @@
++Writing command line to /tmp/37brI66PAN.dsk...
++qemu -hda /tmp/37brI66PAN.dsk -m 4 -net none -nographic -monitor null
++Kernel command line: -q run alarm-simultaneous
++Pintos booting with 4,088 kB RAM...
++371 pages available in kernel pool.
++371 pages available in user pool.
++Calibrating timer...  419,020,800 loops/s.
++Boot complete.
++Executing 'alarm-simultaneous':
++(alarm-simultaneous) begin
++(alarm-simultaneous) Creating 3 threads to sleep 5 times each.
++(alarm-simultaneous) Each thread sleeps 10 ticks each time.
++(alarm-simultaneous) Within an iteration, all threads should wake up on the same tick.
++(alarm-simultaneous) iteration 0, thread 0: woke up after 10 ticks
++(alarm-simultaneous) iteration 0, thread 1: woke up 0 ticks later
++(alarm-simultaneous) iteration 0, thread 2: woke up 0 ticks later
++(alarm-simultaneous) iteration 1, thread 0: woke up 10 ticks later
++(alarm-simultaneous) iteration 1, thread 1: woke up 0 ticks later
++(alarm-simultaneous) iteration 1, thread 2: woke up 0 ticks later
++(alarm-simultaneous) iteration 2, thread 0: woke up 10 ticks later
++(alarm-simultaneous) iteration 2, thread 1: woke up 0 ticks later
++(alarm-simultaneous) iteration 2, thread 2: woke up 0 ticks later
++(alarm-simultaneous) iteration 3, thread 0: woke up 10 ticks later
++(alarm-simultaneous) iteration 3, thread 1: woke up 0 ticks later
++(alarm-simultaneous) iteration 3, thread 2: woke up 0 ticks later
++(alarm-simultaneous) iteration 4, thread 0: woke up 10 ticks later
++(alarm-simultaneous) iteration 4, thread 1: woke up 0 ticks later
++(alarm-simultaneous) iteration 4, thread 2: woke up 0 ticks later
++(alarm-simultaneous) end
++Execution of 'alarm-simultaneous' complete.
++Timer: 277 ticks
++Thread: 250 idle ticks, 27 kernel ticks, 0 user ticks
++Console: 1615 characters output
++Keyboard: 0 keys pressed
++Powering off...
+diff --git a/pintos/src/threads/build/tests/threads/alarm-simultaneous.result b/pintos/src/threads/build/tests/threads/alarm-simultaneous.result
+new file mode 100644
+index 0000000..7ef22e9
+--- /dev/null
++++ b/pintos/src/threads/build/tests/threads/alarm-simultaneous.result
+@@ -0,0 +1 @@
++PASS
+diff --git a/pintos/src/threads/build/tests/threads/alarm-single.errors b/pintos/src/threads/build/tests/threads/alarm-single.errors
+new file mode 100644
+index 0000000..e69de29
+diff --git a/pintos/src/threads/build/tests/threads/alarm-single.output b/pintos/src/threads/build/tests/threads/alarm-single.output
+new file mode 100644
+index 0000000..32b4491
+--- /dev/null
++++ b/pintos/src/threads/build/tests/threads/alarm-single.output
+@@ -0,0 +1,27 @@
++Writing command line to /tmp/tC0puCHe3p.dsk...
++qemu -hda /tmp/tC0puCHe3p.dsk -m 4 -net none -nographic -monitor null
++Kernel command line: -q run alarm-single
++Pintos booting with 4,088 kB RAM...
++371 pages available in kernel pool.
++371 pages available in user pool.
++Calibrating timer...  419,020,800 loops/s.
++Boot complete.
++Executing 'alarm-single':
++(alarm-single) begin
++(alarm-single) Creating 5 threads to sleep 1 times each.
++(alarm-single) Thread 0 sleeps 10 ticks each time,
++(alarm-single) thread 1 sleeps 20 ticks each time, and so on.
++(alarm-single) If successful, product of iteration count and
++(alarm-single) sleep duration will appear in nondescending order.
++(alarm-single) thread 0: duration=10, iteration=1, product=10
++(alarm-single) thread 1: duration=20, iteration=1, product=20
++(alarm-single) thread 2: duration=30, iteration=1, product=30
++(alarm-single) thread 3: duration=40, iteration=1, product=40
++(alarm-single) thread 4: duration=50, iteration=1, product=50
++(alarm-single) end
++Execution of 'alarm-single' complete.
++Timer: 274 ticks
++Thread: 250 idle ticks, 25 kernel ticks, 0 user ticks
++Console: 987 characters output
++Keyboard: 0 keys pressed
++Powering off...
+diff --git a/pintos/src/threads/build/tests/threads/alarm-single.result b/pintos/src/threads/build/tests/threads/alarm-single.result
+new file mode 100644
+index 0000000..7ef22e9
+--- /dev/null
++++ b/pintos/src/threads/build/tests/threads/alarm-single.result
+@@ -0,0 +1 @@
++PASS
+diff --git a/pintos/src/threads/build/tests/threads/alarm-zero.errors b/pintos/src/threads/build/tests/threads/alarm-zero.errors
+new file mode 100644
+index 0000000..e69de29
+diff --git a/pintos/src/threads/build/tests/threads/alarm-zero.output b/pintos/src/threads/build/tests/threads/alarm-zero.output
+new file mode 100644
+index 0000000..deafd0a
+--- /dev/null
++++ b/pintos/src/threads/build/tests/threads/alarm-zero.output
+@@ -0,0 +1,18 @@
++Writing command line to /tmp/dGcKZLLGLg.dsk...
++qemu -hda /tmp/dGcKZLLGLg.dsk -m 4 -net none -nographic -monitor null
++Kernel command line: -q run alarm-zero
++Pintos booting with 4,088 kB RAM...
++371 pages available in kernel pool.
++371 pages available in user pool.
++Calibrating timer...  419,020,800 loops/s.
++Boot complete.
++Executing 'alarm-zero':
++(alarm-zero) begin
++(alarm-zero) PASS
++(alarm-zero) end
++Execution of 'alarm-zero' complete.
++Timer: 22 ticks
++Thread: 0 idle ticks, 22 kernel ticks, 0 user ticks
++Console: 385 characters output
++Keyboard: 0 keys pressed
++Powering off...
+diff --git a/pintos/src/threads/build/tests/threads/alarm-zero.result b/pintos/src/threads/build/tests/threads/alarm-zero.result
+new file mode 100644
+index 0000000..7ef22e9
+--- /dev/null
++++ b/pintos/src/threads/build/tests/threads/alarm-zero.result
+@@ -0,0 +1 @@
++PASS
+diff --git a/pintos/src/threads/build/threads/kernel.lds.s b/pintos/src/threads/build/threads/kernel.lds.s
+new file mode 100644
+index 0000000..0f841da
+--- /dev/null
++++ b/pintos/src/threads/build/threads/kernel.lds.s
+@@ -0,0 +1,17 @@
++OUTPUT_FORMAT("elf32-i386")
++OUTPUT_ARCH("i386")
++ENTRY(start)
++SECTIONS
++{
++  . = 0xc0000000 + 0x100000;
++  _start = .;
++  .text : { *(.start) *(.text) } = 0x90
++  .rodata : { *(.rodata) *(.rodata.*)
++       . = ALIGN(0x1000);
++       _end_kernel_text = .; }
++  .data : { *(.data) }
++  _start_bss = .;
++  .bss : { *(.bss) }
++  _end_bss = .;
++  _end = .;
++}
+diff --git a/pintos/src/threads/synch.c b/pintos/src/threads/synch.c
+index 317c68a..6934fa3 100644
+--- a/pintos/src/threads/synch.c
++++ b/pintos/src/threads/synch.c
+@@ -294,6 +294,7 @@ cond_wait (struct condition *cond, struct lock *lock)
+   ASSERT (!intr_context ());
+   ASSERT (lock_held_by_current_thread (lock));
+   
++
+   sema_init (&waiter.semaphore, 0);
+   list_push_back (&cond->waiters, &waiter.elem);
+   lock_release (lock);
+diff --git a/pintos/src/threads/thread.c b/pintos/src/threads/thread.c
+index 7de0909..300d540 100644
+--- a/pintos/src/threads/thread.c
++++ b/pintos/src/threads/thread.c
+@@ -35,11 +35,6 @@ static struct thread *initial_thread;
+ /* Lock used by allocate_tid(). */
+ static struct lock tid_lock;
+ 
+-/*Sleep Semaphore declaration*/
+-struct semaphore* sleep_sema;
+-
+-/*Sleep list declaration*/
+-struct list sleep_queue;
+ 
+ /* Stack frame for kernel_thread(). */
+ struct kernel_thread_frame 
+@@ -96,11 +91,6 @@ thread_init (void)
+   lock_init (&tid_lock);
+   list_init (&ready_list);
+ 
+-  // #ifdef USERPROG
+-  sleep_sema = (struct semaphore*) malloc(sizeof(struct semaphore));
+-  sleep_sema->waiters = sleep_queue;
+-  sema_init(sleep_sema, 0); // we want the first process to wait for sema_up directly
+-  //#endif
+   /* Set up a thread structure for the running thread. */
+   initial_thread = running_thread ();
+   init_thread (initial_thread, "main", PRI_DEFAULT);
+@@ -270,6 +260,7 @@ thread_current (void)
+      have overflowed its stack.  Each thread has less than 4 kB
+      of stack, so a few big automatic arrays or moderate
+      recursion can cause stack overflow. */
++  //printf("in thread current\n");
+   ASSERT (is_thread (t));
+   ASSERT (t->status == THREAD_RUNNING);
+ 
+@@ -294,7 +285,7 @@ thread_exit (void)
+   struct thread* t = thread_current();
+    if (t->nr_open_files > 0) { 
+      int i;
+-     for(i=0; i<t->max_nr_open_files; i++) {
++     for(i=0; i<MAX_NR_OPEN_FILES; i++) {
+        struct file* file = t->fd_table[i];
+        if(file != NULL) {
+          file_close(file);
+@@ -463,11 +454,9 @@ init_thread (struct thread *t, const char *name, int priority)
+ 
+   #ifdef USERPROG
+   /* Initalize file descriptor table and constants */
+-  t->max_nr_open_files = 128;
+-  t->fd_table_offset = 2;
+   t->nr_open_files = 0;
+   int i;
+-  for(i=0; i<t->max_nr_open_files; i++) {
++  for(i=0; i<MAX_NR_OPEN_FILES; i++) {
+     t->fd_table[i] = NULL;
+   }
+   #endif
+@@ -587,7 +576,3 @@ allocate_tid (void)
+    Used by switch.S, which can't figure it out on its own. */
+ uint32_t thread_stack_ofs = offsetof (struct thread, stack);
+ 
+-struct semaphore* get_sleep_sema(void)
+-{
+-  return sleep_sema; 
+-}
+diff --git a/pintos/src/threads/thread.h b/pintos/src/threads/thread.h
+index 644cd9b..58cc6c9 100644
+--- a/pintos/src/threads/thread.h
++++ b/pintos/src/threads/thread.h
+@@ -26,6 +26,13 @@ typedef int tid_t;
+ #define PRI_MIN 0                       /* Lowest priority. */
+ #define PRI_DEFAULT 31                  /* Default priority. */
+ #define PRI_MAX 63                      /* Highest priority. */
++#ifdef USERPROG
++#define MAX_NR_OPEN_FILES 128
++/* Used to calculate actual index in fd_table. 
++   (needed since fd nr 0 and 1 are reserved and not stored
++    in fd table)*/
++#define FD_TABLE_OFFSET 2
++#endif
+ 
+ /* A kernel thread or user process.
+ 
+@@ -102,10 +109,8 @@ struct thread
+     /* Owned by userprog/syscall.c. */
+     struct file* fd_table[128];         /* File descriptor table */
+     int nr_open_files;
+-    int max_nr_open_files;
+-    int fd_table_offset;                /* Used to calculate actual index in fd_table. 
+-                                           (needed since fd nr 0 and 1 are reserved and not stored
+-                                           in fd table)*/
++    //int max_nr_open_files;
++    int fd_table_offset;                
+ #endif
+ 
+     /* Owned by thread.c. */
+@@ -145,7 +150,4 @@ int thread_get_recent_cpu (void);
+ int thread_get_load_avg (void);
+ 
+ 
+-struct semaphore* get_sleep_sema(void);
+-
+-
+ #endif /* threads/thread.h */
+diff --git a/pintos/src/userprog/syscall.c b/pintos/src/userprog/syscall.c
+index bea8e5b..78fd7d3 100644
+--- a/pintos/src/userprog/syscall.c
++++ b/pintos/src/userprog/syscall.c
+@@ -29,7 +29,7 @@ int add_file_to_fd_table(struct file* openfile, struct thread* current_thread);
+ 
+ void get_args(int nr_args, int* args, void* esp);
+ 
+-bool validate_fd(int fd, struct thread* current_thread);
++bool validate_fd(int fd);
+ 
+ static void syscall_handler (struct intr_frame *);
+ 
+@@ -111,7 +111,7 @@ int open (const char *file)
+     return -1;
+   }
+   int index = add_file_to_fd_table(openfile, current_thread);
+-  int fd = index + current_thread->fd_table_offset;              //offset is 2 in our case
++  int fd = index + FD_TABLE_OFFSET;              //offset is 2 in our case
+ 
+   return fd;
+ } 
+@@ -119,8 +119,8 @@ int open (const char *file)
+ void close(int fd)
+ { 
+   struct thread* current_thread = thread_current();
+-  if (!(validate_fd(fd, current_thread))) return;
+-  int i = fd - current_thread->fd_table_offset;
++  if (!(validate_fd(fd))) return;
++  int i = fd - FD_TABLE_OFFSET;
+   struct file* closing_file = current_thread->fd_table[i];
+   if (closing_file != NULL)
+     { file_close(closing_file);
+@@ -151,8 +151,8 @@ int write(int fd, const void *buffer, unsigned size)
+   // file descriptor table.
+   
+   struct thread* current_thread = thread_current();
+-  if ( !(validate_fd(fd, current_thread))) return nr_bytes_written;
+-  int i = fd - current_thread->fd_table_offset;
++  if ( !(validate_fd(fd))) return nr_bytes_written;
++  int i = fd - FD_TABLE_OFFSET;
+   struct file* file = current_thread->fd_table[i];
+ 
+   off_t size_var = (off_t)size;
+@@ -184,8 +184,8 @@ int read (int fd, void *buffer, unsigned size)
+     return size;
+   }
+   struct thread* current_thread = thread_current();
+-  if ( !(validate_fd(fd, current_thread))) return nr_bytes_read;
+-  int i = fd - current_thread->fd_table_offset;
++  if ( !(validate_fd(fd))) return nr_bytes_read;
++  int i = fd - FD_TABLE_OFFSET;
+   struct file* file = current_thread->fd_table[i];
+   if ( file != NULL && buffer != NULL)
+     {
+@@ -200,9 +200,9 @@ and returns the index or -1 if the file descriptor table is full.
+  */
+ int add_file_to_fd_table(struct file* openfile, struct thread* current_thread)
+ {
+-  if(current_thread->nr_open_files <= current_thread->max_nr_open_files) {
++  if(current_thread->nr_open_files <= MAX_NR_OPEN_FILES) {
+       int i;
+-      for(i=0; i < current_thread->max_nr_open_files; i++) {
++      for(i=0; i < MAX_NR_OPEN_FILES; i++) {
+         if(current_thread->fd_table[i]==NULL){
+           current_thread->fd_table[i] = openfile;
+ 	  current_thread->nr_open_files++;
+@@ -231,7 +231,7 @@ void get_args(int nr_args, int* args, void* esp)
+ Confirms that the file descriptor is within the acceptable bounds (2 - 127). 
+ STDIN and STDOUT for values 0 and 1 are not accounted for. 
+  */
+-bool validate_fd(int fd, struct thread* current_thread)
++bool validate_fd(int fd)
+ {
+-  return ((fd < current_thread->max_nr_open_files) & (fd > 1)); 
++  return ((fd < MAX_NR_OPEN_FILES) & (fd > 1)); 
+ }
+diff --git a/pintos/src/utils/backtrace b/pintos/src/utils/backtrace
+old mode 100644
+new mode 100755
+diff --git a/pintos/src/utils/pintos-gdb b/pintos/src/utils/pintos-gdb
+old mode 100644
+new mode 100755
+diff --git a/pintos/src/utils/pintos-mkdisk b/pintos/src/utils/pintos-mkdisk
+old mode 100644
+new mode 100755
+diff --git a/pintos/src/utils/qemu b/pintos/src/utils/qemu
+new file mode 120000
+index 0000000..8bf8069
+--- /dev/null
++++ b/pintos/src/utils/qemu
+@@ -0,0 +1 @@
++/usr/bin/qemu-system-i386
+\ No newline at end of file
+diff --git a/pintos/src/utils/setitimer-helper b/pintos/src/utils/setitimer-helper
+new file mode 100755
+index 0000000..d85aeae
+Binary files /dev/null and b/pintos/src/utils/setitimer-helper differ
+diff --git a/pintos/src/utils/squish-pty b/pintos/src/utils/squish-pty
+new file mode 100755
+index 0000000..4253f3e
+Binary files /dev/null and b/pintos/src/utils/squish-pty differ
+diff --git a/pintos/src/utils/squish-unix b/pintos/src/utils/squish-unix
+new file mode 100755
+index 0000000..e90c8e4
+Binary files /dev/null and b/pintos/src/utils/squish-unix differ
+diff --git a/work-log.txt b/work-log.txt
+index d200f98..970e3f0 100644
+--- a/work-log.txt
++++ b/work-log.txt
+@@ -83,6 +83,55 @@ Created the sleep_queue and sleep_sema inside thread.c. And a list in timer.c to
+ TODO: Create the comparator function for the insert_ordered. Add code in timer_interrupt(). 
+ TODO: list_entry?????? 
+ 
++--- 14/2/17 ---
++Matildha: 
++Free p_sleep_time struct after sema_down in timer_sleep(). Free the same struct right after. 
++
++We will probably need a local semaphore for management of the  tick_list!! 
++
++I DO BELIEVE our tick_list is our ACTUAL SLEEP_QUEUE!!!!!!!!!!!!!! 
++
++timer_ticks() protects ticks variable by disabling and reenabling interrupts... NOT using any lock or semaphore?? Would we be allowed to do this as well? 
++  - Yes, inside timer_interrupt() right? Cuz we can't call sema_down inside an interrupt handler!? 
++
++-- 15/2/17 ---
++Matildha and Dominique 
++Finish the timer_interrupt function. Fix several compilations errors left from passed sessions. We followed the teacher's recommendation regarding lab 1. 
++TODO : protect tick_list. create small test? otherwise start real tests. 
++
++--- 16/2/17 ---
++M & D:
++Started to debug lab2. Commented everythings we've added line by line until only the busyloop remained. We put a print and a division by 0 in timer_sleep and didn't get a print or error when running alarm-single. 
++TODO: WHY???? 
++
++Store semaphores that are unique for each process in the sleep_queue!! 
++
++--- 17/2/17 ---
++M & D:
++Moved sleep_sema and its queue into timer.c. Debugged this. 
++TODO: (Branch the solution with 1 semaphore) and then continue seperately on one semaphore for each process. 
++
++--- 18/2/17 ---
++M:
++I think I got lab2 to work!! Passed all the tests. Didn't run them more then once or twice with my final solution though, so might want to do that, since it was so inconsistent before when testing (getting different results with me not changing any code). 
++
++TODO: Clean up code, remove prints and remove thread pid from our p_time_sleep struct. 
++
++TODO: Check for mem leaks? 
++
++--- 19/2/17 ---
++M: 
++Extracted code in timer_interrupt into a recursive function. (kept all old things commented). And REMOVED disable interrupt protection around the editing of the list in timer_interrupt. 
++  Ran every test several times, succesful. Thereby the enabling of interrupts do not seem to have had an impact. Bare in mind though! 
++TODO: Same as last log. 
++TODO: Bad with recursion in the timer_interrupt? Takes longer time?? 
++
++
++
++
++
++
++
+ 
+ 
+ 

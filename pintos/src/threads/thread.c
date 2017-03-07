@@ -96,7 +96,7 @@ thread_init (void)
   init_thread (initial_thread, "main", PRI_DEFAULT);
   initial_thread->status = THREAD_RUNNING;
   initial_thread->tid = allocate_tid ();
-
+  initial_thread->parent = NULL;             //initial thread has non parent
 }
 
 /* Starts preemptive thread scheduling by enabling interrupts.
@@ -292,6 +292,9 @@ thread_exit (void)
        }
      } 
   }
+#endif
+
+#ifdef USERPROG
   process_exit ();
 #endif
 
@@ -451,9 +454,13 @@ init_thread (struct thread *t, const char *name, int priority)
   t->stack = (uint8_t *) t + PGSIZE;
   t->priority = priority;
   t->magic = THREAD_MAGIC;
+  
+  list_init(&(t->children));
+  // initialisation of the wait_lock (only if current thread is a child)
+  if(t->parent != NULL)  sema_init(&(t->parent->wait_sema),0);
 
   #ifdef USERPROG
-  /* Initalize file descriptor table and constants */
+  /* Initalize file descriptor table*/
   t->nr_open_files = 0;
   int i;
   for(i=0; i<MAX_NR_OPEN_FILES; i++) {

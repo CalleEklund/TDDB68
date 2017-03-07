@@ -17,42 +17,104 @@
 #include "threads/palloc.h"
 #include "threads/thread.h"
 #include "threads/vaddr.h"
+#include "threads/malloc.h"
 
 static thread_func start_process NO_RETURN;
 static bool load (const char *cmdline, void (**eip) (void), void **esp);
 
-/* Starts a new thread running a user program loaded from
-   FILENAME.  The new thread may be scheduled (and may even exit)
+static bool debug = false;
+
+/* Starts a new thread running a user program with given arguments loaded from
+   CMD_LINE.  The new thread may be scheduled (and may even exit)
    before process_execute() returns.  Returns the new process's
    thread id, or TID_ERROR if the thread cannot be created. */
 tid_t
-process_execute (const char *file_name) 
+process_execute (const char *cmd_line) 
 {
-  char *fn_copy;
-  tid_t tid;
+  char *cmd_copy;
+  tid_t tid;  
 
-  /* Make a copy of FILE_NAME.
+  /* Make a copy of CMD_LINE.
      Otherwise there's a race between the caller and load(). */
-  fn_copy = palloc_get_page (0);
-  if (fn_copy == NULL)
+  cmd_copy = palloc_get_page (0);
+  if (cmd_copy == NULL)
     return TID_ERROR;
-  strlcpy (fn_copy, file_name, PGSIZE);
+  strlcpy (cmd_copy, cmd_line, PGSIZE);
 
   /* Create a new thread to execute FILE_NAME. */
-  tid = thread_create (file_name, PRI_DEFAULT, start_process, fn_copy);
+
+  // Create new_proc_args to hold filename, arguments, argc,
+  // load_sema and pointer to parent's parent_child struct.
+  struct new_proc_args* pr_args = (struct new_proc_args*) malloc(sizeof(struct new_proc_args));
+  pr_args->cmd_line = cmd_copy;
+  sema_init(&(pr_args->load_sema),0);
+
+  struct parent_child* child = (struct parent_child*) malloc(sizeof(struct parent_child));
+  
+  // initialise alive_count protected by its lock
+  lock_init(&(child->alive_lock));
+  lock_acquire(&(child->alive_lock));
+  child->alive_count = 2;
+  lock_release(&(child->alive_lock));
+  child->exit_status = -1;
+  
+  //initialisation of the wait_lock of the child
+  sema_init(&(child->wait_sema),0);
+
+  pr_args->parent = child;
+
+  char* file_name = palloc_get_page (0);
+  if (file_name == NULL)
+    return TID_ERROR;
+  strlcpy (file_name, cmd_line, PGSIZE);
+
+  char* save_ptr;
+  char* file_name_extr = strtok_r (file_name, " ", &save_ptr);
+  pr_args->file_name = file_name_extr;
+
+  tid = thread_create (file_name_extr, PRI_DEFAULT, start_process, pr_args);
+  // Wait for program to load
+  if(debug) printf("Before waiting in load_sema\n");
+  //printf("Value of load_sema in pr_execute: %d\n", (int) pr_args->load_sema.value);
+  sema_down(&(pr_args->load_sema));
+  if(debug) printf("Awoke from load_sema\n");
+  if(!pr_args->load_success) 
+    {
+      tid = TID_ERROR;
+    }
+  else
+    {
+      if(debug) printf("Before child push back\n");
+      list_push_back(&thread_current()->children, &(child->elem));
+    }
+
+  child->child = tid;
+  if(debug) printf("Set new child id to %d\n", (int) child->child);
+  free(pr_args);
+  palloc_free_page(file_name);        
+
   if (tid == TID_ERROR)
-    palloc_free_page (fn_copy); 
+    palloc_free_page (cmd_copy); 
+
+  if(debug) printf("End of process execute\n");
+
   return tid;
 }
 
 /* A thread function that loads a user process and starts it
    running. */
 static void
-start_process (void *file_name_)
+start_process (void *aux)
 {
-  char *file_name = file_name_;
+  char* file_name = ((struct new_proc_args*) aux)->file_name;
   struct intr_frame if_;
   bool success;
+
+  // Transfer info from aux to the new thread
+  struct new_proc_args* pr_args = ((struct new_proc_args*) aux);
+  // Store parent pnt separetely since pr_args will be freed in process_execute()
+  thread_current()->parent = pr_args->parent;
+  thread_current()->pr_args = pr_args;
 
   /* Initialize interrupt frame and load executable. */
   memset (&if_, 0, sizeof if_);
@@ -60,12 +122,18 @@ start_process (void *file_name_)
   if_.cs = SEL_UCSEG;
   if_.eflags = FLAG_IF | FLAG_MBS;
   success = load (file_name, &if_.eip, &if_.esp);
+  // Release load_lock so parent process can continue executing
+  pr_args->load_success = success;
+  if(debug) printf("Before load sema up\n");
+  sema_up(&(pr_args->load_sema));
 
   /* If load failed, quit. */
-  palloc_free_page (file_name);
-  if (!success) 
+  if (!success) {
+    if(debug) printf("Unsuccesfully loaded file_name\n");
     thread_exit ();
+  }
 
+  if(debug) printf("Before last line in start_process()\n");
   /* Start the user process by simulating a return from an
      interrupt, implemented by intr_exit (in
      threads/intr-stubs.S).  Because intr_exit takes all of its
@@ -86,21 +154,107 @@ start_process (void *file_name_)
    This function will be implemented in problem 2-2.  For now, it
    does nothing. */
 int
-process_wait (tid_t child_tid UNUSED) 
+process_wait (tid_t child_tid) 
 {
-  while(true){
-    continue;
-  }
-  return -1;
+  if(debug) printf("In process_wait()\n");
+  struct thread* t = thread_current();
+  struct list_elem* e; 
+  int exit_status = -1;
+  for (e = list_begin (&(t->children)); e != list_end (&(t->children)); e = list_next (e))
+      {
+          struct parent_child *child = list_entry (e, struct parent_child, elem);
+	  if(debug) printf("Cmp children ids: %d and given %d\n", child->child, child_tid);
+          if (child->child == child_tid) 
+	    {
+	      if(debug) printf("Child found in wait\n"); 
+	      lock_acquire(&(child->alive_lock));
+	      if (child->alive_count == 1)  
+		{
+		  // Child has terminated
+		  lock_release(&(child->alive_lock));
+		  exit_status = child->exit_status;
+		  if(debug) printf("Child with exit status %d has already exited\n", exit_status);
+		}
+	      else 
+		{
+		  // Wait for child to terminate
+		  lock_release(&(child->alive_lock));
+		  if(debug) printf("Waiting for child to terminate...\n");
+		  sema_down(&(child->wait_sema));
+		  exit_status = child->exit_status;
+		  if(debug) printf("Child with exit status %d has now exited\n", exit_status);
+		}
+	      child->exit_status = -1;
+	      break;
+	    }
+      }
+  return exit_status;
 }
 
 /* Free the current process's resources. */
 void
 process_exit (void)
 {
+  if(debug) printf("Start of process_exit()\n");
   struct thread *cur = thread_current ();
   uint32_t *pd;
+  struct parent_child* par = cur->parent;
+  
 
+  if(par != NULL && par->child == -1) {
+    // This process was not loaded correctly
+    free(par);
+  }
+  // Do if the current thread is not the initial thread
+  else if(par != NULL) { 
+
+    // alive count is decremented
+    lock_acquire(&(par->alive_lock));
+    par->alive_count--;
+            
+    //   Alive count goes from 1 to 0 (terminate after parent)  (decr parent struct)
+    // free our parent struct
+    // (parent did not call wait)
+    if (par->alive_count == 0)
+      {
+	lock_release(&(par->alive_lock));
+	free(par);
+      }
+    // Alive count goes from 2 to 1 (terminate before parent) (decr parent struct)
+    // do sema up on wait_sema
+    else
+      {
+	lock_release(&(par->alive_lock));
+	int debug_status = par->exit_status;
+	// release the sema holding process_wait()
+	printf("%s: exit(%d)\n", cur->name, debug_status);
+	sema_up(&(cur->parent->wait_sema));
+	if(debug) printf("After sema up in process_exit() Exiting with status %d\n",
+			 par->exit_status);
+      }
+  }
+  
+  // Go through all children and decrement alive count
+  // Alive count goes from 2 to 1 (terminate before its child) (decr child struct)
+  // Alive count goes from 1 to 0 (terminate after its child) (decr child struct)
+  //   free the child's struct and remove it from the list
+
+   while (!list_empty (&cur->children))
+     {
+       struct list_elem *e = list_pop_front (&cur->children);
+       struct parent_child *child = list_entry (e, struct parent_child, elem);
+       lock_acquire(&child->alive_lock);
+       child->alive_count--;
+          if (child->alive_count == 0) 
+	    {
+	      lock_release(&child->alive_lock);
+	      free(child);
+	    }
+	  else lock_release(&child->alive_lock);
+       
+     }
+
+  //printf("Before the page dir destruction in process_exit()\n");
   /* Destroy the current process's page directory and switch back
      to the kernel-only page directory. */
   pd = cur->pagedir;
@@ -117,6 +271,7 @@ process_exit (void)
       pagedir_activate (NULL);
       pagedir_destroy (pd);
     }
+  if(debug) printf("At end of process_exit()\n");
 }
 
 /* Sets up the CPU for running user code in the current
@@ -232,7 +387,7 @@ load (const char *file_name, void (**eip) (void), void **esp)
    /* Uncomment the following line to print some debug
      information. This will be useful when you debug the program
      stack.*/
-/*#define STACK_DEBUG*/
+  //#define STACK_DEBUG
 
 #ifdef STACK_DEBUG
   printf("*esp is %p\nstack contents:\n", *esp);
@@ -467,7 +622,7 @@ load_segment (struct file *file, off_t ofs, uint8_t *upage,
 }
 
 /* Create a minimal stack by mapping a zeroed page at the top of
-   user virtual memory. */
+   user virtual memory. Also sets up the arguments passed to the user program. */
 static bool
 setup_stack (void **esp) 
 {
@@ -479,10 +634,63 @@ setup_stack (void **esp)
     {
       success = install_page (((uint8_t *) PHYS_BASE) - PGSIZE, kpage, true);
       if (success)
-        *esp = PHYS_BASE - 12;   // Makeshift change! (until arguments passing implemented)
+	{
+	  *esp = PHYS_BASE;  
+
+	  // Setup the user's arguments to the stack
+	  // Actual strings
+	  struct new_proc_args* pr_args = thread_current()->pr_args;
+	  void* p = *esp;
+	  char* argv[32];
+	  int argc;
+	  char *token, *save_ptr;
+
+	  for (token = strtok_r (pr_args->cmd_line, " ", &save_ptr); token != NULL;
+	       token = strtok_r (NULL, " ", &save_ptr))
+	    {
+	      p -= strlen(token) +1;
+	      //printf("Writing %s to stack\n", token);
+	      memcpy(p, token, strlen(token) +1);
+	      argv[argc] = p;
+	      argc++;
+	      if(argc == 31) break;
+	    }
+
+	  // Add extra last element in array, set to NULL
+	  argv[argc] = NULL;
+
+	  // Word allign (to make stack pointer divisable by 4)
+	  while((int)p % 4 != 0) {
+	    p--;
+	  }
+
+	  // Argv (pointers to the strings)
+	  char** argvpnt;
+	  int i;
+	  for(i=argc; i>=0; i--) {
+	    p -= sizeof(char*);
+	    memcpy(p, &(argv[i]), sizeof(char*));
+	    argvpnt = p;
+	  }
+	  p -= sizeof(char**);
+	  memcpy(p, &argvpnt, sizeof(char**));
+	  //printf("Put argv at addr %p\n", p);
+
+	  p -= sizeof(int);
+	  memcpy(p, &argc, sizeof(int));
+	  //printf("Put argc at addr %p\n", p);
+
+	  // Fake return addr
+	  void* dummy;
+	  p -= sizeof(dummy);
+          memcpy(p, &dummy, sizeof(dummy));
+
+	  *esp = (void*) p;
+	}
       else
         palloc_free_page (kpage);
     }
+  if(debug) printf("End of setup_stack()\n");
   return success;
 }
 

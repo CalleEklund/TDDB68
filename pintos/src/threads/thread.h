@@ -109,13 +109,30 @@ struct thread
     /* Owned by userprog/syscall.c. */
     struct file* fd_table[128];         /* File descriptor table */
     int nr_open_files;
-    //int max_nr_open_files;
     int fd_table_offset;                
 #endif
 
     /* Owned by thread.c. */
     unsigned magic;                     /* Detects stack overflow. */
+
+    struct parent_child* parent;
+    struct list children;  
+    
+    //char** argv;                   /* Pointer to the array of all args*/
+    //int argc;
+    struct new_proc_args* pr_args;
   };
+
+struct parent_child 
+{
+  tid_t child;                           
+  int exit_status;
+  int alive_count;
+  struct lock alive_lock;
+  struct list_elem elem;
+  struct semaphore wait_sema;
+};
+
 
 /* If false (default), use round-robin scheduler.
    If true, use multi-level feedback queue scheduler.

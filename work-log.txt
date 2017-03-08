@@ -227,7 +227,7 @@ I changed all casts to the return values in syscall to uint32_t. The ones from l
 
 Changed write, read and seek, tell to exit(-1) if for some reason file struct is null when fetched from the fd table. Even after checking the fd itself. (shouldn't happen right? But if it does feels like a bad enough problem to deserve exit(-1)!!!!)
 
---- 8/3/2017 --- (last night...? :) ) 
+--- 8/3/2017 --- (last night...? :) == true ?) 
 M: 
 
 Failed tests: 
@@ -236,6 +236,14 @@ open-twice
 syn-read
 syn-remove
 syn-write
+
+They pass now. As do psf. Run in 10+ times with and without changing timeslice and timer freq. 
+
+Added free_map_access lock and dir_access lock in filesys.h. Used in filesys_remove and filesys_create. 
+
+All tests and psf still pass. :D :D :D Superyay and megayatta! 
+
+
 
 
 

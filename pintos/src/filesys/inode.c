@@ -46,7 +46,7 @@ struct inode
     unsigned read_count;
     struct semaphore read_count_access;
     struct semaphore resource_access;
-    struct semaphore open_cnt_access;
+    //struct semaphore open_cnt_access;
   };
 
 /* 
@@ -139,6 +139,8 @@ inode_create (disk_sector_t sector, off_t length)
      one sector in size, and you should fix that. */
   ASSERT (sizeof *disk_inode == DISK_SECTOR_SIZE);
 
+  lock_acquire(&inode_access);
+
   disk_inode = calloc (1, sizeof *disk_inode);
   if (disk_inode != NULL)
     {
@@ -160,6 +162,8 @@ inode_create (disk_sector_t sector, off_t length)
         } 
       free (disk_inode);
     }
+
+  lock_release(&inode_access);
   return success;
 }
 
@@ -179,12 +183,10 @@ inode_open (disk_sector_t sector)
   for (e = list_begin (&open_inodes); e != list_end (&open_inodes);
        e = list_next (e)) 
     {
-      //sema_down(&inode->open_cnt_access);
       inode = list_entry (e, struct inode, elem);
       if (inode->sector == sector) 
         {
           inode_reopen (inode);
-	  //sema_up(&inode->open_cnt_access);
 	  lock_release(&inode_access);
           return inode; 
         }
@@ -208,7 +210,7 @@ inode_open (disk_sector_t sector)
   sema_init(&inode->read_count_access,1);
   sema_init(&inode->resource_access,1);
   // open and close synchronisation
-  sema_init(&inode->open_cnt_access, 1);
+  //sema_init(&inode->open_cnt_access, 1);
 
   lock_release(&inode_access);
   
@@ -249,7 +251,6 @@ inode_close (struct inode *inode)
   ASSERT (!lock_held_by_current_thread (&inode_access));
   lock_acquire(&inode_access);
 
-  //sema_down(&inode->open_cnt_access);
   /* Release resources if this was the last opener. */
   if (--inode->open_cnt == 0)
     {
@@ -263,11 +264,8 @@ inode_close (struct inode *inode)
           free_map_release (inode->data.start,
                             bytes_to_sectors (inode->data.length)); 
         }
-      //sema_up(&inode->open_cnt_access);
       free (inode); 
     }
-  //else
-    //sema_up(&inode->open_cnt_access);
 
   lock_release(&inode_access);
 }

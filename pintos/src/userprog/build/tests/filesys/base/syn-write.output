@@ -1,7 +1,7 @@
-Copying tests/filesys/base/syn-write into /tmp/PrR7CiFGyH.dsk...
-Copying tests/filesys/base/child-syn-wrt into /tmp/PrR7CiFGyH.dsk...
-Writing command line to /tmp/4GlfDJ_7LL.dsk...
-qemu -hda /tmp/4GlfDJ_7LL.dsk -hdb /tmp/UglodyfC7u.dsk -hdc /tmp/PrR7CiFGyH.dsk -m 4 -net none -nographic -monitor null
+Copying tests/filesys/base/syn-write into /tmp/LnnEggRPc5.dsk...
+Copying tests/filesys/base/child-syn-wrt into /tmp/LnnEggRPc5.dsk...
+Writing command line to /tmp/_o3pmKZWk2.dsk...
+qemu -hda /tmp/_o3pmKZWk2.dsk -hdb /tmp/N7HAycFTut.dsk -hdc /tmp/LnnEggRPc5.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put syn-write put child-syn-wrt run syn-write
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
@@ -52,12 +52,12 @@ child-syn-wrt: exit(9)
 (syn-write) end
 syn-write: exit(0)
 Execution of 'syn-write' complete.
-Timer: 72 ticks
-Thread: 39 idle ticks, 28 kernel ticks, 5 user ticks
+Timer: 73 ticks
+Thread: 35 idle ticks, 28 kernel ticks, 10 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 496 reads, 474 writes
 hd1:0: 220 reads, 0 writes
-Console: 2265 characters output
+Console: 2266 characters output
 Keyboard: 0 keys pressed
 Exception: 0 page faults
 Powering off...

@@ -227,6 +227,16 @@ I changed all casts to the return values in syscall to uint32_t. The ones from l
 
 Changed write, read and seek, tell to exit(-1) if for some reason file struct is null when fetched from the fd table. Even after checking the fd itself. (shouldn't happen right? But if it does feels like a bad enough problem to deserve exit(-1)!!!!)
 
+--- 8/3/2017 --- (last night...? :) ) 
+M: 
+
+Failed tests: 
+
+open-twice
+syn-read
+syn-remove
+syn-write
+
 
 
 

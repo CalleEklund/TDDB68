@@ -1,12 +1,1 @@
-FAIL
-Kernel panic in run: PANIC at ../../threads/synch.c:197 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
-Call stack: 0xc01070db 0x804a44b 0x804813f
-Translation of call stack:
-In kernel.o:
-0xc01070db: debug_panic (.../../lib/kernel/debug.c:34)
-In tests/filesys/base/syn-remove:
-0x0804a44b: remove (.../../lib/user/syscall.c:99)
-0x0804813f: test_main (...esys/base/syn-remove.c:21)
-Translations of user virtual addresses above are based on a guess at
-the binary to use.  If this guess is incorrect, then those
-translations will be misleading.
+PASS

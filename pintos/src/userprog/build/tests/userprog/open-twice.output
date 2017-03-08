@@ -1,7 +1,7 @@
-Copying tests/userprog/open-twice into /tmp/ffouvCLrUs.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/ffouvCLrUs.dsk...
-Writing command line to /tmp/EvdWsyZo_P.dsk...
-qemu -hda /tmp/EvdWsyZo_P.dsk -hdb /tmp/yssuVa6vuF.dsk -hdc /tmp/ffouvCLrUs.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/open-twice into /tmp/VqqPFVw6ma.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/VqqPFVw6ma.dsk...
+Writing command line to /tmp/nM7TWGY_dj.dsk...
+qemu -hda /tmp/nM7TWGY_dj.dsk -hdb /tmp/SwueSd8NPo.dsk -hdc /tmp/VqqPFVw6ma.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put open-twice put sample.txt run open-twice
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
@@ -16,134 +16,17 @@ Putting 'open-twice' into the file system...
 Putting 'sample.txt' into the file system...
 Executing 'open-twice':
 (open-twice) begin
-Kernel PANIC at ../../threads/synch.c:197 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
-Call stack: 0xc01070db 0x804a1cf 0x80480bc.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Kernel PANIC recursion at ../../threads/synch.c:197 in lock_acquire().
-Kernel command line: -q -f put open-twice put sample.txt run open-twice
-Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
-371 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
-hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
-hd1:0: detected 101 sector (50 kB) disk, model "QEMU HARDDISK", serial "QM00003"
-Formatting file system...done.
-Boot complete.
-Putting 'open-twice' into the file system...
-Putting 'sample.txt' into the file system...
-Executing 'open-twice':
-(open-twice) begin
-Kernel PANIC at ../../threads/synch.c:197 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
-Call stack: 0xc01070db 0x804a1cf 0x80480bc.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Kernel PANIC recursion at ../../threads/synch.c:197 in lock_acquire().
-Kernel command line: -q -f put open-twice put sample.txt run open-twice
-Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
-371 pages available in user pool.
-Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
-hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
-hd1:0: detected 101 sector (50 kB) disk, model "QEMU HARDDISK", serial "QM00003"
-Formatting file system...done.
-Boot complete.
-Putting 'open-twice' into the file system...
-Putting 'sample.txt' into the file system...
-Executing 'open-twice':
-(open-twice) begin
-Kernel PANIC at ../../threads/synch.c:197 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
-Call stack: 0xc01070db 0x804a1cf 0x80480bc.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Kernel PANIC recursion at ../../threads/synch.c:197 in lock_acquire().
-Kernel command line: -q -f put open-twice put sample.txt run open-twice
-Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
-371 pages available in user pool.
-Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
-hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
-hd1:0: detected 101 sector (50 kB) disk, model "QEMU HARDDISK", serial "QM00003"
-Formatting file system...done.
-Boot complete.
-Putting 'open-twice' into the file system...
-Putting 'sample.txt' into the file system...
-Executing 'open-twice':
-(open-twice) begin
-Kernel PANIC at ../../threads/synch.c:197 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
-Call stack: 0xc01070db 0x804a1cf 0x80480bc.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Kernel PANIC recursion at ../../threads/synch.c:197 in lock_acquire().
-Kernel command line: -q -f put open-twice put sample.txt run open-twice
-Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
-371 pages available in user pool.
-Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
-hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
-hd1:0: detected 101 sector (50 kB) disk, model "QEMU HARDDISK", serial "QM00003"
-Formatting file system...done.
-Boot complete.
-Putting 'open-twice' into the file system...
-Putting 'sample.txt' into the file system...
-Executing 'open-twice':
-(open-twice) begin
-Kernel PANIC at ../../threads/synch.c:197 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
-Call stack: 0xc01070db 0x804a1cf 0x80480bc.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Kernel PANIC recursion at ../../threads/synch.c:197 in lock_acquire().
-Kernel command line: -q -f put open-twice put sample.txt run open-twice
-Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
-371 pages available in user pool.
-Calibrating timer...  314,163,200 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
-hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
-hd1:0: detected 101 sector (50 kB) disk, model "QEMU HARDDISK", serial "QM00003"
-Formatting file system...done.
-Boot complete.
-Putting 'open-twice' into the file system...
-Putting 'sample.txt' into the file system...
-Executing 'open-twice':
-(open-twice) begin
-Kernel PANIC at ../../threads/synch.c:197 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
-Call stack: 0xc01070db 0x804a1cf 0x80480bc.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Kernel PANIC recursion at ../../threads/synch.c:197 in lock_acquire().
-Kernel command line: -q -f put open-twice put sample.txt run open-twice
-Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
-371 pages available in user pool.
-Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
-hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
-hd1:0: detected 101 sector (50 kB) disk, model "QEMU HARDDISK", serial "QM00003"
-Formatting file system...done.
-Boot complete.
-Putting 'open-twice' into the file system...
-Putting 'sample.txt' into the file system...
-Executing 'open-twice':
-(open-twice) begin
-Kernel PANIC at ../../threads/synch.c:197 in lock_acquire(): assertion `!lock_held_by_current_thread (lock)' failed.
-Call stack: 0xc01070db 0x804a1cf 0x80480bc.
-The `backtrace' program can make call stacks useful.
-Read "Backtraces" in the "Debugging Tools" chapter
-of the Pintos documentation for more information.
-Kernel PANIC recursion at ../../threads/synch.c:197 in lock_acquire().
-Kernel command line: -q -f put open-twice put sample.txt run open-twice
-Pintos booting with 4,088 kB RAM...
-371 pages available in kernel pool.
-371 pages available in user pool.
-Calibrating timer...  Simulation terminated due to kernel panic.
+(open-twice) open "sample.txt" once
+(open-twice) open "sample.txt" again
+(open-twice) end
+open-twice: exit(0)
+Execution of 'open-twice' complete.
+Timer: 59 ticks
+Thread: 32 idle ticks, 25 kernel ticks, 2 user ticks
+hd0:0: 0 reads, 0 writes
+hd0:1: 99 reads, 212 writes
+hd1:0: 101 reads, 0 writes
+Console: 939 characters output
+Keyboard: 0 keys pressed
+Exception: 0 page faults
+Powering off...

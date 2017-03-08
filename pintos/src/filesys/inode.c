@@ -3,6 +3,8 @@
 #include <debug.h>
 #include <round.h>
 #include <string.h>
+#include <stdbool.h>
+#include <stdio.h>
 #include "filesys/filesys.h"
 #include "filesys/free-map.h"
 #include "threads/malloc.h"
@@ -10,6 +12,8 @@
 
 /* Identifies an inode. */
 #define INODE_MAGIC 0x494e4f44
+
+bool debug = false;
 
 /* On-disk inode.
    Must be exactly DISK_SECTOR_SIZE bytes long. */
@@ -44,6 +48,12 @@ struct inode
     struct semaphore resource_access;
     struct semaphore open_cnt_access;
   };
+
+/* 
+P and V operations on inode semaphores
+(to make the semaphores accessable outside of this module)
+*/
+
 void
 service_queue_p(struct inode* inode)
 {
@@ -84,6 +94,7 @@ set_read_count(struct inode* inode, unsigned new)
 {
   inode->read_count = new; 
 }
+
 /* Returns the disk sector that contains byte offset POS within
    INODE.
    Returns -1 if INODE does not contain data for a byte at offset
@@ -122,6 +133,7 @@ inode_create (disk_sector_t sector, off_t length)
   bool success = false;
 
   ASSERT (length >= 0);
+  if(debug) printf("In inode create\n");
 
   /* If this assertion fails, the inode structure is not exactly
      one sector in size, and you should fix that. */
@@ -160,6 +172,7 @@ inode_open (disk_sector_t sector)
   struct list_elem *e;
   struct inode *inode;
 
+  ASSERT (!lock_held_by_current_thread (&inode_access));
   lock_acquire(&inode_access);
 
   /* Check whether this inode is already open. */
@@ -172,6 +185,7 @@ inode_open (disk_sector_t sector)
         {
           inode_reopen (inode);
 	  //sema_up(&inode->open_cnt_access);
+	  lock_release(&inode_access);
           return inode; 
         }
     }
@@ -231,6 +245,8 @@ inode_close (struct inode *inode)
   /* Ignore null pointer. */
   if (inode == NULL)
     return;
+
+  ASSERT (!lock_held_by_current_thread (&inode_access));
   lock_acquire(&inode_access);
 
   //sema_down(&inode->open_cnt_access);

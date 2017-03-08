@@ -1,13 +1,13 @@
-Copying tests/userprog/close-normal into /tmp/KJCJJKgX9B.dsk...
-Copying ../../tests/userprog/sample.txt into /tmp/KJCJJKgX9B.dsk...
-Writing command line to /tmp/G4SEgaSleT.dsk...
-qemu -hda /tmp/G4SEgaSleT.dsk -hdb /tmp/wDDt7UiyUF.dsk -hdc /tmp/KJCJJKgX9B.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/close-normal into /tmp/_B0EXzOjrI.dsk...
+Copying ../../tests/userprog/sample.txt into /tmp/_B0EXzOjrI.dsk...
+Writing command line to /tmp/H4Zi7lFVem.dsk...
+qemu -hda /tmp/H4Zi7lFVem.dsk -hdb /tmp/pAhEBtKxiq.dsk -hdc /tmp/_B0EXzOjrI.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put close-normal put sample.txt run close-normal
 Pintos booting with 4,088 kB RAM...
-372 pages available in kernel pool.
+371 pages available in kernel pool.
 371 pages available in user pool.
 Calibrating timer...  419,020,800 loops/s.
-hd0:0: detected 153 sector (76 kB) disk, model "QEMU HARDDISK", serial "QM00001"
+hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 100 sector (50 kB) disk, model "QEMU HARDDISK", serial "QM00003"
 Formatting file system...done.
@@ -21,8 +21,8 @@ Executing 'close-normal':
 (close-normal) end
 close-normal: exit(0)
 Execution of 'close-normal' complete.
-Timer: 60 ticks
-Thread: 33 idle ticks, 27 kernel ticks, 0 user ticks
+Timer: 58 ticks
+Thread: 32 idle ticks, 26 kernel ticks, 0 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 90 reads, 210 writes
 hd1:0: 100 reads, 0 writes

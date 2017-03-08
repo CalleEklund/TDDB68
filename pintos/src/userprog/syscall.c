@@ -307,11 +307,11 @@ void seek (int fd, unsigned position)
     exit(ARG_ERROR);
 
   int i = fd - FD_TABLE_OFFSET;
-  struct file* file = current_thread->fd_table[i];
+  struct file* file = thread_current()->fd_table[i];
   if (file == NULL || (off_t) position > file_length(file))      //TODO: This is right, right? 
     exit(ARG_ERROR);
 
-  file_seek (struct file *file, (off_t) position);
+  file_seek (file, (off_t) position);
 }
 
 unsigned tell (int fd)
@@ -320,7 +320,7 @@ unsigned tell (int fd)
     exit(ARG_ERROR);
 
   int i = fd - FD_TABLE_OFFSET;
-  struct file* file = current_thread->fd_table[i];
+  struct file* file = thread_current()->fd_table[i];
   if (file == NULL)
     exit(ARG_ERROR);
   return (unsigned) file_tell(file);
@@ -332,7 +332,7 @@ int filesize (int fd)
     exit(ARG_ERROR);
   
   int i = fd - FD_TABLE_OFFSET;
-  struct file* file = current_thread->fd_table[i];
+  struct file* file = thread_current()->fd_table[i];
   if (file == NULL)
     exit(ARG_ERROR);
   return (int) file_length(file);

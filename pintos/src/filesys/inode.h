@@ -4,8 +4,11 @@
 #include <stdbool.h>
 #include "filesys/off_t.h"
 #include "devices/disk.h"
+#include "threads/synch.h"
 
 struct bitmap;
+
+struct lock inode_access;
 
 void inode_init (void);
 bool inode_create (disk_sector_t, off_t);
@@ -19,5 +22,12 @@ off_t inode_write_at (struct inode *, const void *, off_t size, off_t offset);
 void inode_deny_write (struct inode *);
 void inode_allow_write (struct inode *);
 off_t inode_length (const struct inode *);
-
+void service_queue_p(struct inode*);
+void service_queue_v(struct inode*);
+void read_count_access_p(struct inode*);
+void read_count_access_v(struct inode*);
+void resource_access_p(struct inode*);
+void resource_access_v(struct inode*);
+unsigned get_read_count(struct inode*);
+void set_read_count(struct inode*, unsigned);
 #endif /* filesys/inode.h */

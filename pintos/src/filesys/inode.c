@@ -6,6 +6,7 @@
 #include "filesys/filesys.h"
 #include "filesys/free-map.h"
 #include "threads/malloc.h"
+#include "threads/synch.h"
 
 /* Identifies an inode. */
 #define INODE_MAGIC 0x494e4f44
@@ -37,8 +38,52 @@ struct inode
     bool removed;                       /* True if deleted, false otherwise. */
     int deny_write_cnt;                 /* 0: writes ok, >0: deny writes. */
     struct inode_disk data;             /* Inode content. */
+    struct semaphore service_queue;
+    unsigned read_count;
+    struct semaphore read_count_access;
+    struct semaphore resource_access;
+    struct semaphore open_cnt_access;
   };
-
+void
+service_queue_p(struct inode* inode)
+{
+  sema_down(&inode->service_queue);
+}
+void
+service_queue_v(struct inode* inode)
+{
+  sema_up(&inode->service_queue);
+}
+void
+read_count_access_p(struct inode* inode)
+{
+  sema_down(&inode->read_count_access);
+}
+void
+read_count_access_v(struct inode* inode)
+{
+  sema_up(&inode->read_count_access);
+}
+void
+resource_access_p(struct inode* inode)
+{
+  sema_down(&inode->resource_access);
+}
+void
+resource_access_v(struct inode* inode)
+{
+  sema_up(&inode->resource_access);
+}
+unsigned
+get_read_count(struct inode* inode)
+{
+  return inode->read_count; 
+}
+void 
+set_read_count(struct inode* inode, unsigned new)
+{
+  inode->read_count = new; 
+}
 /* Returns the disk sector that contains byte offset POS within
    INODE.
    Returns -1 if INODE does not contain data for a byte at offset
@@ -62,6 +107,7 @@ void
 inode_init (void) 
 {
   list_init (&open_inodes);
+  lock_init (&inode_access);
 }
 
 /* Initializes an inode with LENGTH bytes of data and
@@ -114,14 +160,18 @@ inode_open (disk_sector_t sector)
   struct list_elem *e;
   struct inode *inode;
 
+  lock_acquire(&inode_access);
+
   /* Check whether this inode is already open. */
   for (e = list_begin (&open_inodes); e != list_end (&open_inodes);
        e = list_next (e)) 
     {
+      //sema_down(&inode->open_cnt_access);
       inode = list_entry (e, struct inode, elem);
       if (inode->sector == sector) 
         {
           inode_reopen (inode);
+	  //sema_up(&inode->open_cnt_access);
           return inode; 
         }
     }
@@ -138,6 +188,16 @@ inode_open (disk_sector_t sector)
   inode->deny_write_cnt = 0;
   inode->removed = false;
   disk_read (filesys_disk, inode->sector, &inode->data);
+  // read-write synchronisation
+  sema_init(&inode->service_queue, 1) ;
+  inode->read_count = 0;
+  sema_init(&inode->read_count_access,1);
+  sema_init(&inode->resource_access,1);
+  // open and close synchronisation
+  sema_init(&inode->open_cnt_access, 1);
+
+  lock_release(&inode_access);
+  
   return inode;
 }
 
@@ -147,8 +207,10 @@ inode_reopen (struct inode *inode)
 {
   if (inode != NULL) 
     {
+  
       ASSERT(inode->open_cnt != 0);
       inode->open_cnt++;
+
     }
   return inode;
 }
@@ -169,7 +231,9 @@ inode_close (struct inode *inode)
   /* Ignore null pointer. */
   if (inode == NULL)
     return;
+  lock_acquire(&inode_access);
 
+  //sema_down(&inode->open_cnt_access);
   /* Release resources if this was the last opener. */
   if (--inode->open_cnt == 0)
     {
@@ -183,9 +247,13 @@ inode_close (struct inode *inode)
           free_map_release (inode->data.start,
                             bytes_to_sectors (inode->data.length)); 
         }
-
+      //sema_up(&inode->open_cnt_access);
       free (inode); 
     }
+  //else
+    //sema_up(&inode->open_cnt_access);
+
+  lock_release(&inode_access);
 }
 
 /* Marks INODE to be deleted when it is closed by the last caller who

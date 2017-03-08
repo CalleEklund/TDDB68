@@ -24,6 +24,8 @@ int wait (pid_t pid);
 
 bool create (const char *file, unsigned initial_size);
 
+bool remove (const char *file);
+
 int open (const char *file); 
 
 void close(int fd);
@@ -31,6 +33,12 @@ void close(int fd);
 int write(int fd, const void *buffer, unsigned size);
 
 int read (int fd, void *buffer, unsigned size);
+
+void seek (int fd, unsigned position);
+
+unsigned tell (int fd);
+
+int filesize (int fd);
 
 int add_file_to_fd_table(struct file* openfile, struct thread* current_thread);
 
@@ -72,7 +80,7 @@ syscall_handler (struct intr_frame *f)
     
   case SYS_EXEC :
     get_args(1, args, f->esp);
-    return_value = (pid_t) exec((const char*) args[0]);
+    return_value = (uint32_t) exec((const char*) args[0]);
     break;
 
   case SYS_EXIT :                   /* Terminate this process. */
@@ -82,12 +90,17 @@ syscall_handler (struct intr_frame *f)
 
   case SYS_WAIT :
     get_args(1, args, f->esp);
-    return_value = (int) wait((pid_t) args[0]);
+    return_value = (uint32_t) wait((pid_t) args[0]);
     break;
 
   case SYS_CREATE :                 /* Create a file. */
     get_args(2, args, f->esp);
     return_value = (uint32_t) create((const char*)args[0], (unsigned)args[1]);
+    break;
+
+  case SYS_REMOVE :
+    get_args(1, args, f->esp);
+    return_value = (uint32_t) remove((const char*)args[0]);
     break;
 
   case SYS_OPEN :                   /* Open a file. */
@@ -108,6 +121,21 @@ syscall_handler (struct intr_frame *f)
   case SYS_CLOSE :                  /* Close a file. */
     get_args(1, args, f->esp);
     close((int) args[0]);
+    break;
+
+  case SYS_SEEK : 
+    get_args(2, args, f->esp);
+    seek((int)args[0], (unsigned)args[1]);
+    break;
+
+  case SYS_TELL : 
+    get_args(1, args, f->esp);
+    return_value = (uint32_t) tell((int)args[0]);
+    break;
+
+  case SYS_FILESIZE :
+    get_args(1, args, f->esp);
+    return_value = (uint32_t) filesize((int)args[0]);
     break;
   }
 
@@ -154,6 +182,14 @@ bool create (const char *file, unsigned initial_size)
   return filesys_create(file, init_size);
 }
 
+bool remove (const char *file)
+{
+  if(!is_valid_string(file)) 
+    exit(ARG_ERROR);
+
+  return filesys_remove(file);
+}
+
 int open (const char *file)
 {
   if(!is_valid_string(file))
@@ -178,11 +214,12 @@ void close(int fd)
 
   int i = fd - FD_TABLE_OFFSET;
   struct file* closing_file = current_thread->fd_table[i];
-  if (closing_file != NULL) { 
-    file_close(closing_file);
-    current_thread->fd_table[i] = NULL;
-    current_thread->nr_open_files--;  
-  }
+  if (closing_file == NULL)
+    exit(ARG_ERROR); 
+
+  file_close(closing_file);
+  current_thread->fd_table[i] = NULL;
+  current_thread->nr_open_files--;  
 }
 
 int write(int fd, const void *buffer, unsigned size)
@@ -220,7 +257,7 @@ int write(int fd, const void *buffer, unsigned size)
 
   off_t size_var = (off_t)size;
   if (file == NULL) {
-    nr_bytes_written = -1;
+    exit(ARG_ERROR);
   }
   else{ 
     nr_bytes_written = (int)file_write(file, buffer, size_var);
@@ -257,12 +294,57 @@ int read (int fd, void *buffer, unsigned size)
 
   int i = fd - FD_TABLE_OFFSET;
   struct file* file = current_thread->fd_table[i];
-  if ( file != NULL && buffer != NULL)
-    {
-      nr_bytes_read = (int)file_read(file, buffer, (off_t)size);
-    }
+  if ( file == NULL)
+    exit(ARG_ERROR);
+
+  nr_bytes_read = (int)file_read(file, buffer, (off_t)size);
   return nr_bytes_read;
 }
+
+void seek (int fd, unsigned position) 
+{
+  if (!validate_fd(fd))
+    exit(ARG_ERROR);
+
+  int i = fd - FD_TABLE_OFFSET;
+  struct file* file = current_thread->fd_table[i];
+  if (file == NULL || (off_t) position > file_length(file))      //TODO: This is right, right? 
+    exit(ARG_ERROR);
+
+  file_seek (struct file *file, (off_t) position);
+}
+
+unsigned tell (int fd)
+{
+  if (!validate_fd(fd))
+    exit(ARG_ERROR);
+
+  int i = fd - FD_TABLE_OFFSET;
+  struct file* file = current_thread->fd_table[i];
+  if (file == NULL)
+    exit(ARG_ERROR);
+  return (unsigned) file_tell(file);
+}
+
+int filesize (int fd)
+{
+  if (!validate_fd(fd))
+    exit(ARG_ERROR);
+  
+  int i = fd - FD_TABLE_OFFSET;
+  struct file* file = current_thread->fd_table[i];
+  if (file == NULL)
+    exit(ARG_ERROR);
+  return (int) file_length(file);
+}
+
+
+/* 
+---------------------------------------------------------------------
+---------------------- Syscall help functions ----------------------- 
+---------------------------------------------------------------------
+*/ 
+
 
 /* 
 Puts the file at the first found avaiable spot in the file descriptor table,
@@ -349,4 +431,3 @@ bool is_valid_string(const char* str)
     if(*((char*) ch) == '\0') return true;
   }
 }
-

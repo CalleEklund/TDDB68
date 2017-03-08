@@ -220,6 +220,13 @@ M:
 TODO: Change declaration of load on top of process.c. (different names on const char* parameter (cmdline vs file_name) 
 TODO: We might have to do palloc_free_page() on file_name_extr send to thread_create. When is it safe to do so? Init-thread() copies the name. 
 
+--- 8/3/2017 ---
+M:
+
+I changed all casts to the return values in syscall to uint32_t. The ones from lab3 had wrong cast. 
+
+Changed write, read and seek, tell to exit(-1) if for some reason file struct is null when fetched from the fd table. Even after checking the fd itself. (shouldn't happen right? But if it does feels like a bad enough problem to deserve exit(-1)!!!!)
+
 
 
 

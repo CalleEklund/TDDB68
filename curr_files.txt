@@ -1,5 +1,3 @@
-./threads/interrupt.c
-./threads/interrupt.h
 ./threads/thread.c 
 ./threads/thread.h
 ./threads/synch.c
@@ -10,5 +8,15 @@
 ./userprog/syscall.h
 ./userprog/pagedir.c
 ./userprog/pagedir.h
-./lib/string.c
-./lib/string.h
+./devices/disk.h
+./devices/disk.c
+./filesys/free-map.h
+./filesys/free-map.c
+./filesys/inode.c
+./filesys/inode.h
+./filesys/filesys.h
+./filesys/filesys.c
+./filesys/directory.c
+./filesys/directory.h
+./filesys/file.h
+./filesys/file.c

@@ -32,7 +32,6 @@ filesys_init (bool format)
 
   // Initialize filesys locks
   lock_init(&dir_access);
-  lock_init(&free_map_access);
 }
 
 /* Shuts down the file system module, writing any unwritten data
@@ -53,9 +52,7 @@ filesys_create (const char *name, off_t initial_size)
   disk_sector_t inode_sector = 0;
   struct dir *dir = dir_open_root ();
 
-  lock_acquire(&free_map_access);
   bool fm_alloc = free_map_allocate (1, &inode_sector);
-  lock_release(&free_map_access);
   bool inode_cr = inode_create (inode_sector, initial_size);
   lock_acquire(&dir_access);
   bool dr_add = dir_add (dir, name, inode_sector);
@@ -66,15 +63,8 @@ filesys_create (const char *name, off_t initial_size)
                   && inode_cr
                   && dr_add);
 
-/* bool success = (dir != NULL
-                  && free_map_allocate (1, &inode_sector)
-                  && inode_create (inode_sector, initial_size)
-                  && dir_add (dir, name, inode_sector));*/
-
   if (!success && inode_sector != 0)  {
-    lock_acquire(&free_map_access);
     free_map_release (inode_sector, 1);
-    lock_release(&free_map_access);
   }
 
   dir_close (dir);
@@ -97,7 +87,11 @@ filesys_open (const char *name)
     dir_lookup (dir, name, &inode);
   dir_close (dir);
 
-  return file_open (inode);
+  // protect with dir lock
+  lock_acquire(&dir_access);
+  struct file* file = file_open(inode);
+  lock_release(&dir_access);
+  return file;
 }
 
 /* Deletes the file named NAME.
@@ -109,9 +103,9 @@ filesys_remove (const char *name)
 {
   struct dir *dir = dir_open_root ();
 
-  lock_acquire(&free_map_access);
+  lock_acquire(&dir_access);
   bool success = dir != NULL && dir_remove (dir, name);
-  lock_release(&free_map_access);
+  lock_release(&dir_access);
 
   dir_close (dir); 
 

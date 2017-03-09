@@ -69,27 +69,7 @@ off_t
 file_read (struct file *file, void *buffer, off_t size) 
 {
   struct inode* inode = file->inode;
-  service_queue_p(inode);
-  read_count_access_p(inode);
-  
-  if (get_read_count(inode)==0) 
-    resource_access_p(inode);
-  unsigned new = get_read_count(inode);
-  set_read_count(inode, ++new);
-  
-  service_queue_v(inode);
-  read_count_access_v(inode);
-
   off_t bytes_read = inode_read_at (inode, buffer, size, file->pos);
-  
-  read_count_access_p(inode);
-  new = get_read_count(inode);
-  set_read_count(inode,--new);
-
-  if (get_read_count(inode) == 0)
-    resource_access_v(inode);
-  read_count_access_v(inode);
-
   file->pos += bytes_read;
   
   return bytes_read;
@@ -117,15 +97,9 @@ off_t
 file_write (struct file *file, const void *buffer, off_t size) 
 {
   struct inode* inode = file->inode;
-  service_queue_p(inode);
-  resource_access_p(inode);
-  service_queue_v(inode);
-
-  off_t bytes_written = inode_write_at (file->inode, buffer, size, file->pos);
-
-  resource_access_v(inode);
-
+  off_t bytes_written = inode_write_at (inode, buffer, size, file->pos);
   file->pos += bytes_written;
+
   return bytes_written;
 }
 

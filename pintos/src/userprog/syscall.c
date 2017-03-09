@@ -308,7 +308,7 @@ void seek (int fd, unsigned position)
 
   int i = fd - FD_TABLE_OFFSET;
   struct file* file = thread_current()->fd_table[i];
-  if (file == NULL || (off_t) position > file_length(file))      //TODO: This is right, right? 
+  if (file == NULL || (off_t) position > file_length(file))   
     exit(ARG_ERROR);
 
   file_seek (file, (off_t) position);

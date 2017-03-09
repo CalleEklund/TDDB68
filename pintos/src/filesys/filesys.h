@@ -10,7 +10,6 @@
 #define ROOT_DIR_SECTOR 1       /* Root directory file inode sector. */
 
 struct lock dir_access;
-struct lock free_map_access;
 
 /* Disk used for file system. */
 extern struct disk *filesys_disk;

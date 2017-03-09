@@ -1,11 +1,11 @@
-Copying tests/userprog/read-bad-fd into /tmp/CzgwJR5xe1.dsk...
-Writing command line to /tmp/eDdIcZb0h2.dsk...
-qemu -hda /tmp/eDdIcZb0h2.dsk -hdb /tmp/Fq3NkvDeKf.dsk -hdc /tmp/CzgwJR5xe1.dsk -m 4 -net none -nographic -monitor null
+Copying tests/userprog/read-bad-fd into /tmp/B6eKeMr7uh.dsk...
+Writing command line to /tmp/TDqEngbbHl.dsk...
+qemu -hda /tmp/TDqEngbbHl.dsk -hdb /tmp/NUAC3JpPl1.dsk -hdc /tmp/B6eKeMr7uh.dsk -m 4 -net none -nographic -monitor null
 Kernel command line: -q -f put read-bad-fd run read-bad-fd
 Pintos booting with 4,088 kB RAM...
 371 pages available in kernel pool.
 371 pages available in user pool.
-Calibrating timer...  419,020,800 loops/s.
+Calibrating timer...  314,163,200 loops/s.
 hd0:0: detected 161 sector (80 kB) disk, model "QEMU HARDDISK", serial "QM00001"
 hd0:1: detected 4,032 sector (1 MB) disk, model "QEMU HARDDISK", serial "QM00002"
 hd1:0: detected 98 sector (49 kB) disk, model "QEMU HARDDISK", serial "QM00003"
@@ -16,8 +16,8 @@ Executing 'read-bad-fd':
 (read-bad-fd) begin
 read-bad-fd: exit(-1)
 Execution of 'read-bad-fd' complete.
-Timer: 58 ticks
-Thread: 32 idle ticks, 25 kernel ticks, 1 user ticks
+Timer: 57 ticks
+Thread: 32 idle ticks, 24 kernel ticks, 1 user ticks
 hd0:0: 0 reads, 0 writes
 hd0:1: 59 reads, 204 writes
 hd1:0: 98 reads, 0 writes

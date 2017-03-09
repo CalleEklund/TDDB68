@@ -5,6 +5,8 @@
 #include <stddef.h>
 #include "devices/disk.h"
 
+struct lock free_map_access;
+
 void free_map_init (void);
 void free_map_read (void);
 void free_map_create (void);

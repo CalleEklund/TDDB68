@@ -46,7 +46,6 @@ struct inode
     unsigned read_count;
     struct semaphore read_count_access;
     struct semaphore resource_access;
-    //struct semaphore open_cnt_access;
   };
 
 /* 
@@ -133,7 +132,6 @@ inode_create (disk_sector_t sector, off_t length)
   bool success = false;
 
   ASSERT (length >= 0);
-  if(debug) printf("In inode create\n");
 
   /* If this assertion fails, the inode structure is not exactly
      one sector in size, and you should fix that. */
@@ -176,7 +174,6 @@ inode_open (disk_sector_t sector)
   struct list_elem *e;
   struct inode *inode;
 
-  ASSERT (!lock_held_by_current_thread (&inode_access));
   lock_acquire(&inode_access);
 
   /* Check whether this inode is already open. */
@@ -194,8 +191,10 @@ inode_open (disk_sector_t sector)
 
   /* Allocate memory. */
   inode = malloc (sizeof *inode);
-  if (inode == NULL)
+  if (inode == NULL) {
+    lock_release(&inode_access);
     return NULL;
+  }
 
   /* Initialize. */
   list_push_front (&open_inodes, &inode->elem);
@@ -209,8 +208,6 @@ inode_open (disk_sector_t sector)
   inode->read_count = 0;
   sema_init(&inode->read_count_access,1);
   sema_init(&inode->resource_access,1);
-  // open and close synchronisation
-  //sema_init(&inode->open_cnt_access, 1);
 
   lock_release(&inode_access);
   
@@ -248,7 +245,6 @@ inode_close (struct inode *inode)
   if (inode == NULL)
     return;
 
-  ASSERT (!lock_held_by_current_thread (&inode_access));
   lock_acquire(&inode_access);
 
   /* Release resources if this was the last opener. */
@@ -288,6 +284,17 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
   uint8_t *buffer = buffer_;
   off_t bytes_read = 0;
   uint8_t *bounce = NULL;
+
+  service_queue_p(inode);
+  read_count_access_p(inode);
+  
+  if (get_read_count(inode)==0) 
+    resource_access_p(inode);
+  unsigned new = get_read_count(inode);
+  set_read_count(inode, ++new);
+  
+  service_queue_v(inode);
+  read_count_access_v(inode);
 
   while (size > 0) 
     {
@@ -331,6 +338,14 @@ inode_read_at (struct inode *inode, void *buffer_, off_t size, off_t offset)
     }
   free (bounce);
 
+  read_count_access_p(inode);
+  new = get_read_count(inode);
+  set_read_count(inode,--new);
+
+  if (get_read_count(inode) == 0)
+    resource_access_v(inode);
+  read_count_access_v(inode);
+
   return bytes_read;
 }
 
@@ -347,8 +362,14 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
   off_t bytes_written = 0;
   uint8_t *bounce = NULL;
 
-  if (inode->deny_write_cnt)
+  service_queue_p(inode);
+  resource_access_p(inode);
+  service_queue_v(inode);
+
+  if (inode->deny_write_cnt) {
+    resource_access_v(inode);
     return 0;
+  }
 
   while (size > 0) 
     {
@@ -398,6 +419,8 @@ inode_write_at (struct inode *inode, const void *buffer_, off_t size,
       bytes_written += chunk_size;
     }
   free (bounce);
+
+  resource_access_v(inode);
 
   return bytes_written;
 }
